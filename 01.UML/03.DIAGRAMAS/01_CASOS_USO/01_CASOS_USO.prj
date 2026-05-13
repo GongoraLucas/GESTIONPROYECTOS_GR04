@@ -505,7 +505,7 @@ Shadow=0</a:DisplayPreferences>
 <a:Code>CU_Ingresar_Sistema</a:Code>
 <a:CreationDate>1777299189</a:CreationDate>
 <a:Creator>Lucas</a:Creator>
-<a:ModificationDate>1777299190</a:ModificationDate>
+<a:ModificationDate>1777299976</a:ModificationDate>
 <a:Modifier>Lucas</a:Modifier>
 <a:Location>file:///%[PRJ_ROOT_DIR]%/CU_Ingresar_Sistema.oom</a:Location>
 <a:Extension>oom</a:Extension>
@@ -544,7 +544,7 @@ Shadow=0</a:DisplayPreferences>
 <a:Code>CU_Gestionar_Proyecto</a:Code>
 <a:CreationDate>1777300616</a:CreationDate>
 <a:Creator>Lucas</a:Creator>
-<a:ModificationDate>1777300616</a:ModificationDate>
+<a:ModificationDate>1777300608</a:ModificationDate>
 <a:Modifier>Lucas</a:Modifier>
 <a:Location>file:///%[PRJ_ROOT_DIR]%/CU_Gestionar_Grupo_Artículo.oom</a:Location>
 <a:Extension>oom</a:Extension>
