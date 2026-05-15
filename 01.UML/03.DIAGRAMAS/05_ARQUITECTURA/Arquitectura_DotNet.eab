@@ -2668,8 +2668,8 @@ Shadow=0</a:DisplayPreferences>
 <o:ApplicationLinkSymbol Id="o30">
 <a:CreationDate>1778827944</a:CreationDate>
 <a:ModificationDate>1778827957</a:ModificationDate>
-<a:Rect>((-18550,9106), (3016,15921))</a:Rect>
-<a:ListOfPoints>((-18150,15521),(-18150,9733),(2616,9731))</a:ListOfPoints>
+<a:Rect>((-18550,9104), (3016,15919))</a:Rect>
+<a:ListOfPoints>((-18150,15519),(-18150,9733),(2616,9729))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>1</a:ArrowStyle>
 <a:LineColor>8540968</a:LineColor>
@@ -2828,7 +2828,7 @@ LABL 0 Arial,8,N</a:FontList>
 <a:ModificationDate>1778827944</a:ModificationDate>
 <a:IconMode>2</a:IconMode>
 <a:EmptyAreaSize>(1920, 1920)</a:EmptyAreaSize>
-<a:Rect>((1682,7824), (5521,11664))</a:Rect>
+<a:Rect>((1682,7822), (5521,11662))</a:Rect>
 <a:LineColor>9733219</a:LineColor>
 <a:FillColor>15986392</a:FillColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -2840,7 +2840,7 @@ FTYP 0 Arial,8,N</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:CustomPictureType>3</a:CustomPictureType>
 <a:CustomTextMode>1</a:CustomTextMode>
-<a:CustomPictureID>4F53EC72-E6BD-40D9-96E6-5F85A25EC2D2</a:CustomPictureID>
+<a:CustomPictureID>4E268972-25BD-4038-8E51-584F629D3742</a:CustomPictureID>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <a:KeepAspect>1</a:KeepAspect>
 <c:Object>
@@ -2974,7 +2974,7 @@ DATY 0 Arial,8,N</a:FontList>
 <a:GradientFillMode>34</a:GradientFillMode>
 <a:CustomPictureType>3</a:CustomPictureType>
 <a:CustomTextMode>1</a:CustomTextMode>
-<a:CustomPictureID>834096FD-C98D-4A1A-935D-C9D7CFCF2572</a:CustomPictureID>
+<a:CustomPictureID>F5EAA6AC-D36B-4A62-8AD1-9C2D309A44BC</a:CustomPictureID>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <a:KeepAspect>1</a:KeepAspect>
 <c:Object>
@@ -3103,7 +3103,7 @@ LABL 0 Arial,8,N</a:FontList>
 <a:ModificationDate>1778827944</a:ModificationDate>
 <a:IconMode>2</a:IconMode>
 <a:EmptyAreaSize>(1920, 1920)</a:EmptyAreaSize>
-<a:Rect>((-20803,13739), (-16963,17579))</a:Rect>
+<a:Rect>((-20803,13737), (-16963,17577))</a:Rect>
 <a:LineColor>9733219</a:LineColor>
 <a:FillColor>15986392</a:FillColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -3118,7 +3118,7 @@ ETYP 0 Arial,8,N</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:CustomPictureType>3</a:CustomPictureType>
 <a:CustomTextMode>1</a:CustomTextMode>
-<a:CustomPictureID>2D4EDA91-9207-4FBE-B3AA-0338563BD9D5</a:CustomPictureID>
+<a:CustomPictureID>3EB81E2A-4030-4797-BA43-A42E25FE08E6</a:CustomPictureID>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <a:KeepAspect>1</a:KeepAspect>
 <c:Object>
