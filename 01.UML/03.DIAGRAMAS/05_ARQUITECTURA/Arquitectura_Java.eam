@@ -2666,8 +2666,8 @@ Shadow=0</a:DisplayPreferences>
 <a:CreationDate>1778826908</a:CreationDate>
 <a:ModificationDate>1778827459</a:ModificationDate>
 <a:CenterTextOffset>(4080, -1395)</a:CenterTextOffset>
-<a:Rect>((-19993,9055), (3832,18594))</a:Rect>
-<a:ListOfPoints>((-19593,18194),(-19593,9686),(3432,9680))</a:ListOfPoints>
+<a:Rect>((-19993,9053), (3832,18592))</a:Rect>
+<a:ListOfPoints>((-19593,18192),(-19593,9686),(3432,9678))</a:ListOfPoints>
 <a:CornerStyle>1</a:CornerStyle>
 <a:ArrowStyle>1</a:ArrowStyle>
 <a:LineColor>8540968</a:LineColor>
@@ -2828,7 +2828,7 @@ LABL 0 Arial,8,N</a:FontList>
 <a:ModificationDate>1778826908</a:ModificationDate>
 <a:IconMode>2</a:IconMode>
 <a:EmptyAreaSize>(1920, 1920)</a:EmptyAreaSize>
-<a:Rect>((2642,7697), (6481,11537))</a:Rect>
+<a:Rect>((2642,7695), (6481,11535))</a:Rect>
 <a:LineColor>9733219</a:LineColor>
 <a:FillColor>15986392</a:FillColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -2840,7 +2840,7 @@ FTYP 0 Arial,8,N</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:CustomPictureType>3</a:CustomPictureType>
 <a:CustomTextMode>1</a:CustomTextMode>
-<a:CustomPictureID>97A5EEFD-C404-4BF8-BF93-15E350CC58CF</a:CustomPictureID>
+<a:CustomPictureID>C70A215F-0E79-457E-A354-DFAAE7F0E8E8</a:CustomPictureID>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <a:KeepAspect>1</a:KeepAspect>
 <c:Object>
@@ -2974,7 +2974,7 @@ DATY 0 Arial,8,N</a:FontList>
 <a:GradientFillMode>34</a:GradientFillMode>
 <a:CustomPictureType>3</a:CustomPictureType>
 <a:CustomTextMode>1</a:CustomTextMode>
-<a:CustomPictureID>59FD711C-1FB0-47B9-AC7A-191D51D84032</a:CustomPictureID>
+<a:CustomPictureID>009689BB-BD76-4A56-BE1D-1DCB627CD033</a:CustomPictureID>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <a:KeepAspect>1</a:KeepAspect>
 <c:Object>
@@ -3104,7 +3104,7 @@ LABL 0 Arial,8,N</a:FontList>
 <a:ModificationDate>1778827035</a:ModificationDate>
 <a:IconMode>2</a:IconMode>
 <a:EmptyAreaSize>(1920, 1920)</a:EmptyAreaSize>
-<a:Rect>((-22002,17388), (-18162,21228))</a:Rect>
+<a:Rect>((-22002,17386), (-18162,21226))</a:Rect>
 <a:LineColor>9733219</a:LineColor>
 <a:FillColor>15986392</a:FillColor>
 <a:ShadowColor>12632256</a:ShadowColor>
@@ -3119,7 +3119,7 @@ ETYP 0 Arial,8,N</a:FontList>
 <a:GradientFillMode>65</a:GradientFillMode>
 <a:CustomPictureType>3</a:CustomPictureType>
 <a:CustomTextMode>1</a:CustomTextMode>
-<a:CustomPictureID>3E8C6BC5-0C8B-40C6-8881-3C9B160EB141</a:CustomPictureID>
+<a:CustomPictureID>462C1151-C78A-4BEC-97D9-ACF4F2BE8544</a:CustomPictureID>
 <a:GradientEndColor>16777215</a:GradientEndColor>
 <a:KeepAspect>1</a:KeepAspect>
 <c:Object>
