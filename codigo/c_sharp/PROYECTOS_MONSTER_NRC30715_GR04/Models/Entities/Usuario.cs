@@ -55,4 +55,9 @@ public class Usuario
     public Estado? Estado { get; set; }
 
     public Empleado? Empleado { get; set; }
+
+    public ICollection<RecuperacionPassword>
+    Recuperaciones
+    { get; set; }
+    = new List<RecuperacionPassword>();
 }

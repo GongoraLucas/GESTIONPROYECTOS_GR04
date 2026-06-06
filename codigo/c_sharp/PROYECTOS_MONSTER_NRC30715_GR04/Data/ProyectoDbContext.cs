@@ -28,6 +28,8 @@ namespace PROYECTOS_MONSTER_NRC30715_GR04.Data
 
         public DbSet<Usuario> Usuarios { get; set; }
 
+        public DbSet<RecuperacionPassword> Recuperaciones { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -73,6 +75,11 @@ namespace PROYECTOS_MONSTER_NRC30715_GR04.Data
               .HasOne(u => u.Empleado)
               .WithMany()
               .HasForeignKey(u => u.EmpleadoCodigo);
+
+            modelBuilder.Entity<RecuperacionPassword>()
+              .HasOne(r => r.Usuario)
+              .WithMany(u => u.Recuperaciones)
+              .HasForeignKey(r => r.UsuarioId);
         }
 
     }

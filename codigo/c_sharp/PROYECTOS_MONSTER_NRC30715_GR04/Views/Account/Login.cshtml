@@ -1,44 +1,87 @@
 ﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.LoginViewModel
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
 
-        <div class="col-md-4">
+<div class="row justify-content-center mt-5">
 
-            <h3 class="text-center mb-4">
-                Iniciar Sesión
-            </h3>
+    <div class="col-md-4">
 
-            <form asp-action="Login">
+        <div class="card shadow-lg">
 
-                <div class="mb-3">
-                    <label asp-for="Usuario"></label>
+            <div class="card-header text-center">
 
-                    <input asp-for="Usuario"
-                           class="form-control">
+                <h3>
+                    Monster Projects
+                </h3>
 
-                    <span asp-validation-for="Usuario"
-                          class="text-danger"></span>
+                <small class="text-muted">
+                    Sistema de Gestión de Proyectos
+                </small>
+
+            </div>
+
+            <div class="card-body">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="text-danger mb-3">
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Password"></label>
+                <form asp-action="Login"
+                      method="post">
 
-                    <input asp-for="Password"
-                           class="form-control">
+                    <div class="mb-3">
 
-                    <span asp-validation-for="Password"
-                          class="text-danger"></span>
+                        <label asp-for="Usuario"></label>
+
+                        <input asp-for="Usuario"
+                               class="form-control" />
+
+                        <span asp-validation-for="Usuario"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label asp-for="Password"></label>
+
+                        <input asp-for="Password"
+                               class="form-control" />
+
+                        <span asp-validation-for="Password"
+                              class="text-danger">
+                        </span>
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+                        Ingresar
+                    </button>
+
+                </form>
+
+                <hr />
+
+                <div class="text-center">
+
+                    <a asp-action="RecuperarPassword">
+                        ¿Olvidó su contraseña?
+                    </a>
+
                 </div>
 
-                <button type="submit"
-                        class="btn btn-primary w-100">
-                    Ingresar
-                </button>
-
-            </form>
+            </div>
 
         </div>
 
     </div>
+
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

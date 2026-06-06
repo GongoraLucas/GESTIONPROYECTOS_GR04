@@ -1,8 +1,109 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container mt-4">
+
+    <div class="row mb-4">
+
+        <div class="col">
+
+            <h2>
+                Bienvenido @User.Identity?.Name
+            </h2>
+
+            <p class="text-muted">
+                Sistema de Gestión de Proyectos Monster
+            </p>
+
+            <hr />
+
+        </div>
+
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Empleados
+                    </h5>
+
+                    <p class="card-text">
+                        Administración de empleados del sistema.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Usuarios
+                    </h5>
+
+                    <p class="card-text">
+                        Gestión de accesos y credenciales.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Proyectos
+                    </h5>
+
+                    <p class="card-text">
+                        Administración de proyectos y equipos.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-3">
+
+            <div class="card shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Reportes
+                    </h5>
+
+                    <p class="card-text">
+                        Consulta y generación de reportes.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>

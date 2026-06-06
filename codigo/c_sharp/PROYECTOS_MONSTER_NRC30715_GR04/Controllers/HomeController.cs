@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using PROYECTOS_MONSTER_NRC30715_GR04.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PROYECTOS_MONSTER_NRC30715_GR04.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         public IActionResult Index()
