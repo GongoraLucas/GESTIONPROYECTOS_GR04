@@ -60,4 +60,14 @@ public class Usuario
     Recuperaciones
     { get; set; }
     = new List<RecuperacionPassword>();
+
+
+    public ICollection<UsuarioPerfil> UsuariosPerfiles
+    {
+        get;
+        set;
+    } = new List<UsuarioPerfil>();
+
+    
+
 }

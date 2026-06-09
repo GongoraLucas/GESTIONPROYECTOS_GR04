@@ -18,4 +18,18 @@ public class Perfil
 
     [Column("XEPER_OBSER")]
     public string? Observacion { get; set; }
+
+
+    public ICollection<UsuarioPerfil> UsuariosPerfiles
+    {
+        get;
+        set;
+    } = new List<UsuarioPerfil>();
+
+    public ICollection<PerfilOpcion> PerfilesOpciones
+    {
+        get;
+        set;
+    } = new List<PerfilOpcion>();
+
 }

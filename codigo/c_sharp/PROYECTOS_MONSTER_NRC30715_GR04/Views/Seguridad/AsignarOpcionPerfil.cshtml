@@ -1,0 +1,147 @@
+﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.AsignarOpcionViewModel
+
+@{
+    ViewData["Title"] = "Asignar Opciones";
+}
+
+<div class="container mt-4">
+
+    <h3>
+        Asignar Opciones a Perfil
+    </h3>
+
+    <hr />
+
+    <form method="get">
+
+        <div class="row mb-4">
+
+            <div class="col-md-4">
+
+                <label class="form-label">
+                    Perfil
+                </label>
+
+                <select asp-for="PerfilCodigo"
+                        asp-items="Model.Perfiles"
+                        class="form-select"
+                        onchange="this.form.submit()">
+
+                    <option value="">
+                        Seleccione...
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </form>
+
+    @if (!string.IsNullOrEmpty(Model.PerfilCodigo))
+    {
+        <div class="row">
+
+            <div class="col-md-5">
+
+                <div class="card">
+
+                    <div class="card-header bg-light">
+                        Opciones Disponibles
+                    </div>
+
+                    <div class="card-body">
+
+                        @foreach (var opcion in Model.OpcionesDisponibles)
+                        {
+                            <form asp-action="AsignarOpcionPerfil"
+                                  method="post"
+                                  class="mb-2">
+
+                                <input type="hidden"
+                                       name="perfilCodigo"
+                                       value="@Model.PerfilCodigo" />
+
+                                <input type="hidden"
+                                       name="opcionCodigo"
+                                       value="@opcion.Codigo" />
+
+                                <div class="d-flex justify-content-between">
+
+                                    <span>
+                                        @opcion.Descripcion
+                                    </span>
+
+                                    <button class="btn btn-success btn-sm">
+                                        →
+                                    </button>
+
+                                </div>
+
+                            </form>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-2 text-center">
+
+                <h1>
+                    ⇄
+                </h1>
+
+            </div>
+
+            <div class="col-md-5">
+
+                <div class="card">
+
+                    <div class="card-header bg-light">
+                        Opciones Asignadas
+                    </div>
+
+                    <div class="card-body">
+
+                        @foreach (var opcion in Model.OpcionesAsignadas)
+                        {
+                            <form asp-action="RetirarOpcionPerfil"
+                                  method="post"
+                                  class="mb-2">
+
+                                <input type="hidden"
+                                       name="perfilCodigo"
+                                       value="@Model.PerfilCodigo" />
+
+                                <input type="hidden"
+                                       name="opcionCodigo"
+                                       value="@opcion.Codigo" />
+
+                                <div class="d-flex justify-content-between">
+
+                                    <button class="btn btn-danger btn-sm">
+                                        ←
+                                    </button>
+
+                                    <span>
+                                        @opcion.Descripcion
+                                    </span>
+
+                                </div>
+
+                            </form>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

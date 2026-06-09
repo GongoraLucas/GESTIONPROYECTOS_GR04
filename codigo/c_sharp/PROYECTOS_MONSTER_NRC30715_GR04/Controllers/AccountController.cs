@@ -11,11 +11,14 @@ namespace PROYECTOS_MONSTER_NRC30715_GR04.Controllers;
 public class AccountController : Controller
 {
     private readonly IAuthService _authService;
+    private readonly IPerfilService _perfilService;
 
     public AccountController(
-        IAuthService authService)
+     IAuthService authService,
+     IPerfilService perfilService)
     {
         _authService = authService;
+        _perfilService = perfilService;
     }
 
     [AllowAnonymous]
@@ -57,6 +60,32 @@ public class AccountController : Controller
             "UsuarioId",
             usuario.Id.ToString())
     };
+
+        var perfiles =
+    await _perfilService
+        .ObtenerPerfilesUsuarioAsync(
+            usuario.Id);
+
+        foreach (var perfil in perfiles)
+        {
+            claims.Add(
+                new Claim(
+                    ClaimTypes.Role,
+                    perfil));
+        }
+
+        var opciones =
+    await _perfilService
+        .ObtenerOpcionesUsuarioAsync(
+            usuario.Id);
+
+        foreach (var opcion in opciones)
+        {
+            claims.Add(
+                new Claim(
+                    "OPCION",
+                    opcion));
+        }
 
         var identity =
             new ClaimsIdentity(

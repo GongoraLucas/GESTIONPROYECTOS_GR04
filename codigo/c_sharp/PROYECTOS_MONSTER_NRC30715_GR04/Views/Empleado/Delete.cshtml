@@ -1,0 +1,109 @@
+﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.EmpleadoViewModel
+
+@{
+    ViewData["Title"] = "Eliminar Empleado";
+}
+
+<div class="card border-danger">
+
+    <div class="card-header bg-danger text-white">
+
+        <h4>Eliminar Empleado</h4>
+
+    </div>
+
+    <div class="card-body">
+
+        <div class="alert alert-warning">
+
+            ¿Está seguro de eliminar este empleado?
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-md-3 text-center">
+
+                @if (!string.IsNullOrEmpty(Model.Foto))
+                {
+                    <img src="@Model.Foto"
+                         class="img-thumbnail"
+                         style="width:180px;height:180px;object-fit:cover;" />
+                }
+                else
+                {
+                    <img src="/images/no-image.png"
+                         class="img-thumbnail"
+                         style="width:180px;height:180px;object-fit:cover;" />
+                }
+
+            </div>
+
+            <div class="col-md-9">
+
+                <dl class="row">
+
+                    <dt class="col-sm-3">
+                        Código
+                    </dt>
+
+                    <dd class="col-sm-9">
+                        @Model.Codigo
+                    </dd>
+
+                    <dt class="col-sm-3">
+                        Cédula
+                    </dt>
+
+                    <dd class="col-sm-9">
+                        @Model.Cedula
+                    </dd>
+
+                    <dt class="col-sm-3">
+                        Nombres
+                    </dt>
+
+                    <dd class="col-sm-9">
+                        @Model.Nombres
+                    </dd>
+
+                    <dt class="col-sm-3">
+                        Apellidos
+                    </dt>
+
+                    <dd class="col-sm-9">
+                        @Model.Apellidos
+                    </dd>
+
+                </dl>
+
+            </div>
+
+        </div>
+
+        <form asp-action="DeleteConfirmado"
+              method="post">
+
+            <input type="hidden"
+                   name="codigo"
+                   value="@Model.Codigo" />
+
+            <button type="submit"
+                    class="btn btn-danger">
+
+                Eliminar
+
+            </button>
+
+            <a asp-action="Index"
+               class="btn btn-secondary">
+
+                Cancelar
+
+            </a>
+
+        </form>
+
+    </div>
+
+</div>

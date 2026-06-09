@@ -1,0 +1,151 @@
+﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.AsignarPerfilViewModel
+
+@{
+    ViewData["Title"] = "Asignar Usuarios a Perfil";
+}
+
+<div class="container mt-4">
+
+    <div class="card shadow">
+
+        <div class="card-header bg-primary text-white">
+
+            <h4 class="mb-0">
+                Asignar Usuarios a Perfil
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <form method="get">
+
+                <div class="row mb-4">
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-bold">
+                            Perfil
+                        </label>
+
+                        <select asp-for="PerfilCodigo"
+                                asp-items="Model.Perfiles"
+                                class="form-select"
+                                onchange="this.form.submit()">
+
+                            <option value="">
+                                Seleccione un perfil
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+            @if (!string.IsNullOrEmpty(Model.PerfilCodigo))
+            {
+                <div class="row">
+
+                    <div class="col-md-5">
+
+                        <div class="card">
+
+                            <div class="card-header">
+                                Usuarios Disponibles
+                            </div>
+
+                            <ul class="list-group list-group-flush">
+
+                                @foreach (var usuario in Model.UsuariosDisponibles)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                                        @usuario.Login
+
+                                        <form asp-action="AsignarUsuario"
+                                              method="post">
+
+                                            <input type="hidden"
+                                                   name="usuarioId"
+                                                   value="@usuario.Id" />
+
+                                            <input type="hidden"
+                                                   name="perfilCodigo"
+                                                   value="@Model.PerfilCodigo" />
+
+                                            <button type="submit"
+                                                    class="btn btn-success btn-sm">
+
+                                                ►
+
+                                            </button>
+
+                                        </form>
+
+                                    </li>
+                                }
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-md-2"></div>
+
+                    <div class="col-md-5">
+
+                        <div class="card">
+
+                            <div class="card-header">
+                                Usuarios Asignados
+                            </div>
+
+                            <ul class="list-group list-group-flush">
+
+                                @foreach (var usuario in Model.UsuariosAsignados)
+                                {
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                                        @usuario.Login
+
+                                        <form asp-action="RetirarUsuario"
+                                              method="post">
+
+                                            <input type="hidden"
+                                                   name="usuarioId"
+                                                   value="@usuario.Id" />
+
+                                            <input type="hidden"
+                                                   name="perfilCodigo"
+                                                   value="@Model.PerfilCodigo" />
+
+                                            <button type="submit"
+                                                    class="btn btn-danger btn-sm">
+
+                                                ◄
+
+                                            </button>
+
+                                        </form>
+
+                                    </li>
+                                }
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</div>

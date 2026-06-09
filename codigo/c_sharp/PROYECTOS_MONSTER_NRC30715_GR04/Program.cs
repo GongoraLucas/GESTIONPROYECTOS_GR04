@@ -21,11 +21,55 @@ builder.Services.AddAuthentication(
         options.SlidingExpiration = true;
     });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(
+        "USR",
+        policy => policy.RequireClaim(
+            "OPCION",
+            "USR"));
+
+    options.AddPolicy(
+        "EMP",
+        policy => policy.RequireClaim(
+            "OPCION",
+            "EMP"));
+
+    options.AddPolicy(
+        "PRO",
+        policy => policy.RequireClaim(
+            "OPCION",
+            "PRO"));
+
+    options.AddPolicy(
+        "REP",
+        policy => policy.RequireClaim(
+            "OPCION",
+            "REP"));
+
+    options.AddPolicy(
+        "PER",
+        policy => policy.RequireClaim(
+            "OPCION",
+            "PER"));
+
+    options.AddPolicy(
+    "EMP",
+    policy =>
+        policy.RequireClaim(
+            "OPCION",
+            "EMP"));
+});
+
 builder.Services.AddDbContext<ProyectoDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+
+builder.Services.AddScoped<IPerfilService,PerfilService>();
+
+builder.Services.AddScoped<IEmpleadoService,EmpleadoService>();
 
 var app = builder.Build();
 

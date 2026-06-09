@@ -2,6 +2,32 @@
     ViewData["Title"] = "Dashboard";
 }
 
+@using System.Security.Claims
+
+<h5>Roles</h5>
+
+<ul>
+    @foreach (var rol in User.Claims
+        .Where(x => x.Type == ClaimTypes.Role))
+    {
+        <li>@rol.Value</li>
+    }
+</ul>
+
+<hr />
+
+<h5>Opciones</h5>
+
+<ul>
+    @foreach (var opcion in User.Claims
+        .Where(x => x.Type == "OPCION"))
+    {
+        <li>@opcion.Value</li>
+    }
+</ul>
+
+<hr />
+
 <div class="container mt-4">
 
     <div class="row mb-4">

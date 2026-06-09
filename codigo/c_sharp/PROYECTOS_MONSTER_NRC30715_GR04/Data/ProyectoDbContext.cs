@@ -30,6 +30,12 @@ namespace PROYECTOS_MONSTER_NRC30715_GR04.Data
 
         public DbSet<RecuperacionPassword> Recuperaciones { get; set; }
 
+        public DbSet<UsuarioPerfil> UsuariosPerfiles { get; set; }
+
+        public DbSet<Opcion> Opciones { get; set; }
+
+        public DbSet<PerfilOpcion> PerfilesOpciones { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -80,6 +86,43 @@ namespace PROYECTOS_MONSTER_NRC30715_GR04.Data
               .HasOne(r => r.Usuario)
               .WithMany(u => u.Recuperaciones)
               .HasForeignKey(r => r.UsuarioId);
+
+            modelBuilder.Entity<UsuarioPerfil>()
+              .HasKey(up => up.Id);
+
+            modelBuilder.Entity<UsuarioPerfil>()
+               .HasOne(up => up.Usuario)
+               .WithMany(u => u.UsuariosPerfiles)
+               .HasForeignKey(up => up.UsuarioId);
+
+
+            modelBuilder.Entity<UsuarioPerfil>()
+               .HasOne(up => up.Perfil)
+               .WithMany(p => p.UsuariosPerfiles)
+               .HasForeignKey(up => up.PerfilCodigo);
+
+            modelBuilder.Entity<PerfilOpcion>()
+               .HasKey(po => new { po.PerfilCodigo, po.OpcionCodigo});
+
+           
+
+
+            modelBuilder.Entity<PerfilOpcion>()
+              .HasOne(po => po.Perfil)
+              .WithMany(p => p.PerfilesOpciones)
+              .HasForeignKey(po => po.PerfilCodigo);
+
+            modelBuilder.Entity<PerfilOpcion>()
+              .HasOne(po => po.Opcion)
+              .WithMany(o => o.PerfilesOpciones)
+              .HasForeignKey(po => po.OpcionCodigo);
+
+
+            modelBuilder.Entity<Opcion>()
+              .HasOne(o => o.Sistema)
+              .WithMany(s => s.Opciones)
+              .HasForeignKey(o => o.SistemaCodigo);
+
         }
 
     }

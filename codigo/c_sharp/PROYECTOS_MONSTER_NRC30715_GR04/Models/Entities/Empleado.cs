@@ -53,9 +53,9 @@ public class Empleado
     [Column("PEEMP_FECNAC")]
     public DateTime FechaNacimiento { get; set; }
 
-    [Required]
+    
     [Column("PEEMP_FECSAL")]
-    public DateTime FechaSalida { get; set; }
+    public DateTime? FechaSalida { get; set; }
 
     [Required]
     [Column("PEEMP_TELEF")]

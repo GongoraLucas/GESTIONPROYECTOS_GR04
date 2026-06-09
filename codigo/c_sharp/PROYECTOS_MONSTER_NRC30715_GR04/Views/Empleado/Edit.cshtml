@@ -1,0 +1,378 @@
+﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.EmpleadoViewModel
+
+@{
+    ViewData["Title"] = "Nuevo Empleado";
+}
+
+<h3 class="mb-4">Editar Empleado</h3>
+
+<form asp-action="Edit"
+      method="post"
+      enctype="multipart/form-data">
+
+    
+    <div asp-validation-summary="ModelOnly"
+         class="text-danger mb-3">
+    </div>
+
+    <div class="card mb-4">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3 text-center">
+
+                    <img id="preview"
+                         src="@(string.IsNullOrEmpty(Model.Foto)
+                                     ? "/images/no-image.png"
+                                     : Model.Foto)"
+                         class="img-thumbnail mb-2"
+                         style="width:200px;height:200px;object-fit:cover;" />
+
+                    <input asp-for="ArchivoFoto"
+                           type="file"
+                           class="form-control"
+                           accept="image/*"
+                           onchange="previewImage(event)" />
+
+                </div>
+
+                <div class="col-md-9">
+
+                    <div class="row">
+
+                        <div class="col-md-4">
+
+                            <label asp-for="Codigo"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="Codigo"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Codigo"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-4">
+
+                            <label asp-for="Cedula"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="Cedula"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Cedula"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-3">
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Nombres"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="Nombres"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Nombres"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label asp-for="Apellidos"
+                                   class="form-label">
+                            </label>
+
+                            <input asp-for="Apellidos"
+                                   class="form-control" />
+
+                            <span asp-validation-for="Apellidos"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <ul class="nav nav-tabs">
+
+        <li class="nav-item">
+            <button class="nav-link active"
+                    data-bs-toggle="tab"
+                    data-bs-target="#personal"
+                    type="button">
+                Personal
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#laboral"
+                    type="button">
+                Laboral
+            </button>
+        </li>
+
+        <li class="nav-item">
+            <button class="nav-link"
+                    data-bs-toggle="tab"
+                    data-bs-target="#contacto"
+                    type="button">
+                Contacto
+            </button>
+        </li>
+
+    </ul>
+
+    <div class="tab-content border border-top-0 p-4">
+
+        <div class="tab-pane fade show active"
+             id="personal">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Sexo
+                    </label>
+
+                    <select asp-for="SexoCodigo"
+                            asp-items="Model.Sexos"
+                            class="form-select">
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Estado Civil
+                    </label>
+
+                    <select asp-for="EstadoCivilCodigo"
+                            asp-items="Model.EstadosCiviles"
+                            class="form-select">
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <label asp-for="FechaNacimiento"
+                           class="form-label">
+                    </label>
+
+                    <input asp-for="FechaNacimiento"
+                           type="date"
+                           class="form-control" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade"
+             id="laboral">
+
+            <div class="row">
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Departamento
+                    </label>
+
+                    <select asp-for="DepartamentoCodigo"
+                            asp-items="Model.Departamentos"
+                            class="form-select">
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Cargo
+                    </label>
+
+                    <select asp-for="CargoCodigo"
+                            asp-items="Model.Cargos"
+                            class="form-select">
+
+                        <option value="">
+                            Seleccione
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="col-md-4">
+
+                    <label class="form-label">
+                        Jefe
+                    </label>
+
+                    <select asp-for="JefeCodigo"
+                            asp-items="Model.Jefes"
+                            class="form-select">
+
+                        <option value="">
+                            Sin jefe
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="row mt-3">
+
+                <div class="col-md-4">
+
+                    <label asp-for="Salario"
+                           class="form-label">
+                    </label>
+
+                    <input asp-for="Salario"
+                           class="form-control" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="tab-pane fade"
+             id="contacto">
+
+            <div class="mb-3">
+
+                <label asp-for="Direccion"
+                       class="form-label">
+                </label>
+
+                <input asp-for="Direccion"
+                       class="form-control" />
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-6">
+
+                    <label asp-for="Telefono"
+                           class="form-label">
+                    </label>
+
+                    <input asp-for="Telefono"
+                           class="form-control" />
+
+                </div>
+
+                <div class="col-md-6">
+
+                    <label asp-for="Email"
+                           class="form-label">
+                    </label>
+
+                    <input asp-for="Email"
+                           class="form-control" />
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="mt-4">
+
+        <button type="submit"
+                class="btn btn-success">
+
+            Guardar
+
+        </button>
+
+        <a asp-action="Index"
+           class="btn btn-secondary">
+
+            Cancelar
+
+        </a>
+
+    </div>
+ 
+
+</form>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        function previewImage(event)
+        {
+            const reader =
+                new FileReader();
+
+            reader.onload =
+                function ()
+                {
+                    document
+                        .getElementById('preview')
+                        .src = reader.result;
+                };
+
+            reader.readAsDataURL(
+                event.target.files[0]);
+        }
+
+    </script>
+    
+
+}

@@ -20,6 +20,8 @@
           asp-append-version="true" />
 </head>
 
+@using System.Security.Claims
+
 <body>
 
     <header>
@@ -59,6 +61,128 @@
                                 </a>
 
                             </li>
+
+                            @if (User.Claims.Any(
+                           x => x.Type == "OPCION" &&
+                                x.Value == "USR"))
+                            {
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-controller="Usuario"
+                                       asp-action="Index">
+                                        Usuarios
+                                    </a>
+
+                                </li>
+                            }
+
+                            @if (User.Claims.Any(
+                           x => x.Type == "OPCION" &&
+                                x.Value == "EMP"))
+                            {
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-controller="Empleado"
+                                       asp-action="Index">
+                                        Empleados
+                                    </a>
+
+                                </li>
+                            }
+
+                            @if (User.Claims.Any(
+                           x => x.Type == "OPCION" &&
+                                x.Value == "PRO"))
+                            {
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-controller="Proyecto"
+                                       asp-action="Index">
+                                        Proyectos
+                                    </a>
+
+                                </li>
+                            }
+
+                            @if (User.Claims.Any(
+                           x => x.Type == "OPCION" &&
+                                x.Value == "REP"))
+                            {
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-controller="Reporte"
+                                       asp-action="Index">
+                                        Reportes
+                                    </a>
+
+                                </li>
+                            }
+
+                            @if (User.Claims.Any(x =>
+                                x.Type == "OPCION" &&
+                                x.Value == "USR"))
+                            {
+                                <li class="nav-item dropdown">
+
+                                    <a class="nav-link dropdown-toggle"
+                                       href="#"
+                                       data-bs-toggle="dropdown">
+
+                                        Seguridad
+
+                                    </a>
+
+                                    <ul class="dropdown-menu">
+
+                                        <li>
+
+                                            <a class="dropdown-item"
+                                               asp-controller="Seguridad"
+                                               asp-action="AsignarUsuarioPerfil">
+
+                                                Usuario - Perfil
+
+                                            </a>
+
+                                        </li>
+
+                                        <li>
+
+                                            <a class="dropdown-item"
+                                               asp-controller="Seguridad"
+                                               asp-action="AsignarOpcionPerfil">
+
+                                                Perfil - Opción
+
+                                            </a>
+
+                                        </li>
+
+                                    </ul>
+
+                                </li>
+                            }
+
+                            @if (User.Claims.Any(x =>
+                                x.Type == "OPCION" &&
+                                x.Value == "EMP"))
+                            {
+                                <li class="nav-item">
+
+                                    <a class="nav-link"
+                                       asp-controller="Empleado"
+                                       asp-action="Index">
+
+                                        Empleados
+
+                                    </a>
+
+                                </li>
+                            }
 
                         </ul>
 

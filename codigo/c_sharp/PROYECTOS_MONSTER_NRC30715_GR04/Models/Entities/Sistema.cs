@@ -15,4 +15,11 @@ public class Sistema
     [Required]
     [StringLength(50)]
     public string Descripcion { get; set; } = string.Empty;
+
+    public ICollection<Opcion>
+    Opciones
+    { get; set; }
+        = new List<Opcion>();
+
+  
 }
