@@ -1,4 +1,4 @@
-﻿@model List<PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.EmpleadoViewModel>
+@model List<PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.EmpleadoViewModel>
 
 @{
     ViewData["Title"] = "Empleados";
@@ -43,6 +43,29 @@
     </div>
 
 </form>
+
+@* Botones de exportación *@
+<div class="d-flex gap-2 mb-3">
+
+    <a asp-action="ExportarPdf"
+       class="btn btn-danger"
+       title="Descargar reporte en PDF">
+        <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+    </a>
+
+    <a asp-action="ExportarExcel"
+       class="btn btn-success"
+       title="Descargar reporte en Excel">
+        <i class="bi bi-file-earmark-excel-fill"></i> Excel
+    </a>
+
+    <a asp-action="ExportarCsv"
+       class="btn btn-secondary"
+       title="Descargar reporte en CSV">
+        <i class="bi bi-filetype-csv"></i> CSV
+    </a>
+
+</div>
 
 <table class="table table-bordered table-hover align-middle">
 

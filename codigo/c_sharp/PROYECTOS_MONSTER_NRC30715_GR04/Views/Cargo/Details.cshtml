@@ -1,0 +1,30 @@
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.CargoViewModel
+
+@{
+    ViewData["Title"] = "Detalle Cargo";
+}
+
+<h3 class="mb-4">Detalle Cargo</h3>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th width="30%">Departamento</th>
+                <td>@Model.DepartamentoDescripcion</td>
+            </tr>
+            <tr>
+                <th>Código de Cargo</th>
+                <td>@Model.Codigo</td>
+            </tr>
+            <tr>
+                <th>Descripción de Cargo</th>
+                <td>@Model.Descripcion</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</div>

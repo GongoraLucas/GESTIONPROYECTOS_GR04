@@ -1,7 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels;
 using PROYECTOS_MONSTER_NRC30715_GR04.Services.Interfaces;
+using PROYECTOS_MONSTER_NRC30715_GR04.Services.Reportes;
 using Microsoft.AspNetCore.Hosting;
 
 namespace PROYECTOS_MONSTER_NRC30715_GR04.Controllers;
@@ -11,13 +12,16 @@ public class EmpleadoController : Controller
 {
     private readonly IEmpleadoService _service;
     private readonly IWebHostEnvironment _environment;
+    private readonly IReporteService _reporteService;
 
     public EmpleadoController(
         IEmpleadoService empleadoService,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment,
+        IReporteService reporteService)
     {
-        _service = empleadoService;
-        _environment = environment;
+        _service        = empleadoService;
+        _environment    = environment;
+        _reporteService = reporteService;
     }
 
 
@@ -217,5 +221,53 @@ Index(
 
         return View(
             resultado.Empleados);
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  EXPORTAR – PDF
+    // ─────────────────────────────────────────────────────────────────────
+    [HttpGet]
+    public async Task<IActionResult> ExportarPdf()
+    {
+        var bytes = await _reporteService
+            .GenerarEmpleadosPdfAsync();
+
+        return File(
+            bytes,
+            "application/pdf",
+            $"empleados_{DateTime.Now:yyyyMMdd_HHmm}.pdf");
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  EXPORTAR – EXCEL
+    // ─────────────────────────────────────────────────────────────────────
+    [HttpGet]
+    public async Task<IActionResult> ExportarExcel()
+    {
+        var bytes = await _reporteService
+            .GenerarEmpleadosExcelAsync();
+
+        return File(
+            bytes,
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            $"empleados_{DateTime.Now:yyyyMMdd_HHmm}.xlsx");
+    }
+
+
+    // ─────────────────────────────────────────────────────────────────────
+    //  EXPORTAR – CSV
+    // ─────────────────────────────────────────────────────────────────────
+    [HttpGet]
+    public async Task<IActionResult> ExportarCsv()
+    {
+        var bytes = await _reporteService
+            .GenerarEmpleadosCsvAsync();
+
+        return File(
+            bytes,
+            "text/csv",
+            $"empleados_{DateTime.Now:yyyyMMdd_HHmm}.csv");
     }
 }

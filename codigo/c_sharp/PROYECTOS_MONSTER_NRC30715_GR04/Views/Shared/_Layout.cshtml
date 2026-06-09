@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
@@ -81,14 +81,50 @@
                            x => x.Type == "OPCION" &&
                                 x.Value == "EMP"))
                             {
-                                <li class="nav-item">
-
-                                    <a class="nav-link"
-                                       asp-controller="Empleado"
-                                       asp-action="Index">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle"
+                                       href="#"
+                                       data-bs-toggle="dropdown">
                                         Empleados
                                     </a>
-
+                                    <ul class="dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item"
+                                               asp-controller="Empleado"
+                                               asp-action="Index">
+                                                Lista de Empleados
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                        <li>
+                                            <a class="dropdown-item"
+                                               asp-controller="Departamento"
+                                               asp-action="Index">
+                                                Departamentos
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item"
+                                               asp-controller="Cargo"
+                                               asp-action="Index">
+                                                Cargos
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item"
+                                               asp-controller="Sexo"
+                                               asp-action="Index">
+                                                Sexos
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item"
+                                               asp-controller="EstadoCivil"
+                                               asp-action="Index">
+                                                Estados Civiles
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </li>
                             }
 
@@ -163,23 +199,6 @@
                                         </li>
 
                                     </ul>
-
-                                </li>
-                            }
-
-                            @if (User.Claims.Any(x =>
-                                x.Type == "OPCION" &&
-                                x.Value == "EMP"))
-                            {
-                                <li class="nav-item">
-
-                                    <a class="nav-link"
-                                       asp-controller="Empleado"
-                                       asp-action="Index">
-
-                                        Empleados
-
-                                    </a>
 
                                 </li>
                             }

@@ -1,0 +1,34 @@
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.CargoViewModel
+
+@{
+    ViewData["Title"] = "Eliminar Cargo";
+}
+
+<div class="card border-danger">
+    <div class="card-header bg-danger text-white">
+        <h4>Eliminar Cargo</h4>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            ¿Está seguro de eliminar este cargo?
+        </div>
+
+        <dl class="row">
+            <dt class="col-sm-3">Departamento</dt>
+            <dd class="col-sm-9">@Model.DepartamentoDescripcion</dd>
+
+            <dt class="col-sm-3">Código de Cargo</dt>
+            <dd class="col-sm-9">@Model.Codigo</dd>
+
+            <dt class="col-sm-3">Descripción</dt>
+            <dd class="col-sm-9">@Model.Descripcion</dd>
+        </dl>
+
+        <form asp-action="DeleteConfirmado" method="post">
+            <input type="hidden" name="departamentoCodigo" value="@Model.DepartamentoCodigo" />
+            <input type="hidden" name="codigo" value="@Model.Codigo" />
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+            <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using PROYECTOS_MONSTER_NRC30715_GR04.Data;
 using PROYECTOS_MONSTER_NRC30715_GR04.Services;
 using PROYECTOS_MONSTER_NRC30715_GR04.Services.Interfaces;
+using PROYECTOS_MONSTER_NRC30715_GR04.Services.Reportes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,13 +53,6 @@ builder.Services.AddAuthorization(options =>
         policy => policy.RequireClaim(
             "OPCION",
             "PER"));
-
-    options.AddPolicy(
-    "EMP",
-    policy =>
-        policy.RequireClaim(
-            "OPCION",
-            "EMP"));
 });
 
 builder.Services.AddDbContext<ProyectoDbContext>(options =>
@@ -66,10 +60,13 @@ builder.Services.AddDbContext<ProyectoDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-
-builder.Services.AddScoped<IPerfilService,PerfilService>();
-
-builder.Services.AddScoped<IEmpleadoService,EmpleadoService>();
+builder.Services.AddScoped<IPerfilService, PerfilService>();
+builder.Services.AddScoped<IEmpleadoService, EmpleadoService>();
+builder.Services.AddScoped<ISexoService, SexoService>();
+builder.Services.AddScoped<IEstadoCivilService, EstadoCivilService>();
+builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
+builder.Services.AddScoped<ICargoService, CargoService>();
+builder.Services.AddScoped<IReporteService, ReporteService>();
 
 var app = builder.Build();
 

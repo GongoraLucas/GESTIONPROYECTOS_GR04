@@ -1,0 +1,48 @@
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.CargoViewModel
+
+@{
+    ViewData["Title"] = "Editar Cargo";
+}
+
+<h3 class="mb-4">Editar Cargo</h3>
+
+<form asp-action="Edit" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <!-- Hidden key preservation fields -->
+    <input type="hidden" asp-for="DepartamentoCodigo" />
+    <input type="hidden" asp-for="Codigo" />
+    <input type="hidden" asp-for="DepartamentoCodigoOriginal" />
+    <input type="hidden" asp-for="CodigoOriginal" />
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Departamento</label>
+                    <input type="text" class="form-control" value="@Model.DepartamentoDescripcion" readonly />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Codigo" class="form-label"></label>
+                    <input type="text" class="form-control" value="@Model.Codigo" readonly />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <label asp-for="Descripcion" class="form-label"></label>
+                    <input asp-for="Descripcion" class="form-control" maxlength="50" />
+                    <span asp-validation-for="Descripcion" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <button type="submit" class="btn btn-success">Guardar</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

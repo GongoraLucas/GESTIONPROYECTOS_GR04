@@ -1,0 +1,26 @@
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.SexoViewModel
+
+@{
+    ViewData["Title"] = "Detalle Sexo";
+}
+
+<h3 class="mb-4">Detalle Sexo</h3>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <table class="table table-bordered">
+            <tr>
+                <th width="30%">Código</th>
+                <td>@Model.Codigo</td>
+            </tr>
+            <tr>
+                <th>Descripción</th>
+                <td>@Model.Descripcion</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</div>
