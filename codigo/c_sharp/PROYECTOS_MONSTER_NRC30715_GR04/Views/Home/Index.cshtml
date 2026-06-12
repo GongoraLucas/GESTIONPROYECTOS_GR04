@@ -1,32 +1,8 @@
-﻿@{
+﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.DashboardViewModel
+
+@{
     ViewData["Title"] = "Dashboard";
 }
-
-@using System.Security.Claims
-
-<h5>Roles</h5>
-
-<ul>
-    @foreach (var rol in User.Claims
-        .Where(x => x.Type == ClaimTypes.Role))
-    {
-        <li>@rol.Value</li>
-    }
-</ul>
-
-<hr />
-
-<h5>Opciones</h5>
-
-<ul>
-    @foreach (var opcion in User.Claims
-        .Where(x => x.Type == "OPCION"))
-    {
-        <li>@opcion.Value</li>
-    }
-</ul>
-
-<hr />
 
 <div class="container mt-4">
 
@@ -34,14 +10,8 @@
 
         <div class="col">
 
-            <h2>
-                Bienvenido @User.Identity?.Name
-            </h2>
-
-            <p class="text-muted">
-                Sistema de Gestión de Proyectos Monster
-            </p>
-
+            <h2>Bienvenido @User.Identity?.Name</h2>
+            <p class="text-muted">Sistema de Gestión de Proyectos Monster</p>
             <hr />
 
         </div>
@@ -50,85 +20,55 @@
 
     <div class="row g-4">
 
-        <div class="col-md-3">
-
-            <div class="card shadow-sm h-100">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">
-                        Empleados
-                    </h5>
-
-                    <p class="card-text">
-                        Administración de empleados del sistema.
-                    </p>
-
+        @if (User.HasClaim(c => c.Type == "OPCION" && c.Value == "EMP"))
+        {
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Empleados</h5>
+                        <p class="card-text">Administración de empleados del sistema.</p>
+                        <p class="mt-2"><strong>Total:</strong> @Model.TotalEmpleados</p>
+                    </div>
                 </div>
-
             </div>
+        }
 
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm h-100">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">
-                        Usuarios
-                    </h5>
-
-                    <p class="card-text">
-                        Gestión de accesos y credenciales.
-                    </p>
-
+        @if (User.HasClaim(c => c.Type == "OPCION" && c.Value == "USR"))
+        {
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Usuarios</h5>
+                        <p class="card-text">Gestión de accesos y credenciales.</p>
+                        <p class="mt-2"><strong>Total:</strong> @Model.TotalUsuarios</p>
+                    </div>
                 </div>
-
             </div>
+        }
 
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm h-100">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">
-                        Proyectos
-                    </h5>
-
-                    <p class="card-text">
-                        Administración de proyectos y equipos.
-                    </p>
-
+        @if (User.HasClaim(c => c.Type == "OPCION" && c.Value == "PRO"))
+        {
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Proyectos</h5>
+                        <p class="card-text">Administración de proyectos y equipos.</p>
+                    </div>
                 </div>
-
             </div>
+        }
 
-        </div>
-
-        <div class="col-md-3">
-
-            <div class="card shadow-sm h-100">
-
-                <div class="card-body">
-
-                    <h5 class="card-title">
-                        Reportes
-                    </h5>
-
-                    <p class="card-text">
-                        Consulta y generación de reportes.
-                    </p>
-
+        @if (User.HasClaim(c => c.Type == "OPCION" && c.Value == "REP"))
+        {
+            <div class="col-md-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Reportes</h5>
+                        <p class="card-text">Consulta y generación de reportes.</p>
+                    </div>
                 </div>
-
             </div>
-
-        </div>
+        }
 
     </div>
 

@@ -1,0 +1,20 @@
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.UsuarioViewModel
+
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+}
+
+<h3>Eliminar Usuario</h3>
+
+<div class="mb-3">
+    <label class="form-label">Login</label>
+    <div>@Model.Login</div>
+    <label class="form-label">Email</label>
+    <div>@Model.Email</div>
+</div>
+
+<form asp-action="DeleteConfirmado" method="post">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

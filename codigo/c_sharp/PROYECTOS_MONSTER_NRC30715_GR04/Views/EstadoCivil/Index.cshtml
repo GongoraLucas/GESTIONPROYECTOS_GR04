@@ -4,108 +4,157 @@
     ViewData["Title"] = "Estados Civiles";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>Estados Civiles</h3>
-    <a asp-action="Create" class="btn btn-primary">Nuevo Estado Civil</a>
-</div>
-
-<form method="get" asp-action="Index" class="row mb-3">
-    <div class="col-md-10">
-        <input type="text"
-               name="buscar"
-               value="@ViewBag.Buscar"
-               class="form-control"
-               placeholder="Buscar por código o descripción..." />
-    </div>
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-success w-100">Buscar</button>
-    </div>
-</form>
-
-<div class="d-flex gap-2 mb-3">
-    <a asp-action="ExportarPdf" class="btn btn-danger" title="Descargar reporte en PDF">
-        PDF
-    </a>
-    <a asp-action="ExportarExcel" class="btn btn-success" title="Descargar reporte en Excel">
-        Excel
-    </a>
-    <a asp-action="ExportarCsv" class="btn btn-secondary" title="Descargar reporte en CSV">
-        CSV
-    </a>
-</div>
-
-<table class="table table-bordered table-hover align-middle">
-    <thead class="table-dark">
-        <tr>
-            <th>Código</th>
-            <th>Descripción</th>
-            <th width="220">Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (!Model.Any())
-        {
-            <tr>
-                <td colspan="3" class="text-center">No existen registros.</td>
-            </tr>
-        }
-        else
-        {
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>@item.Codigo</td>
-                    <td>@item.Descripcion</td>
-                    <td>
-                        <a asp-action="Details" asp-route-id="@item.Codigo" class="btn btn-info btn-sm">Ver</a>
-                        <a asp-action="Edit" asp-route-id="@item.Codigo" class="btn btn-warning btn-sm">Editar</a>
-                        <a asp-action="Delete" asp-route-id="@item.Codigo" class="btn btn-danger btn-sm">Eliminar</a>
-                    </td>
-                </tr>
-            }
-        }
-    </tbody>
-</table>
-
-@if (ViewBag.TotalPaginas > 1)
-{
-    <nav aria-label="Paginación de estados civiles">
-        <ul class="pagination justify-content-center">
-            <!-- Anterior -->
-            <li class="page-item @(ViewBag.PaginaActual <= 1 ? "disabled" : "")">
-                <a class="page-link"
-                   asp-action="Index"
-                   asp-route-pagina="@(ViewBag.PaginaActual - 1)"
-                   asp-route-buscar="@ViewBag.Buscar">
-                    Anterior
-                </a>
-            </li>
-
-            <!-- Números de página -->
-            @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
-            {
-                <li class="page-item @(ViewBag.PaginaActual == i ? "active" : "")">
-                    <a class="page-link"
-                       asp-action="Index"
-                       asp-route-pagina="@i"
-                       asp-route-buscar="@ViewBag.Buscar">
-                        @i
-                    </a>
-                </li>
-            }
-
-            <!-- Siguiente -->
-            <li class="page-item @(ViewBag.PaginaActual >= ViewBag.TotalPaginas ? "disabled" : "")">
-                <a class="page-link"
-                   asp-action="Index"
-                   asp-route-pagina="@(ViewBag.PaginaActual + 1)"
-                   asp-route-buscar="@ViewBag.Buscar">
-                    Siguiente
-                </a>
-            </li>
-        </ul>
-        <div class="text-center text-muted">
-            Página @ViewBag.PaginaActual de @ViewBag.TotalPaginas
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4">
+        <!-- Header area inside card -->
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div>
+                <h3 class="fw-bold text-dark m-0">Estados Civiles</h3>
+                <p class="text-muted small m-0">Gestión de estados civiles del sistema</p>
+            </div>
+            <a asp-action="Create" class="btn btn-primary d-flex align-items-center gap-2 shadow-sm">
+                <i class="bi bi-plus-lg"></i> Nuevo Estado Civil
+            </a>
         </div>
-    </nav>
-}
+
+        <!-- Search / Filter area -->
+        <form method="get" asp-action="Index" class="row g-3 mb-4">
+            <div class="col-md-9 col-lg-10">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text"
+                           name="buscar"
+                           value="@ViewBag.Buscar"
+                           class="form-control bg-light border-start-0 ps-0"
+                           placeholder="Buscar por código o descripción..." />
+                </div>
+            </div>
+            <div class="col-md-3 col-lg-2">
+                <button type="submit" class="btn btn-dark w-100 shadow-sm">
+                    <i class="bi bi-funnel-fill me-1"></i> Filtrar
+                </button>
+            </div>
+        </form>
+
+        <!-- Quick actions / Export button group -->
+        <div class="d-flex align-items-center justify-content-between border-top border-bottom py-3 mb-4">
+            <div class="d-flex align-items-center gap-2">
+                <span class="text-muted small fw-semibold me-2">Exportar:</span>
+                <a asp-action="ExportarPdf" class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 shadow-xs" title="Exportar a PDF">
+                    <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                </a>
+                <a asp-action="ExportarExcel" class="btn btn-sm btn-outline-success d-inline-flex align-items-center gap-1 shadow-xs" title="Exportar a Excel">
+                    <i class="bi bi-file-earmark-excel-fill"></i> Excel
+                </a>
+                <a asp-action="ExportarCsv" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1 shadow-xs" title="Exportar a CSV">
+                    <i class="bi bi-filetype-csv"></i> CSV
+                </a>
+            </div>
+            <div class="text-muted small">
+                Total: <strong>@Model.Count</strong> registros
+            </div>
+        </div>
+
+        <!-- Table view with styled classes -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light border-bottom">
+                    <tr>
+                        <th class="ps-3">Código</th>
+                        <th>Descripción</th>
+                        <th class="text-end pe-3" width="200">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-5">
+                                <i class="bi bi-info-circle fs-3 d-block mb-2"></i>
+                                No se encontraron registros.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-3 fw-semibold text-secondary">@item.Codigo</td>
+                                <td class="fw-semibold">@item.Descripcion</td>
+                                <td class="text-end pe-3">
+                                    <div class="btn-group gap-1">
+                                        <a asp-action="Details"
+                                           asp-route-id="@item.Codigo"
+                                           class="btn btn-sm btn-outline-info d-inline-flex align-items-center justify-content-center"
+                                           style="width: 32px; height: 32px; border-radius: 6px;"
+                                           title="Ver Detalle">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit"
+                                           asp-route-id="@item.Codigo"
+                                           class="btn btn-sm btn-outline-warning d-inline-flex align-items-center justify-content-center"
+                                           style="width: 32px; height: 32px; border-radius: 6px;"
+                                           title="Editar">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <a asp-action="Delete"
+                                           asp-route-id="@item.Codigo"
+                                           class="btn btn-sm btn-outline-danger d-inline-flex align-items-center justify-content-center"
+                                           style="width: 32px; height: 32px; border-radius: 6px;"
+                                           title="Eliminar">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        @if (ViewBag.TotalPaginas > 1)
+        {
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center border-top pt-4 mt-3 gap-2">
+                <div class="text-muted small">
+                    Página <strong>@ViewBag.PaginaActual</strong> de <strong>@ViewBag.TotalPaginas</strong>
+                </div>
+                <nav aria-label="Paginación de estados civiles">
+                    <ul class="pagination pagination-sm m-0">
+                        <li class="page-item @(ViewBag.PaginaActual <= 1 ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-pagina="@(ViewBag.PaginaActual - 1)"
+                               asp-route-buscar="@ViewBag.Buscar">
+                                Anterior
+                            </a>
+                        </li>
+                        @for (int i = 1; i <= ViewBag.TotalPaginas; i++)
+                        {
+                            <li class="page-item @(ViewBag.PaginaActual == i ? "active" : "")">
+                                <a class="page-link"
+                                   asp-action="Index"
+                                   asp-route-pagina="@i"
+                                   asp-route-buscar="@ViewBag.Buscar">
+                                    @i
+                                </a>
+                            </li>
+                        }
+                        <li class="page-item @(ViewBag.PaginaActual >= ViewBag.TotalPaginas ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="Index"
+                               asp-route-pagina="@(ViewBag.PaginaActual + 1)"
+                               asp-route-buscar="@ViewBag.Buscar">
+                                Siguiente
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        }
+    </div>
+</div>

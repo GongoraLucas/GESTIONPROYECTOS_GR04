@@ -3,271 +3,327 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Monster Projects</title>
 
-    <title>
-        @ViewData["Title"] - Monster Projects
-    </title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <link rel="stylesheet"
-          href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet"
-          href="~/css/site.css"
-          asp-append-version="true" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
 
-    <link rel="stylesheet"
-          href="~/PROYECTOS_MONSTER_NRC30715_GR04.styles.css"
-          asp-append-version="true" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PROYECTOS_MONSTER_NRC30715_GR04.styles.css" asp-append-version="true" />
 </head>
-
-@using System.Security.Claims
-
 <body>
 
-    <header>
+    @{
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    }
 
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
-
-            <div class="container-fluid">
-
-                <a class="navbar-brand fw-bold"
-                   asp-controller="Home"
-                   asp-action="Index">
-                    Monster Projects
-                </a>
-
-                <button class="navbar-toggler"
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#navbarMain">
-
-                    <span class="navbar-toggler-icon"></span>
-
-                </button>
-
-                <div class="collapse navbar-collapse"
-                     id="navbarMain">
-
-                    @if (User.Identity?.IsAuthenticated ?? false)
-                    {
-                        <ul class="navbar-nav me-auto">
-
-                            <li class="nav-item">
-
-                                <a class="nav-link"
-                                   asp-controller="Home"
-                                   asp-action="Index">
-                                    Dashboard
-                                </a>
-
-                            </li>
-
-                            @if (User.Claims.Any(
-                           x => x.Type == "OPCION" &&
-                                x.Value == "USR"))
-                            {
-                                <li class="nav-item">
-
-                                    <a class="nav-link"
-                                       asp-controller="Usuario"
-                                       asp-action="Index">
-                                        Usuarios
-                                    </a>
-
-                                </li>
-                            }
-
-                            @if (User.Claims.Any(
-                           x => x.Type == "OPCION" &&
-                                x.Value == "EMP"))
-                            {
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle"
-                                       href="#"
-                                       data-bs-toggle="dropdown">
-                                        Empleados
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="Empleado"
-                                               asp-action="Index">
-                                                Lista de Empleados
-                                            </a>
-                                        </li>
-                                        <li><hr class="dropdown-divider" /></li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="Departamento"
-                                               asp-action="Index">
-                                                Departamentos
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="Cargo"
-                                               asp-action="Index">
-                                                Cargos
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="Sexo"
-                                               asp-action="Index">
-                                                Sexos
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item"
-                                               asp-controller="EstadoCivil"
-                                               asp-action="Index">
-                                                Estados Civiles
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </li>
-                            }
-
-                            @if (User.Claims.Any(
-                           x => x.Type == "OPCION" &&
-                                x.Value == "PRO"))
-                            {
-                                <li class="nav-item">
-
-                                    <a class="nav-link"
-                                       asp-controller="Proyecto"
-                                       asp-action="Index">
-                                        Proyectos
-                                    </a>
-
-                                </li>
-                            }
-
-                            @if (User.Claims.Any(
-                           x => x.Type == "OPCION" &&
-                                x.Value == "REP"))
-                            {
-                                <li class="nav-item">
-
-                                    <a class="nav-link"
-                                       asp-controller="Reporte"
-                                       asp-action="Index">
-                                        Reportes
-                                    </a>
-
-                                </li>
-                            }
-
-                            @if (User.Claims.Any(x =>
-                                x.Type == "OPCION" &&
-                                x.Value == "USR"))
-                            {
-                                <li class="nav-item dropdown">
-
-                                    <a class="nav-link dropdown-toggle"
-                                       href="#"
-                                       data-bs-toggle="dropdown">
-
-                                        Seguridad
-
-                                    </a>
-
-                                    <ul class="dropdown-menu">
-
-                                        <li>
-
-                                            <a class="dropdown-item"
-                                               asp-controller="Seguridad"
-                                               asp-action="AsignarUsuarioPerfil">
-
-                                                Usuario - Perfil
-
-                                            </a>
-
-                                        </li>
-
-                                        <li>
-
-                                            <a class="dropdown-item"
-                                               asp-controller="Seguridad"
-                                               asp-action="AsignarOpcionPerfil">
-
-                                                Perfil - Opción
-
-                                            </a>
-
-                                        </li>
-
-                                    </ul>
-
-                                </li>
-                            }
-
-                        </ul>
-
-                        <div class="d-flex align-items-center">
-
-                            <span class="text-white me-3">
-                                @User.Identity.Name
-                            </span>
-
-                            <a asp-controller="Account"
-                               asp-action="CambiarPassword"
-                               class="btn btn-warning btn-sm me-2">
-
-                                Contraseña
-
-                            </a>
-
-                            <a asp-controller="Account"
-                               asp-action="Logout"
-                               class="btn btn-danger btn-sm">
-
-                                Salir
-
-                            </a>
-
-                        </div>
-                    }
-
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <div class="app-layout">
+            <!-- Top Premium Header -->
+            <header class="app-navbar d-flex align-items-center justify-content-between px-4">
+                <div class="d-flex align-items-center gap-3">
+                    <button class="btn btn-link text-white p-0 d-md-none fs-4" id="sidebar-toggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <a class="navbar-brand fw-bold fs-4 text-white d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
+                        <span class="brand-gradient">Monster Projects</span>
+                    </a>
                 </div>
 
+                <div class="d-flex align-items-center gap-3">
+                    <span class="user-pill d-none d-sm-inline-flex align-items-center gap-2">
+                        <i class="bi bi-person-circle text-primary"></i>
+                        <span class="fw-semibold">@User.Identity.Name</span>
+                    </span>
+
+                    @if (User.HasClaim(c => c.Type == "PRIMER_INGRESO" && c.Value == "True"))
+                    {
+                        <a asp-controller="Account" asp-action="CambiarPassword" class="btn btn-outline-warning btn-sm d-flex align-items-center gap-1">
+                            <i class="bi bi-shield-lock-fill"></i> Contraseña
+                        </a>
+                    }
+
+                    <a asp-controller="Account" asp-action="Logout" class="btn btn-logout btn-sm d-flex align-items-center gap-1">
+                        <i class="bi bi-box-arrow-right"></i> Salir
+                    </a>
+                </div>
+            </header>
+
+            <div class="app-workspace d-flex">
+                <!-- Sidebar Treeview Panel -->
+                <aside class="app-sidebar" id="sidebar-panel">
+                    <div class="sidebar-header px-4 py-3 border-bottom border-secondary border-opacity-10">
+                        <small class="text-uppercase tracking-wider text-muted fw-bold">Menú de Navegación</small>
+                    </div>
+                    <div class="sidebar-tree py-3">
+                        <ul class="tree-root">
+                            <!-- Dashboard -->
+                            <li class="tree-item">
+                                <a class="tree-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                                    <i class="bi bi-speedometer2 text-info me-2"></i> Dashboard
+                                </a>
+                            </li>
+
+                            <!-- 01. Personal Folder -->
+                            @if (User.Claims.Any(x => x.Type == "OPCION" && (x.Value == "EMP" || x.Value == "PRO" || x.Value == "REP")))
+                            {
+                                <li class="tree-item has-children">
+                                    <div class="tree-header">
+                                        <i class="bi bi-folder-fill text-warning me-2"></i>
+                                        <span>01. Personal</span>
+                                        <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                    </div>
+                                    <ul class="tree-submenu">
+                                        @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "EMP"))
+                                        {
+                                            <li class="tree-item has-children">
+                                                <div class="tree-header">
+                                                    <i class="bi bi-folder-fill text-warning me-2"></i>
+                                                    <span>01.01. Gestión tareas básicas Personal</span>
+                                                    <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                                </div>
+                                                <ul class="tree-submenu">
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Departamento" ? "active" : "")" asp-controller="Departamento" asp-action="Index">
+                                                            <i class="bi bi-building me-2 text-primary"></i> 01.01.01. Departamento
+                                                        </a>
+                                                    </li>
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Cargo" ? "active" : "")" asp-controller="Cargo" asp-action="Index">
+                                                            <i class="bi bi-briefcase me-2 text-primary"></i> 01.01.02. Cargo
+                                                        </a>
+                                                    </li>
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Empleado" ? "active" : "")" asp-controller="Empleado" asp-action="Index">
+                                                            <i class="bi bi-people me-2 text-primary"></i> 01.01.03. Empleado
+                                                        </a>
+                                                    </li>
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Sexo" ? "active" : "")" asp-controller="Sexo" asp-action="Index">
+                                                            <i class="bi bi-gender-ambiguous me-2 text-primary"></i> 01.01.04. Sexo
+                                                        </a>
+                                                    </li>
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "EstadoCivil" ? "active" : "")" asp-controller="EstadoCivil" asp-action="Index">
+                                                            <i class="bi bi-heart me-2 text-primary"></i> 01.01.05. Estado Civil
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        }
+
+                                        <!-- 01.02. Procesos (Mocked) -->
+                                        <li class="tree-item has-children">
+                                            <div class="tree-header text-muted opacity-75">
+                                                <i class="bi bi-folder text-muted me-2"></i>
+                                                <span>01.02. Procesos</span>
+                                                <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                            </div>
+                                            <ul class="tree-submenu">
+                                                <li class="tree-item"><span class="tree-link disabled"><i class="bi bi-slash-circle me-2"></i>No implementado</span></li>
+                                            </ul>
+                                        </li>
+
+                                        <!-- 01.03. Reportes -->
+                                        <li class="tree-item has-children">
+                                            <div class="tree-header">
+                                                <i class="bi bi-folder-fill text-warning me-2"></i>
+                                                <span>01.03. Reportes</span>
+                                                <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                            </div>
+                                            <ul class="tree-submenu">
+                                                <li class="tree-item">
+                                                    <a class="tree-link @(currentController == "Reporte" && currentAction == "Personal" ? "active" : "")" asp-controller="Reporte" asp-action="Personal">
+                                                        <i class="bi bi-file-earmark-bar-graph me-2 text-primary"></i> 01.03.01. Centro de Reportes
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+
+                            <!-- 02. Seguridades Folder -->
+                            @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "USR"))
+                            {
+                                <li class="tree-item has-children">
+                                    <div class="tree-header">
+                                        <i class="bi bi-folder-fill text-warning me-2"></i>
+                                        <span>02. Seguridades</span>
+                                        <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                    </div>
+                                    <ul class="tree-submenu">
+                                        <li class="tree-item has-children">
+                                            <div class="tree-header">
+                                                <i class="bi bi-folder-fill text-warning me-2"></i>
+                                                <span>02.01. Gestión tareas básicas Seguridad</span>
+                                                <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                            </div>
+                                            <ul class="tree-submenu">
+                                                <li class="tree-item">
+                                                    <a class="tree-link @(currentController == "Usuario" ? "active" : "")" asp-controller="Usuario" asp-action="Index">
+                                                        <i class="bi bi-person-gear me-2 text-danger"></i> 02.01.01. Usuario
+                                                    </a>
+                                                </li>
+                                                <li class="tree-item">
+                                                    <a class="tree-link @(currentController == "Seguridad" && currentAction == "AsignarUsuarioPerfil" ? "active" : "")" asp-controller="Seguridad" asp-action="AsignarUsuarioPerfil">
+                                                        <i class="bi bi-shield-check me-2 text-danger"></i> 02.01.02. Perfil
+                                                    </a>
+                                                </li>
+                                                <li class="tree-item">
+                                                    <a class="tree-link @(currentController == "Seguridad" && currentAction == "AsignarOpcionPerfil" ? "active" : "")" asp-controller="Seguridad" asp-action="AsignarOpcionPerfil">
+                                                        <i class="bi bi-list-check me-2 text-danger"></i> 02.01.03. Opción
+                                                    </a>
+                                                </li>
+                                                <li class="tree-item">
+                                                    <span class="tree-link disabled">
+                                                        <i class="bi bi-slash-circle me-2"></i> 02.01.04. Sistema
+                                                    </span>
+                                                </li>
+                                            </ul>
+                                        </li>
+
+                                        <!-- 02.02. Procesos (Mocked) -->
+                                        <li class="tree-item has-children">
+                                            <div class="tree-header text-muted opacity-75">
+                                                <i class="bi bi-folder text-muted me-2"></i>
+                                                <span>02.02. Procesos</span>
+                                                <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                            </div>
+                                            <ul class="tree-submenu">
+                                                <li class="tree-item"><span class="tree-link disabled"><i class="bi bi-slash-circle me-2"></i>No implementado</span></li>
+                                            </ul>
+                                        </li>
+
+                                        <!-- 02.03. Reportes -->
+                                        <li class="tree-item has-children">
+                                            <div class="tree-header">
+                                                <i class="bi bi-folder-fill text-warning me-2"></i>
+                                                <span>02.03. Reportes</span>
+                                                <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                            </div>
+                                            <ul class="tree-submenu">
+                                                <li class="tree-item">
+                                                    <a class="tree-link @(currentController == "Reporte" && currentAction == "Seguridad" ? "active" : "")" asp-controller="Reporte" asp-action="Seguridad">
+                                                        <i class="bi bi-shield-fill-check me-2 text-danger"></i> 02.03.01. Reporte de Usuarios
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </aside>
+
+                <!-- Premium Content Area -->
+                <main class="app-content flex-grow-1 p-4 bg-light">
+                    <div class="content-container">
+                        <partial name="_Alerts" />
+                        @RenderBody()
+                    </div>
+                </main>
             </div>
-
-        </nav>
-
-    </header>
-
-    <div class="container mt-4">
-
-        <partial name="_Alerts" />
-
-        <main role="main">
-
-            @RenderBody()
-
-        </main>
-
-    </div>
-
-    <footer class="border-top mt-5 py-3 text-center text-muted">
-
-        <div class="container">
-
-            &copy; 2026 - Monster Projects
-
         </div>
+    }
+    else
+    {
+        <!-- Login/Forgot Password Premium Background Layout -->
+        <div class="auth-layout d-flex align-items-center justify-content-center min-vh-100 px-3">
+            <div class="auth-card shadow-lg rounded-4 p-4 p-sm-5 bg-white">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold brand-gradient display-6">Monster Projects</h2>
+                    <p class="text-muted">Acceso al Sistema Integrado</p>
+                </div>
+                <partial name="_Alerts" />
+                @RenderBody()
+            </div>
+        </div>
+    }
 
-    </footer>
-
+    <!-- jQuery and Bootstrap bundle JS -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
-    <script src="~/js/site.js"
-            asp-append-version="true"></script>
+    <!-- Interactive Treeview JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Sidebar toggle for mobile responsive layouts
+            const sidebarToggle = document.getElementById("sidebar-toggle");
+            const sidebarPanel = document.getElementById("sidebar-panel");
+            if (sidebarToggle && sidebarPanel) {
+                sidebarToggle.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    sidebarPanel.classList.toggle("mobile-show");
+                });
+                
+                // Hide sidebar when clicking outside of it on mobile
+                document.addEventListener("click", function (e) {
+                    if (sidebarPanel.classList.contains("mobile-show") && !sidebarPanel.contains(e.target) && e.target !== sidebarToggle) {
+                        sidebarPanel.classList.remove("mobile-show");
+                    }
+                });
+            }
+
+            // Interactive treeview folders collapsing/expanding
+            const headers = document.querySelectorAll(".tree-header");
+            headers.forEach(header => {
+                header.addEventListener("click", function (e) {
+                    e.stopPropagation();
+                    const parent = this.parentElement;
+                    
+                    // Toggle open status
+                    parent.classList.toggle("open");
+                    
+                    // Rotate the icon
+                    const icon = this.querySelector(".toggle-icon");
+                    if (icon) {
+                        if (parent.classList.contains("open")) {
+                            icon.classList.remove("bi-chevron-right");
+                            icon.classList.add("bi-chevron-down");
+                        } else {
+                            icon.classList.remove("bi-chevron-down");
+                            icon.classList.add("bi-chevron-right");
+                        }
+                    }
+                });
+            });
+
+            // Automatically expand tree paths for the active menu option
+            const activeLink = document.querySelector(".tree-link.active");
+            if (activeLink) {
+                let submenu = activeLink.closest(".tree-submenu");
+                while (submenu) {
+                    const item = submenu.closest(".tree-item");
+                    if (item) {
+                        item.classList.add("open");
+                        const icon = item.querySelector(".tree-header > .toggle-icon");
+                        if (icon) {
+                            icon.classList.remove("bi-chevron-right");
+                            icon.classList.add("bi-chevron-down");
+                        }
+                        submenu = item.parentElement.closest(".tree-submenu");
+                    } else {
+                        break;
+                    }
+                }
+            }
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
-
 </body>
 </html>

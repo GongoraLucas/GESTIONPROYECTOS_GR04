@@ -19,8 +19,157 @@ public class ReporteService : IReporteService
     {
         _context = context;
 
-        // Licencia gratuita para proyectos no comerciales / educativos
         QuestPDF.Settings.License = LicenseType.Community;
+    }
+
+    // ═════════════════════════════════════════════════════════════════════
+    //  USUARIOS
+    // ═════════════════════════════════════════════════════════════════════
+
+    private async Task<List<ReporteUsuarioDto>> ObtenerDatosUsuariosAsync()
+    {
+        return await _context.Usuarios
+            .Include(u => u.Estado)
+            .Include(u => u.Empleado)
+            .OrderBy(u => u.Login)
+            .Select(u => new ReporteUsuarioDto
+            {
+                Id = u.Id,
+                Login = u.Login,
+                Email = u.Email,
+                Estado = u.Estado != null ? u.Estado.Descripcion : "",
+                Empleado = u.Empleado != null ? u.Empleado.Apellidos + " " + u.Empleado.Nombres : ""
+            })
+            .ToListAsync();
+    }
+
+    public async Task<byte[]> GenerarUsuariosPdfAsync()
+    {
+        var datos = await ObtenerDatosUsuariosAsync();
+
+        var documento = Document.Create(container =>
+        {
+            container.Page(page =>
+            {
+                page.Size(PageSizes.A4);
+                page.Margin(1.5f, Unit.Centimetre);
+                page.DefaultTextStyle(x => x.FontSize(10));
+
+                page.Header().Element(ComposeHeaderGenerico("Reporte de Usuarios"));
+
+                page.Content().Element(content =>
+                {
+                    content.PaddingTop(10).Table(table =>
+                    {
+                        table.ColumnsDefinition(cols =>
+                        {
+                            cols.ConstantColumn(40);
+                            cols.RelativeColumn(2);
+                            cols.RelativeColumn(3);
+                            cols.RelativeColumn(2);
+                        });
+
+                        table.Header(header =>
+                        {
+                            static IContainer CeldaHead(IContainer c) =>
+                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White).FontSize(9))
+                                 .Background("#4f46e5").Padding(6);
+
+                            header.Cell().Element(CeldaHead).Text("Id");
+                            header.Cell().Element(CeldaHead).Text("Login");
+                            header.Cell().Element(CeldaHead).Text("Email");
+                            header.Cell().Element(CeldaHead).Text("Empleado / Estado");
+                        });
+
+                        bool alterno = false;
+                        foreach (var u in datos)
+                        {
+                            alterno = !alterno;
+                            var bg = alterno ? "#f8fafc" : "#ffffff";
+
+                            static IContainer Celda(IContainer c, string bg) =>
+                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten3).Padding(6);
+
+                            table.Cell().Element(c => Celda(c, bg)).Text(u.Id.ToString());
+                            table.Cell().Element(c => Celda(c, bg)).Text(u.Login);
+                            table.Cell().Element(c => Celda(c, bg)).Text(u.Email);
+                            table.Cell().Element(c => Celda(c, bg)).Text($"{u.Empleado} / {u.Estado}");
+                        }
+                    });
+                });
+
+                page.Footer().AlignCenter().Text(text =>
+                {
+                    text.Span("Página ").FontSize(8).FontColor(Colors.Grey.Medium);
+                    text.CurrentPageNumber().FontSize(8).FontColor(Colors.Grey.Medium);
+                    text.Span(" de ").FontSize(8).FontColor(Colors.Grey.Medium);
+                    text.TotalPages().FontSize(8).FontColor(Colors.Grey.Medium);
+                });
+            });
+        });
+
+        return documento.GeneratePdf();
+    }
+
+    public async Task<byte[]> GenerarUsuariosExcelAsync()
+    {
+        var datos = await ObtenerDatosUsuariosAsync();
+
+        using var workbook = new XLWorkbook();
+        var ws = workbook.Worksheets.Add("Usuarios");
+
+        ws.Cell(1, 1).Value = "REPORTE DE USUARIOS";
+        AplicarEstiloTitulo(ws.Cell(1, 1));
+        ws.Range(1, 1, 1, 4).Merge();
+
+        ws.Cell(2, 1).Value = $"Generado: {DateTime.Now:dd/MM/yyyy HH:mm}";
+        AplicarEstiloSubtitulo(ws.Cell(2, 1));
+        ws.Range(2, 1, 2, 4).Merge();
+
+        AplicarEncabezados(ws, 4, new[] { "Id", "Login", "Email", "Empleado / Estado" });
+
+        int fila = 5; bool alt = false;
+        foreach (var u in datos)
+        {
+            alt = !alt;
+            var bg = alt ? XLColor.FromHtml("#ECEFF1") : XLColor.White;
+            ws.Cell(fila, 1).Value = u.Id;
+            ws.Cell(fila, 2).Value = u.Login;
+            ws.Cell(fila, 3).Value = u.Email;
+            ws.Cell(fila, 4).Value = $"{u.Empleado} / {u.Estado}";
+            var r = ws.Range(fila, 1, fila, 4);
+            r.Style.Fill.BackgroundColor = bg;
+            r.Style.Border.SetOutsideBorder(XLBorderStyleValues.Thin);
+            r.Style.Border.SetInsideBorder(XLBorderStyleValues.Hair);
+            fila++;
+        }
+
+        ws.Columns().AdjustToContents();
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        return stream.ToArray();
+    }
+
+    public async Task<byte[]> GenerarUsuariosCsvAsync()
+    {
+        var datos = await ObtenerDatosUsuariosAsync();
+
+        using var mem = new MemoryStream();
+        using var wr  = new StreamWriter(mem, System.Text.Encoding.UTF8);
+        using var csv = new CsvWriter(wr, new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = "," });
+
+        csv.WriteField("Id"); csv.WriteField("Login"); csv.WriteField("Email"); csv.WriteField("Empleado"); csv.WriteField("Estado");
+        await csv.NextRecordAsync();
+
+        foreach (var u in datos)
+        {
+            csv.WriteField(u.Id); csv.WriteField(u.Login); csv.WriteField(u.Email);
+            csv.WriteField(u.Empleado); csv.WriteField(u.Estado);
+            await csv.NextRecordAsync();
+        }
+
+        await wr.FlushAsync();
+        return mem.ToArray();
     }
 
     // ═════════════════════════════════════════════════════════════════════
@@ -97,9 +246,9 @@ public class ReporteService : IReporteService
                         table.Header(header =>
                         {
                             static IContainer CeldaHead(IContainer c) =>
-                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White))
-                                 .Background(Colors.BlueGrey.Darken3)
-                                 .Padding(5);
+                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White).FontSize(8.5f))
+                                 .Background("#4f46e5")
+                                 .Padding(6);
 
                             header.Cell().Element(CeldaHead).Text("Código");
                             header.Cell().Element(CeldaHead).Text("Cédula");
@@ -115,10 +264,10 @@ public class ReporteService : IReporteService
                         foreach (var emp in datos)
                         {
                             alterno = !alterno;
-                            var bg = alterno ? Colors.Grey.Lighten4 : Colors.White;
+                            var bg = alterno ? "#f8fafc" : "#ffffff";
 
                             static IContainer Celda(IContainer c, string bg) =>
-                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten2).Padding(4);
+                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten3).Padding(5);
 
                             table.Cell().Element(c => Celda(c, bg)).Text(emp.Codigo);
                             table.Cell().Element(c => Celda(c, bg)).Text(emp.Cedula);
@@ -286,8 +435,8 @@ public class ReporteService : IReporteService
                         table.Header(header =>
                         {
                             static IContainer CeldaHead(IContainer c) =>
-                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White))
-                                 .Background(Colors.BlueGrey.Darken3).Padding(5);
+                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White).FontSize(9))
+                                 .Background("#4f46e5").Padding(6);
 
                             header.Cell().Element(CeldaHead).Text("Código");
                             header.Cell().Element(CeldaHead).Text("Descripción");
@@ -298,10 +447,10 @@ public class ReporteService : IReporteService
                         foreach (var dep in datos)
                         {
                             alterno = !alterno;
-                            var bg = alterno ? Colors.Grey.Lighten4 : Colors.White;
+                            var bg = alterno ? "#f8fafc" : "#ffffff";
 
                             static IContainer Celda(IContainer c, string bg) =>
-                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten2).Padding(4);
+                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten3).Padding(6);
 
                             table.Cell().Element(c => Celda(c, bg)).Text(dep.Codigo);
                             table.Cell().Element(c => Celda(c, bg)).Text(dep.Descripcion);
@@ -427,8 +576,8 @@ public class ReporteService : IReporteService
                         table.Header(header =>
                         {
                             static IContainer CeldaHead(IContainer c) =>
-                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White))
-                                 .Background(Colors.BlueGrey.Darken3).Padding(5);
+                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White).FontSize(9))
+                                 .Background("#4f46e5").Padding(6);
 
                             header.Cell().Element(CeldaHead).Text("Código");
                             header.Cell().Element(CeldaHead).Text("Descripción");
@@ -439,10 +588,10 @@ public class ReporteService : IReporteService
                         foreach (var s in datos)
                         {
                             alterno = !alterno;
-                            var bg = alterno ? Colors.Grey.Lighten4 : Colors.White;
+                            var bg = alterno ? "#f8fafc" : "#ffffff";
 
                             static IContainer Celda(IContainer c, string bg) =>
-                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten2).Padding(4);
+                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten3).Padding(6);
 
                             table.Cell().Element(c => Celda(c, bg)).Text(s.Codigo);
                             table.Cell().Element(c => Celda(c, bg)).Text(s.Descripcion);
@@ -568,8 +717,8 @@ public class ReporteService : IReporteService
                         table.Header(header =>
                         {
                             static IContainer CeldaHead(IContainer c) =>
-                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White))
-                                 .Background(Colors.BlueGrey.Darken3).Padding(5);
+                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White).FontSize(9))
+                                 .Background("#4f46e5").Padding(6);
 
                             header.Cell().Element(CeldaHead).Text("Código");
                             header.Cell().Element(CeldaHead).Text("Descripción");
@@ -580,10 +729,10 @@ public class ReporteService : IReporteService
                         foreach (var ec in datos)
                         {
                             alterno = !alterno;
-                            var bg = alterno ? Colors.Grey.Lighten4 : Colors.White;
+                            var bg = alterno ? "#f8fafc" : "#ffffff";
 
                             static IContainer Celda(IContainer c, string bg) =>
-                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten2).Padding(4);
+                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten3).Padding(6);
 
                             table.Cell().Element(c => Celda(c, bg)).Text(ec.Codigo);
                             table.Cell().Element(c => Celda(c, bg)).Text(ec.Descripcion);
@@ -713,8 +862,8 @@ public class ReporteService : IReporteService
                         table.Header(header =>
                         {
                             static IContainer CeldaHead(IContainer c) =>
-                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White))
-                                 .Background(Colors.BlueGrey.Darken3).Padding(5);
+                                c.DefaultTextStyle(x => x.Bold().FontColor(Colors.White).FontSize(9))
+                                 .Background("#4f46e5").Padding(6);
 
                             header.Cell().Element(CeldaHead).Text("Departamento");
                             header.Cell().Element(CeldaHead).Text("Código");
@@ -726,10 +875,10 @@ public class ReporteService : IReporteService
                         foreach (var c in datos)
                         {
                             alterno = !alterno;
-                            var bg = alterno ? Colors.Grey.Lighten4 : Colors.White;
+                            var bg = alterno ? "#f8fafc" : "#ffffff";
 
                             static IContainer Celda(IContainer c, string bg) =>
-                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten2).Padding(4);
+                                c.Background(bg).BorderBottom(0.5f, Unit.Point).BorderColor(Colors.Grey.Lighten3).Padding(6);
 
                             table.Cell().Element(x => Celda(x, bg)).Text(c.Departamento);
                             table.Cell().Element(x => Celda(x, bg)).Text(c.Codigo);
@@ -825,35 +974,43 @@ public class ReporteService : IReporteService
             {
                 row.RelativeItem().Column(c =>
                 {
+                    c.Item().Text("MONSTER PROJECTS")
+                     .Bold().FontSize(10).FontColor("#4f46e5");
+                    
                     c.Item().Text(titulo)
-                     .Bold().FontSize(16).FontColor(Colors.BlueGrey.Darken3);
+                     .Bold().FontSize(20).FontColor("#1e293b");
 
-                    c.Item().Text($"Generado: {DateTime.Now:dd/MM/yyyy HH:mm}")
+                    c.Item().Text($"Reporte del Sistema • Generado: {DateTime.Now:dd/MM/yyyy HH:mm}")
                      .FontSize(8).FontColor(Colors.Grey.Medium);
                 });
             });
 
-            col.Item().PaddingTop(4)
-               .LineHorizontal(1).LineColor(Colors.BlueGrey.Darken3);
+            col.Item().PaddingTop(8).PaddingBottom(8)
+               .LineHorizontal(1.5f).LineColor("#4f46e5");
         });
 
     private static void AplicarEstiloTitulo(IXLCell celda)
     {
         celda.Style
             .Font.SetBold(true)
-            .Font.SetFontSize(14)
+            .Font.SetFontSize(16)
+            .Font.SetFontName("Segoe UI")
             .Font.SetFontColor(XLColor.White)
-            .Fill.SetBackgroundColor(XLColor.FromHtml("#37474F"))
-            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            .Fill.SetBackgroundColor(XLColor.FromHtml("#4F46E5"))
+            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+            .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
     }
 
     private static void AplicarEstiloSubtitulo(IXLCell celda)
     {
         celda.Style
             .Font.SetItalic(true)
-            .Font.SetFontSize(9)
-            .Font.SetFontColor(XLColor.Gray)
-            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+            .Font.SetFontSize(10)
+            .Font.SetFontName("Segoe UI")
+            .Font.SetFontColor(XLColor.FromHtml("#E0E7FF"))
+            .Fill.SetBackgroundColor(XLColor.FromHtml("#4F46E5"))
+            .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+            .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
     }
 
     private static void AplicarEncabezados(IXLWorksheet ws, int fila, string[] encabezados)
@@ -864,10 +1021,16 @@ public class ReporteService : IReporteService
             celda.Value = encabezados[col];
             celda.Style
                 .Font.SetBold(true)
+                .Font.SetFontName("Segoe UI")
+                .Font.SetFontSize(11)
                 .Font.SetFontColor(XLColor.White)
-                .Fill.SetBackgroundColor(XLColor.FromHtml("#546E7A"))
+                .Fill.SetBackgroundColor(XLColor.FromHtml("#1E293B"))
                 .Border.SetOutsideBorder(XLBorderStyleValues.Thin)
-                .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                .Border.SetOutsideBorderColor(XLColor.FromHtml("#475569"))
+                .Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center)
+                .Alignment.SetVertical(XLAlignmentVerticalValues.Center);
         }
+        ws.Row(fila).Height = 24;
     }
 }
+

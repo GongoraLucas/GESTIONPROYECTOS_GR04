@@ -21,14 +21,14 @@
                 </div>
                 <div class="col-md-6 mb-3">
                     <label asp-for="Codigo" class="form-label"></label>
-                    <input asp-for="Codigo" class="form-control" maxlength="3" />
+                    <input asp-for="Codigo" class="form-control" placeholder="Ej. C02" required maxlength="3" />
                     <span asp-validation-for="Codigo" class="text-danger"></span>
                 </div>
             </div>
             <div class="row">
                 <div class="col-12 mb-3">
                     <label asp-for="Descripcion" class="form-label"></label>
-                    <input asp-for="Descripcion" class="form-control" maxlength="50" />
+                    <input asp-for="Descripcion" class="form-control" placeholder="Ej. Desarrollador Web Senior" required maxlength="50" />
                     <span asp-validation-for="Descripcion" class="text-danger"></span>
                 </div>
             </div>

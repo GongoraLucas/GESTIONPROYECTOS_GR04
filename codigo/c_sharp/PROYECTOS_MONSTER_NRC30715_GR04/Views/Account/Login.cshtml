@@ -1,85 +1,45 @@
-﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.LoginViewModel
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.LoginViewModel
 
 @{
     ViewData["Title"] = "Iniciar Sesión";
 }
 
-<div class="row justify-content-center mt-5">
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div class="col-md-4">
-
-        <div class="card shadow-lg">
-
-            <div class="card-header text-center">
-
-                <h3>
-                    Monster Projects
-                </h3>
-
-                <small class="text-muted">
-                    Sistema de Gestión de Proyectos
-                </small>
-
-            </div>
-
-            <div class="card-body">
-
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3">
-                </div>
-
-                <form asp-action="Login"
-                      method="post">
-
-                    <div class="mb-3">
-
-                        <label asp-for="Usuario"></label>
-
-                        <input asp-for="Usuario"
-                               class="form-control" />
-
-                        <span asp-validation-for="Usuario"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <div class="mb-3">
-
-                        <label asp-for="Password"></label>
-
-                        <input asp-for="Password"
-                               class="form-control" />
-
-                        <span asp-validation-for="Password"
-                              class="text-danger">
-                        </span>
-
-                    </div>
-
-                    <button type="submit"
-                            class="btn btn-primary w-100">
-                        Ingresar
-                    </button>
-
-                </form>
-
-                <hr />
-
-                <div class="text-center">
-
-                    <a asp-action="RecuperarPassword">
-                        ¿Olvidó su contraseña?
-                    </a>
-
-                </div>
-
-            </div>
-
+<form asp-action="Login" method="post">
+    <div class="mb-3">
+        <label asp-for="Usuario" class="form-label fw-semibold text-secondary">Usuario</label>
+        <div class="input-group">
+            <span class="input-group-text bg-light border-end-0 text-muted">
+                <i class="bi bi-person-fill"></i>
+            </span>
+            <input asp-for="Usuario" class="form-control bg-light border-start-0 ps-0" placeholder="Ingrese su usuario" required />
         </div>
-
+        <span asp-validation-for="Usuario" class="text-danger small"></span>
     </div>
 
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label fw-semibold text-secondary">Contraseña</label>
+        <div class="input-group">
+            <span class="input-group-text bg-light border-end-0 text-muted">
+                <i class="bi bi-lock-fill"></i>
+            </span>
+            <input asp-for="Password" type="password" class="form-control bg-light border-start-0 ps-0" placeholder="Ingrese su contraseña" required />
+        </div>
+        <span asp-validation-for="Password" class="text-danger small"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold shadow-sm mt-3">
+        <i class="bi bi-box-arrow-in-right me-2"></i>Ingresar
+    </button>
+</form>
+
+<hr class="text-muted my-4" />
+
+<div class="text-center">
+    <a asp-action="RecuperarPassword" class="text-decoration-none small fw-semibold text-primary">
+        ¿Olvidó su contraseña?
+    </a>
 </div>
 
 @section Scripts {

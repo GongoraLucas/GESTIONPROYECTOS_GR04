@@ -36,28 +36,31 @@ public class EmpleadoController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(
-    EmpleadoViewModel model)
+    public async Task<IActionResult> Create(EmpleadoViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            return View(
-                await _service
-                    .ObtenerFormularioAsync());
+            var repopulatedModel = await _service.ObtenerFormularioAsync(model);
+            return View(repopulatedModel);
         }
 
-        if (model.ArchivoFoto != null)
+        try
         {
-            model.Foto =
-                await GuardarFotoAsync(
-                    model.ArchivoFoto);
+            if (model.ArchivoFoto != null)
+            {
+                model.Foto = await GuardarFotoAsync(model.ArchivoFoto);
+            }
+
+            await _service.CrearAsync(model);
+            TempData["Success"] = "Empleado creado correctamente.";
+            return RedirectToAction(nameof(Index));
         }
-
-        await _service.CrearAsync(
-            model);
-
-        return RedirectToAction(
-            nameof(Index));
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, "Error al crear el empleado: " + ex.Message);
+            var repopulatedModel = await _service.ObtenerFormularioAsync(model);
+            return View(repopulatedModel);
+        }
     }
 
     private async Task<string?> GuardarFotoAsync(
@@ -111,24 +114,26 @@ public class EmpleadoController : Controller
     }
 
     [HttpPost]
-    public async Task<IActionResult> Edit(
-    EmpleadoViewModel model)
+    public async Task<IActionResult> Edit(EmpleadoViewModel model)
     {
         if (!ModelState.IsValid)
         {
-            var vm =
-                await _service
-                    .ObtenerPorIdAsync(
-                        model.Codigo);
-
-            return View(vm);
+            var repopulatedModel = await _service.ObtenerFormularioAsync(model);
+            return View(repopulatedModel);
         }
 
-        await _service.ActualizarAsync(
-            model);
-
-        return RedirectToAction(
-            nameof(Index));
+        try
+        {
+            await _service.ActualizarAsync(model);
+            TempData["Success"] = "Empleado actualizado correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, "Error al actualizar el empleado: " + ex.Message);
+            var repopulatedModel = await _service.ObtenerFormularioAsync(model);
+            return View(repopulatedModel);
+        }
     }
 
 

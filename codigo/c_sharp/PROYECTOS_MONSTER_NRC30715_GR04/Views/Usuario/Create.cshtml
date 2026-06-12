@@ -1,0 +1,109 @@
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.UsuarioViewModel
+
+@{
+    ViewData["Title"] = "Nuevo Usuario";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="m-0"><i class="bi bi-person-plus text-primary me-2"></i>Nuevo Usuario</h3>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm"><i class="bi bi-arrow-left"></i> Volver a la Lista</a>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="card-body p-4">
+        <form asp-action="Create" method="post" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Login" class="form-label">Nombre de Usuario (Login)</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person"></i></span>
+                        <input asp-for="Login" class="form-control" placeholder="Ej. cgomez" required maxlength="50" />
+                    </div>
+                    <span asp-validation-for="Login" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Email" class="form-label">Correo Electrónico</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input asp-for="Email" type="email" class="form-control" placeholder="Ej. carlos.gomez@monster.com" required maxlength="100" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="EmpleadoCodigo" class="form-label">Empleado Asociado</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                        <select asp-for="EmpleadoCodigo" asp-items="Model.Empleados" class="form-select" required>
+                            <option value="">-- Seleccione el Empleado --</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="EmpleadoCodigo" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="EstadoCodigo" class="form-label">Estado Inicial</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                        <select asp-for="EstadoCodigo" asp-items="Model.Estados" class="form-select" required>
+                            <option value="">-- Seleccione el Estado --</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="EstadoCodigo" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <label asp-for="Password" class="form-label">Contraseña de Primer Ingreso</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-key"></i></span>
+                        <input asp-for="Password" type="password" class="form-control" id="txt-password" placeholder="Establezca la contraseña inicial..." required minlength="6" maxlength="50" autocomplete="new-password" />
+                        <button class="btn btn-outline-secondary" type="button" id="btn-toggle-pwd">
+                            <i class="bi bi-eye" id="toggle-icon"></i>
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <small class="text-muted mt-1 d-block"><i class="bi bi-info-circle me-1"></i>Mínimo 6 caracteres. El usuario deberá cambiarla al iniciar sesión.</small>
+                </div>
+            </div>
+
+            <hr class="my-4 text-muted opacity-25" />
+
+            <div class="d-flex gap-2 justify-content-end">
+                <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-circle me-1"></i> Crear Usuario</button>
+                <a asp-action="Index" class="btn btn-secondary px-4">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const btnToggle = document.getElementById("btn-toggle-pwd");
+            const txtPwd = document.getElementById("txt-password");
+            const icon = document.getElementById("toggle-icon");
+
+            if (btnToggle && txtPwd && icon) {
+                btnToggle.addEventListener("click", function () {
+                    if (txtPwd.type === "password") {
+                        txtPwd.type = "text";
+                        icon.classList.remove("bi-eye");
+                        icon.classList.add("bi-eye-slash");
+                    } else {
+                        txtPwd.type = "password";
+                        icon.classList.remove("bi-eye-slash");
+                        icon.classList.add("bi-eye");
+                    }
+                });
+            }
+        });
+    </script>
+}

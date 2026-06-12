@@ -3,13 +3,13 @@ namespace PROYECTOS_MONSTER_NRC30715_GR04.Services.Reportes;
 public interface IReporteService
 {
     // ── Empleados ──────────────────────────────────────────────────────────
-    /// <summary>Genera un reporte PDF con la lista de todos los empleados.</summary>
+    
     Task<byte[]> GenerarEmpleadosPdfAsync();
 
-    /// <summary>Genera un reporte Excel (.xlsx) con la lista de todos los empleados.</summary>
+   
     Task<byte[]> GenerarEmpleadosExcelAsync();
 
-    /// <summary>Genera un reporte CSV con la lista de todos los empleados.</summary>
+    
     Task<byte[]> GenerarEmpleadosCsvAsync();
 
     // ── Departamentos ──────────────────────────────────────────────────────
@@ -31,4 +31,9 @@ public interface IReporteService
     Task<byte[]> GenerarCargosPdfAsync();
     Task<byte[]> GenerarCargosExcelAsync();
     Task<byte[]> GenerarCargosCsvAsync();
+
+    // ── Usuarios ──────────────────────────────────────────────────────────
+    Task<byte[]> GenerarUsuariosPdfAsync();
+    Task<byte[]> GenerarUsuariosExcelAsync();
+    Task<byte[]> GenerarUsuariosCsvAsync();
 }

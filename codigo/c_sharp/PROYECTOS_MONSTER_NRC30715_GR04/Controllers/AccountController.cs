@@ -12,13 +12,16 @@ public class AccountController : Controller
 {
     private readonly IAuthService _authService;
     private readonly IPerfilService _perfilService;
+    private readonly PROYECTOS_MONSTER_NRC30715_GR04.Services.Interfaces.IEmailService _emailService;
 
     public AccountController(
      IAuthService authService,
-     IPerfilService perfilService)
+     IPerfilService perfilService,
+     PROYECTOS_MONSTER_NRC30715_GR04.Services.Interfaces.IEmailService emailService)
     {
         _authService = authService;
         _perfilService = perfilService;
+        _emailService = emailService;
     }
 
     [AllowAnonymous]
@@ -86,6 +89,9 @@ public class AccountController : Controller
                     "OPCION",
                     opcion));
         }
+
+        // Añadir claim de primer ingreso para control de UI
+        claims.Add(new Claim("PRIMER_INGRESO", usuario.PrimerIngreso ? "True" : "False"));
 
         var identity =
             new ClaimsIdentity(
@@ -197,10 +203,29 @@ public class AccountController : Controller
             return View(model);
         }
 
-        TempData["Token"] = token;
+        // Construir URL absoluto para reset
+        var resetUrl = Url.Action(
+            action: "ResetPassword",
+            controller: "Account",
+            values: new { token },
+            protocol: Request.Scheme);
 
-        return RedirectToAction(
-            nameof(TokenGenerado));
+        var subject = "Recuperación de contraseña";
+        var html = $@"<p>Se solicitó restablecer la contraseña. Haga clic en el siguiente enlace para establecer una nueva contraseña:</p>
+                      <p><a href='{resetUrl}'>Restablecer contraseña</a></p>
+                      <p>Si usted no solicitó este correo, puede ignorarlo.</p>";
+
+        try
+        {
+            await _emailService.SendAsync(model.Email, subject, html);
+        }
+        catch (Exception ex)
+        {
+            ModelState.AddModelError(string.Empty, "Error al enviar el correo: " + ex.Message);
+            return View(model);
+        }
+
+        return RedirectToAction(nameof(TokenGenerado));
     }
 
     [AllowAnonymous]

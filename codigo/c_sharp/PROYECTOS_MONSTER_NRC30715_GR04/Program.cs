@@ -67,6 +67,8 @@ builder.Services.AddScoped<IEstadoCivilService, EstadoCivilService>();
 builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 builder.Services.AddScoped<ICargoService, CargoService>();
 builder.Services.AddScoped<IReporteService, ReporteService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<PROYECTOS_MONSTER_NRC30715_GR04.Services.Interfaces.IEmailService, PROYECTOS_MONSTER_NRC30715_GR04.Services.EmailService>();
 
 var app = builder.Build();
 

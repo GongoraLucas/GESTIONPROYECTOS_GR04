@@ -1,4 +1,4 @@
-﻿using PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels;
+using PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels;
 
 namespace PROYECTOS_MONSTER_NRC30715_GR04.Services.Interfaces;
 
@@ -12,7 +12,7 @@ public interface IEmpleadoService
             int registrosPorPagina);
 
     Task<EmpleadoViewModel>
-        ObtenerFormularioAsync();
+        ObtenerFormularioAsync(EmpleadoViewModel? model = null);
 
     Task CrearAsync(
         EmpleadoViewModel model);

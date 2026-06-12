@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using PROYECTOS_MONSTER_NRC30715_GR04.Data;
 using PROYECTOS_MONSTER_NRC30715_GR04.Models.Entities;
@@ -68,10 +68,9 @@ ObtenerTodosAsync(
     }
 
     public async Task<EmpleadoViewModel>
-        ObtenerFormularioAsync()
+        ObtenerFormularioAsync(EmpleadoViewModel? model = null)
     {
-        var model =
-            new EmpleadoViewModel();
+        model ??= new EmpleadoViewModel();
 
         model.Sexos =
             await _context.Sexos

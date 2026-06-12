@@ -1,0 +1,122 @@
+@model List<PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.UsuarioItemViewModel>
+
+@{
+    ViewData["Title"] = "Gestión de Usuarios";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="m-0"><i class="bi bi-people-fill text-primary me-2"></i>Gestión de Usuarios</h3>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-person-plus-fill me-1"></i> Nuevo Usuario</a>
+</div>
+
+<!-- Barra de Búsqueda y Exportaciones -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-3">
+        <div class="row align-items-center gap-3 gap-md-0">
+            <!-- Formulario Buscar -->
+            <div class="col-md-7">
+                <form method="get" asp-action="Index" class="d-flex gap-2">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                        <input type="text" name="buscar" value="@Context.Request.Query["buscar"]" class="form-control border-start-0" placeholder="Buscar por login o correo electrónico..." />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Buscar</button>
+                    @if (!string.IsNullOrEmpty(Context.Request.Query["buscar"]))
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary">Limpiar</a>
+                    }
+                </form>
+            </div>
+            
+            <!-- Descargar Reportes -->
+            <div class="col-md-5 d-flex justify-content-md-end gap-2">
+                <a asp-action="ExportarPdf" class="btn btn-outline-danger d-inline-flex align-items-center gap-1" title="Descargar reporte en PDF">
+                    <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                </a>
+                <a asp-action="ExportarExcel" class="btn btn-outline-success d-inline-flex align-items-center gap-1" title="Descargar reporte en Excel">
+                    <i class="bi bi-file-earmark-excel-fill"></i> Excel
+                </a>
+                <a asp-action="ExportarCsv" class="btn btn-outline-secondary d-inline-flex align-items-center gap-1" title="Descargar reporte en CSV">
+                    <i class="bi bi-filetype-csv"></i> CSV
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Tabla de Resultados -->
+<div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Usuario (Login)</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="2" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-2 text-opacity-25"></i>
+                                No existen registros que coincidan con la búsqueda.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-semibold text-dark">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="avatar-circle">
+                                            @item.Login.Substring(0, Math.Min(2, item.Login.Length)).ToUpper()
+                                        </div>
+                                        <span>@item.Login</span>
+                                    </div>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="d-inline-flex gap-2">
+                                        <!-- Botón Restablecer Password por Admin -->
+                                        <form asp-action="RestablecerPasswordAdmin" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro de restablecer la contraseña del usuario \'@item.Login\' a la contraseña temporal \'Temp1234\'?');">
+                                            <input type="hidden" name="usuarioId" value="@item.Id" />
+                                            <button type="submit" class="btn btn-outline-info btn-sm d-inline-flex align-items-center gap-1" title="Restablecer Contraseña">
+                                                <i class="bi bi-key-fill"></i> <span class="d-none d-lg-inline">Restablecer Pwd</span>
+                                            </button>
+                                        </form>
+
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm d-inline-flex align-items-center gap-1" title="Editar">
+                                            <i class="bi bi-pencil-square"></i> <span class="d-none d-lg-inline">Editar</span>
+                                        </a>
+
+                                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger btn-sm d-inline-flex align-items-center gap-1" title="Eliminar">
+                                            <i class="bi bi-trash"></i> <span class="d-none d-lg-inline">Eliminar</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .avatar-circle {
+        width: 32px;
+        height: 32px;
+        background-color: rgba(79, 70, 229, 0.1);
+        color: var(--color-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+</style>

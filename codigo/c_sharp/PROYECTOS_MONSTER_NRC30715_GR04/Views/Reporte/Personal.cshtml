@@ -1,0 +1,161 @@
+@{
+    ViewData["Title"] = "Reportes de Personal";
+}
+
+<div class="mb-4">
+    <h3 class="fw-bold text-dark m-0">Centro de Reportes: Personal</h3>
+    <p class="text-muted small">Generación y exportación de información administrativa en múltiples formatos.</p>
+</div>
+
+<div class="row g-4">
+    <!-- Empleados Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3 fs-4">
+                            <i class="bi bi-people-fill"></i>
+                        </div>
+                        <h5 class="fw-bold m-0">Empleados</h5>
+                    </div>
+                    <p class="text-muted small">Listado completo de personal con sus datos de contacto, departamento, cargo, salario y estado actual.</p>
+                </div>
+                <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="DescargarEmpleadoPdf" class="btn btn-sm btn-outline-danger flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                    </a>
+                    <a asp-action="DescargarEmpleadoExcel" class="btn btn-sm btn-outline-success flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-excel-fill"></i> Excel
+                    </a>
+                    <a asp-action="DescargarEmpleadoCsv" class="btn btn-sm btn-outline-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-filetype-csv"></i> CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Departamentos Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3 fs-4">
+                            <i class="bi bi-building"></i>
+                        </div>
+                        <h5 class="fw-bold m-0">Departamentos</h5>
+                    </div>
+                    <p class="text-muted small">Estructura organizativa indicando las distintas áreas corporativas y la cantidad total de puestos registrados por área.</p>
+                </div>
+                <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="DescargarDepartamentoPdf" class="btn btn-sm btn-outline-danger flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                    </a>
+                    <a asp-action="DescargarDepartamentoExcel" class="btn btn-sm btn-outline-success flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-excel-fill"></i> Excel
+                    </a>
+                    <a asp-action="DescargarDepartamentoCsv" class="btn btn-sm btn-outline-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-filetype-csv"></i> CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cargos Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3 fs-4">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <h5 class="fw-bold m-0">Cargos</h5>
+                    </div>
+                    <p class="text-muted small">Cargos funcionales con asignación de departamento respectivo y conteo consolidado de empleados en cada uno.</p>
+                </div>
+                <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="DescargarCargoPdf" class="btn btn-sm btn-outline-danger flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                    </a>
+                    <a asp-action="DescargarCargoExcel" class="btn btn-sm btn-outline-success flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-excel-fill"></i> Excel
+                    </a>
+                    <a asp-action="DescargarCargoCsv" class="btn btn-sm btn-outline-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-filetype-csv"></i> CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sexos Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3 fs-4">
+                            <i class="bi bi-gender-ambiguous"></i>
+                        </div>
+                        <h5 class="fw-bold m-0">Sexos</h5>
+                    </div>
+                    <p class="text-muted small">Reporte demográfico basado en el sexo registrado de los empleados y su distribución de volumen laboral.</p>
+                </div>
+                <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="DescargarSexoPdf" class="btn btn-sm btn-outline-danger flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                    </a>
+                    <a asp-action="DescargarSexoExcel" class="btn btn-sm btn-outline-success flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-excel-fill"></i> Excel
+                    </a>
+                    <a asp-action="DescargarSexoCsv" class="btn btn-sm btn-outline-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-filetype-csv"></i> CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Estados Civiles Card -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0 rounded-4 transition-card">
+            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                <div>
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-3 p-3 fs-4">
+                            <i class="bi bi-heart-fill text-danger bg-danger bg-opacity-10 p-0 rounded-0 fs-4"></i>
+                            <i class="bi bi-heart"></i>
+                        </div>
+                        <h5 class="fw-bold m-0">Estados Civiles</h5>
+                    </div>
+                    <p class="text-muted small">Distribución de empleados clasificados por su estado civil registrado en el sistema.</p>
+                </div>
+                <div class="d-flex gap-2 mt-4 pt-3 border-top">
+                    <a asp-action="DescargarEstadoCivilPdf" class="btn btn-sm btn-outline-danger flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                    </a>
+                    <a asp-action="DescargarEstadoCivilExcel" class="btn btn-sm btn-outline-success flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-file-earmark-excel-fill"></i> Excel
+                    </a>
+                    <a asp-action="DescargarEstadoCivilCsv" class="btn btn-sm btn-outline-secondary flex-grow-1 d-flex align-items-center justify-content-center gap-1">
+                        <i class="bi bi-filetype-csv"></i> CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transition-card {
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .transition-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important;
+    }
+</style>
