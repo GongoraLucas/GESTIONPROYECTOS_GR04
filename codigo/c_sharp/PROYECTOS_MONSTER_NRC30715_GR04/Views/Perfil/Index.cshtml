@@ -1,0 +1,133 @@
+@model IEnumerable<PROYECTOS_MONSTER_NRC30715_GR04.Models.Entities.Perfil>
+
+@{
+    ViewData["Title"] = "Perfiles de Seguridad";
+}
+
+<div class="container-fluid px-4 py-4">
+    <!-- Header Page -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold text-dark m-0" style="font-family: 'Outfit', sans-serif;">Perfiles de Seguridad</h3>
+            <p class="text-secondary m-0 fs-6">Administra los roles, asocia usuarios y asigna permisos jerárquicos.</p>
+        </div>
+        @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "PER_CRE"))
+        {
+            <a asp-action="Create" class="btn text-white px-3 py-2 fw-semibold" style="background-color: #635bff; border-radius: 6px;">
+                <i class="bi bi-plus-lg me-1"></i> Nuevo Perfil
+            </a>
+        }
+    </div>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 4px solid #10b981 !important;">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill fs-5 me-2 text-success"></i>
+                <div>@TempData["SuccessMessage"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show border-0 shadow-sm mb-4" role="alert" style="border-left: 4px solid #ef4444 !important;">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill fs-5 me-2 text-danger"></i>
+                <div>@TempData["ErrorMessage"]</div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Table Card -->
+    <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" style="font-family: 'Inter', sans-serif;">
+                <thead class="bg-light text-uppercase text-secondary" style="font-size: 0.75rem; letter-spacing: 0.5px;">
+                    <tr>
+                        <th class="py-3 px-4" style="width: 15%;">Código</th>
+                        <th class="py-3 px-3" style="width: 30%;">Descripción</th>
+                        <th class="py-3 px-3" style="width: 25%;">Observación</th>
+                        <th class="py-3 px-4 text-end" style="width: 30%;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 0.9rem;">
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-secondary">
+                                <i class="bi bi-shield-slash fs-1 d-block mb-2 text-muted"></i>
+                                No se encontraron perfiles de seguridad registrados.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td class="py-3 px-4">
+                                    <span class="badge bg-light text-dark border px-2.5 py-1.5 fw-semibold font-monospace" style="font-size: 0.8rem; border-color: #e2e8f0 !important;">
+                                        @item.Codigo
+                                    </span>
+                                </td>
+                                <td class="py-3 px-3 fw-medium text-dark">
+                                    @item.Descripcion
+                                </td>
+                                <td class="py-3 px-3 text-secondary text-truncate" style="max-width: 250px;">
+                                    @(string.IsNullOrEmpty(item.Observacion) ? "-" : item.Observacion)
+                                </td>
+                                <td class="py-3 px-4 text-end">
+                                    <div class="d-inline-flex gap-1.5">
+                                        <!-- Edit Link -->
+                                        @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "PER_UPD"))
+                                        {
+                                            <a asp-action="Edit" asp-route-id="@item.Codigo" class="btn btn-sm btn-outline-secondary border-0" title="Editar detalles">
+                                                <i class="bi bi-pencil"></i> <span class="d-none d-md-inline ms-1">Editar</span>
+                                            </a>
+                                        }
+
+                                        <!-- Assign Users -->
+                                        @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "PER_ASG"))
+                                        {
+                                            <a asp-controller="Seguridad" asp-action="AsignarUsuarioPerfil" asp-route-perfilCodigo="@item.Codigo" class="btn btn-sm btn-outline-primary border-0" title="Asignar Usuarios">
+                                                <i class="bi bi-people"></i> <span class="d-none d-md-inline ms-1">Usuarios</span>
+                                            </a>
+                                        }
+
+                                        <!-- Delete Link -->
+                                        @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "PER_DEL"))
+                                        {
+                                            <form asp-action="Delete" asp-route-id="@item.Codigo" method="post" class="d-inline" onsubmit="return confirm('¿Está seguro de eliminar el perfil @item.Codigo? Esta acción es irreversible.');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger border-0" title="Eliminar perfil">
+                                                    <i class="bi bi-trash"></i> <span class="d-none d-md-inline ms-1">Eliminar</span>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .gap-1\.5 {
+        gap: 0.35rem;
+    }
+    .px-2\.5 {
+        padding-left: 0.65rem;
+        padding-right: 0.65rem;
+    }
+    .py-1\.5 {
+        padding-top: 0.35rem;
+        padding-bottom: 0.35rem;
+    }
+</style>

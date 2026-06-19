@@ -19,6 +19,236 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/PROYECTOS_MONSTER_NRC30715_GR04.styles.css" asp-append-version="true" />
+    
+    <style>
+        /* STRIPE LAYOUT SYSTEM */
+        body {
+            background-color: #ffffff !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        }
+
+        /* TOP BANNER */
+        .stripe-banner {
+            height: 36px;
+            background: #0a2540;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            font-size: 13px;
+            z-index: 1100;
+            position: relative;
+        }
+        .stripe-banner .sandbox-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+        .stripe-banner .sandbox-tag .info-icon {
+            width: 14px;
+            height: 14px;
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        .stripe-banner .center-msg {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255,255,255,0.85);
+            white-space: nowrap;
+        }
+        .stripe-banner .live-btn {
+            margin-left: auto;
+            background: #635bff;
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.15s ease;
+        }
+        .stripe-banner .live-btn:hover { background: #534aeb; }
+
+        /* LAYOUT CONTAINER */
+        .app-stripe {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR STRIPE OVERRIDES */
+        .app-sidebar {
+            width: 260px !important;
+            background-color: #ffffff !important;
+            border-right: 1px solid #e3e8ee !important;
+            padding: 16px 12px !important;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            position: static !important;
+            transform: none !important;
+        }
+
+        /* TOPBAR STRIPE */
+        .topbar-stripe {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 20px 32px 10px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .search-box-stripe {
+            flex: 1;
+            max-width: 360px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f7f9fc;
+            border: 1px solid #e3e8ee;
+            border-radius: 8px;
+            padding: 8px 12px;
+            color: #8792a2;
+            font-size: 14px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+        }
+        .topbar-stripe .right-icons {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #4f566b;
+        }
+        .topbar-stripe .right-icons .icon-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            color: #4f566b;
+            text-decoration: none;
+            transition: background 0.15s ease;
+        }
+        .topbar-stripe .right-icons .icon-btn:hover { background: #f1f5f9; }
+        .topbar-stripe .plus-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #635bff;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.15s ease;
+        }
+        .topbar-stripe .plus-btn:hover { background: #4f46e5; }
+        .topbar-stripe .setup-guide {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1f36;
+        }
+        .topbar-stripe .setup-guide .ring {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #635bff;
+            border-top-color: #e3e8ee;
+        }
+
+        /* ACCOUNT SWITCH */
+        .account-switch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 8px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            text-decoration: none;
+        }
+        .account-switch:hover { background: #f7f9fc; }
+        .account-switch .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            background: #0a2540;
+            color: #fff;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .account-switch .labels { line-height: 1.3; }
+        .account-switch .labels .main { font-size: 13px; font-weight: 600; color: #1a1f36; }
+        .account-switch .labels .sub { font-size: 12px; color: #697386; }
+        .account-switch .chevron { margin-left: auto; color: #697386; font-size: 12px; }
+
+        /* Sidebar tree overrides */
+        .sidebar-tree {
+            padding: 0 !important;
+        }
+        .tree-root {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+        .tree-item {
+            margin-bottom: 2px;
+        }
+        .tree-header, .tree-link {
+            display: flex;
+            align-items: center;
+            padding: 8px 10px !important;
+            border-radius: 6px !important;
+            font-size: 14px !important;
+            color: #4f566b !important;
+            font-weight: 500 !important;
+            text-decoration: none !important;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            background: transparent !important;
+        }
+        .tree-header:hover, .tree-link:hover {
+            background-color: #f7f9fc !important;
+            color: #1a1f36 !important;
+        }
+        .tree-link.active {
+            color: #635bff !important;
+            background-color: #f5f3ff !important;
+            font-weight: 600 !important;
+        }
+        .tree-submenu {
+            list-style: none;
+            padding-left: 14px !important;
+            margin-top: 2px;
+            margin-bottom: 4px;
+            border-left: 1px solid #e3e8ee;
+        }
+        .tree-header .toggle-icon {
+            font-size: 11px !important;
+            color: #a3acb9 !important;
+        }
+        .tree-header span {
+            font-size: 13px;
+        }
+        
+        .main-stripe {
+            background-color: #ffffff;
+        }
+    </style>
 </head>
 <body>
 
@@ -29,208 +259,216 @@
 
     @if (User.Identity?.IsAuthenticated ?? false)
     {
-        <div class="app-layout">
-            <!-- Top Premium Header -->
-            <header class="app-navbar d-flex align-items-center justify-content-between px-4">
-                <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-link text-white p-0 d-md-none fs-4" id="sidebar-toggle">
-                        <i class="bi bi-list"></i>
-                    </button>
-                    <a class="navbar-brand fw-bold fs-4 text-white d-flex align-items-center gap-2" asp-controller="Home" asp-action="Index">
-                        <span class="brand-gradient">Monster Projects</span>
-                    </a>
-                </div>
-
-                <div class="d-flex align-items-center gap-3">
-                    <span class="user-pill d-none d-sm-inline-flex align-items-center gap-2">
-                        <i class="bi bi-person-circle text-primary"></i>
-                        <span class="fw-semibold">@User.Identity.Name</span>
-                    </span>
-
-                    @if (User.HasClaim(c => c.Type == "PRIMER_INGRESO" && c.Value == "True"))
-                    {
-                        <a asp-controller="Account" asp-action="CambiarPassword" class="btn btn-outline-warning btn-sm d-flex align-items-center gap-1">
-                            <i class="bi bi-shield-lock-fill"></i> Contraseña
-                        </a>
-                    }
-
-                    <a asp-controller="Account" asp-action="Logout" class="btn btn-logout btn-sm d-flex align-items-center gap-1">
-                        <i class="bi bi-box-arrow-right"></i> Salir
-                    </a>
-                </div>
-            </header>
-
-            <div class="app-workspace d-flex">
-                <!-- Sidebar Treeview Panel -->
-                <aside class="app-sidebar" id="sidebar-panel">
-                    <div class="sidebar-header px-4 py-3 border-bottom border-secondary border-opacity-10">
-                        <small class="text-uppercase tracking-wider text-muted fw-bold">Menú de Navegación</small>
+        <div class="app-stripe">
+            <!-- SIDEBAR -->
+            <aside class="app-sidebar" id="sidebar-panel">
+                <a class="account-switch" asp-controller="Home" asp-action="Index">
+                    <div class="avatar">M</div>
+                    <div class="labels">
+                        <div class="main">Monster Projects</div>
+                        <div class="sub">@User.Identity.Name</div>
                     </div>
-                    <div class="sidebar-tree py-3">
-                        <ul class="tree-root">
-                            <!-- Dashboard -->
-                            <li class="tree-item">
-                                <a class="tree-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">
-                                    <i class="bi bi-speedometer2 text-info me-2"></i> Dashboard
-                                </a>
-                            </li>
+                    <span class="chevron">&#9662;</span>
+                </a>
 
-                            <!-- 01. Personal Folder -->
-                            @if (User.Claims.Any(x => x.Type == "OPCION" && (x.Value == "EMP" || x.Value == "PRO" || x.Value == "REP")))
-                            {
-                                <li class="tree-item has-children">
-                                    <div class="tree-header">
-                                        <i class="bi bi-folder-fill text-warning me-2"></i>
-                                        <span>01. Personal</span>
-                                        <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
-                                    </div>
-                                    <ul class="tree-submenu">
-                                        @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "EMP"))
-                                        {
-                                            <li class="tree-item has-children">
-                                                <div class="tree-header">
-                                                    <i class="bi bi-folder-fill text-warning me-2"></i>
-                                                    <span>01.01. Gestión tareas básicas Personal</span>
-                                                    <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
-                                                </div>
-                                                <ul class="tree-submenu">
-                                                    <li class="tree-item">
-                                                        <a class="tree-link @(currentController == "Departamento" ? "active" : "")" asp-controller="Departamento" asp-action="Index">
-                                                            <i class="bi bi-building me-2 text-primary"></i> 01.01.01. Departamento
-                                                        </a>
-                                                    </li>
-                                                    <li class="tree-item">
-                                                        <a class="tree-link @(currentController == "Cargo" ? "active" : "")" asp-controller="Cargo" asp-action="Index">
-                                                            <i class="bi bi-briefcase me-2 text-primary"></i> 01.01.02. Cargo
-                                                        </a>
-                                                    </li>
-                                                    <li class="tree-item">
-                                                        <a class="tree-link @(currentController == "Empleado" ? "active" : "")" asp-controller="Empleado" asp-action="Index">
-                                                            <i class="bi bi-people me-2 text-primary"></i> 01.01.03. Empleado
-                                                        </a>
-                                                    </li>
-                                                    <li class="tree-item">
-                                                        <a class="tree-link @(currentController == "Sexo" ? "active" : "")" asp-controller="Sexo" asp-action="Index">
-                                                            <i class="bi bi-gender-ambiguous me-2 text-primary"></i> 01.01.04. Sexo
-                                                        </a>
-                                                    </li>
-                                                    <li class="tree-item">
-                                                        <a class="tree-link @(currentController == "EstadoCivil" ? "active" : "")" asp-controller="EstadoCivil" asp-action="Index">
-                                                            <i class="bi bi-heart me-2 text-primary"></i> 01.01.05. Estado Civil
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        }
+                <div class="sidebar-tree py-2">
+                    <ul class="tree-root">
+                        <!-- Dashboard -->
+                        <li class="tree-item">
+                            <a class="tree-link @(currentController == "Home" && currentAction == "Index" ? "active" : "")" asp-controller="Home" asp-action="Index">
+                                <i class="bi bi-house-door me-2"></i> Home
+                            </a>
+                        </li>
 
-                                        <!-- 01.02. Procesos (Mocked) -->
+                        <!-- 01. Personal Folder -->
+                        @if (User.Claims.Any(x => x.Type == "OPCION" && (x.Value.StartsWith("DEP_") || x.Value.StartsWith("CAR_") || x.Value.StartsWith("EMP_") || x.Value.StartsWith("SEX_") || x.Value.StartsWith("ECI_") || x.Value.StartsWith("REP_"))))
+                        {
+                            <li class="tree-item has-children">
+                                <div class="tree-header">
+                                    <i class="bi bi-folder me-2"></i>
+                                    <span>01. Personal</span>
+                                    <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                </div>
+                                <ul class="tree-submenu">
+                                    @if (User.Claims.Any(x => x.Type == "OPCION" && (x.Value == "DEP_LIS" || x.Value == "CAR_LIS" || x.Value == "EMP_LIS" || x.Value == "SEX_LIS" || x.Value == "ECI_LIS")))
+                                    {
                                         <li class="tree-item has-children">
-                                            <div class="tree-header text-muted opacity-75">
-                                                <i class="bi bi-folder text-muted me-2"></i>
-                                                <span>01.02. Procesos</span>
+                                            <div class="tree-header">
+                                                <i class="bi bi-folder me-2"></i>
+                                                <span>01.01. Personal</span>
                                                 <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
                                             </div>
                                             <ul class="tree-submenu">
-                                                <li class="tree-item"><span class="tree-link disabled"><i class="bi bi-slash-circle me-2"></i>No implementado</span></li>
+                                                @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "DEP_LIS"))
+                                                {
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Departamento" ? "active" : "")" asp-controller="Departamento" asp-action="Index">
+                                                            <i class="bi bi-building me-2"></i> Departamento
+                                                        </a>
+                                                    </li>
+                                                }
+                                                @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "CAR_LIS"))
+                                                {
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Cargo" ? "active" : "")" asp-controller="Cargo" asp-action="Index">
+                                                            <i class="bi bi-briefcase me-2"></i> Cargo
+                                                        </a>
+                                                    </li>
+                                                }
+                                                @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "EMP_LIS"))
+                                                {
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Empleado" ? "active" : "")" asp-controller="Empleado" asp-action="Index">
+                                                            <i class="bi bi-people me-2"></i> Empleado
+                                                        </a>
+                                                    </li>
+                                                }
+                                                @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "SEX_LIS"))
+                                                {
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Sexo" ? "active" : "")" asp-controller="Sexo" asp-action="Index">
+                                                            <i class="bi bi-gender-ambiguous me-2"></i> Sexo
+                                                        </a>
+                                                    </li>
+                                                }
+                                                @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "ECI_LIS"))
+                                                {
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "EstadoCivil" ? "active" : "")" asp-controller="EstadoCivil" asp-action="Index">
+                                                            <i class="bi bi-heart me-2"></i> Estado Civil
+                                                        </a>
+                                                    </li>
+                                                }
                                             </ul>
                                         </li>
+                                    }
 
-                                        <!-- 01.03. Reportes -->
+                                    <!-- 01.03. Reportes -->
+                                    @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value.StartsWith("REP_")))
+                                    {
                                         <li class="tree-item has-children">
                                             <div class="tree-header">
-                                                <i class="bi bi-folder-fill text-warning me-2"></i>
+                                                <i class="bi bi-folder me-2"></i>
                                                 <span>01.03. Reportes</span>
                                                 <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
                                             </div>
                                             <ul class="tree-submenu">
                                                 <li class="tree-item">
                                                     <a class="tree-link @(currentController == "Reporte" && currentAction == "Personal" ? "active" : "")" asp-controller="Reporte" asp-action="Personal">
-                                                        <i class="bi bi-file-earmark-bar-graph me-2 text-primary"></i> 01.03.01. Centro de Reportes
+                                                        <i class="bi bi-file-earmark-bar-graph me-2"></i> Centro Reportes
                                                     </a>
                                                 </li>
                                             </ul>
                                         </li>
-                                    </ul>
-                                </li>
-                            }
+                                    }
+                                </ul>
+                            </li>
+                        }
 
-                            <!-- 02. Seguridades Folder -->
-                            @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "USR"))
-                            {
-                                <li class="tree-item has-children">
-                                    <div class="tree-header">
-                                        <i class="bi bi-folder-fill text-warning me-2"></i>
-                                        <span>02. Seguridades</span>
-                                        <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
-                                    </div>
-                                    <ul class="tree-submenu">
+                        <!-- 02. Seguridades Folder -->
+                        @if (User.Claims.Any(x => x.Type == "OPCION" && (x.Value.StartsWith("USR_") || x.Value.StartsWith("PER_"))))
+                        {
+                            <li class="tree-item has-children">
+                                <div class="tree-header">
+                                    <i class="bi bi-folder me-2"></i>
+                                    <span>02. Seguridades</span>
+                                    <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
+                                </div>
+                                <ul class="tree-submenu">
+                                    @if (User.Claims.Any(x => x.Type == "OPCION" && (x.Value == "USR_LIS" || x.Value == "PER_LIS" || x.Value == "PER_ASG")))
+                                    {
                                         <li class="tree-item has-children">
                                             <div class="tree-header">
-                                                <i class="bi bi-folder-fill text-warning me-2"></i>
-                                                <span>02.01. Gestión tareas básicas Seguridad</span>
+                                                <i class="bi bi-folder me-2"></i>
+                                                <span>02.01. Seguridad</span>
                                                 <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
                                             </div>
                                             <ul class="tree-submenu">
-                                                <li class="tree-item">
-                                                    <a class="tree-link @(currentController == "Usuario" ? "active" : "")" asp-controller="Usuario" asp-action="Index">
-                                                        <i class="bi bi-person-gear me-2 text-danger"></i> 02.01.01. Usuario
-                                                    </a>
-                                                </li>
-                                                <li class="tree-item">
-                                                    <a class="tree-link @(currentController == "Seguridad" && currentAction == "AsignarUsuarioPerfil" ? "active" : "")" asp-controller="Seguridad" asp-action="AsignarUsuarioPerfil">
-                                                        <i class="bi bi-shield-check me-2 text-danger"></i> 02.01.02. Perfil
-                                                    </a>
-                                                </li>
-                                                <li class="tree-item">
-                                                    <a class="tree-link @(currentController == "Seguridad" && currentAction == "AsignarOpcionPerfil" ? "active" : "")" asp-controller="Seguridad" asp-action="AsignarOpcionPerfil">
-                                                        <i class="bi bi-list-check me-2 text-danger"></i> 02.01.03. Opción
-                                                    </a>
-                                                </li>
-                                                <li class="tree-item">
-                                                    <span class="tree-link disabled">
-                                                        <i class="bi bi-slash-circle me-2"></i> 02.01.04. Sistema
-                                                    </span>
-                                                </li>
+                                                @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "USR_LIS"))
+                                                {
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Usuario" ? "active" : "")" asp-controller="Usuario" asp-action="Index">
+                                                            <i class="bi bi-person-gear me-2"></i> Usuario
+                                                        </a>
+                                                    </li>
+                                                }
+                                                @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "PER_LIS"))
+                                                {
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Seguridad" && currentAction == "AsignarUsuarioPerfil" ? "active" : "")" asp-controller="Seguridad" asp-action="AsignarUsuarioPerfil">
+                                                            <i class="bi bi-shield-check me-2"></i> Perfil
+                                                        </a>
+                                                    </li>
+                                                }
+                                                @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "PER_ASG"))
+                                                {
+                                                    <li class="tree-item">
+                                                        <a class="tree-link @(currentController == "Seguridad" && currentAction == "AsignarOpcionPerfil" ? "active" : "")" asp-controller="Seguridad" asp-action="AsignarOpcionPerfil">
+                                                            <i class="bi bi-list-check me-2"></i> Opción
+                                                        </a>
+                                                    </li>
+                                                }
                                             </ul>
                                         </li>
+                                    }
 
-                                        <!-- 02.02. Procesos (Mocked) -->
-                                        <li class="tree-item has-children">
-                                            <div class="tree-header text-muted opacity-75">
-                                                <i class="bi bi-folder text-muted me-2"></i>
-                                                <span>02.02. Procesos</span>
-                                                <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
-                                            </div>
-                                            <ul class="tree-submenu">
-                                                <li class="tree-item"><span class="tree-link disabled"><i class="bi bi-slash-circle me-2"></i>No implementado</span></li>
-                                            </ul>
-                                        </li>
-
-                                        <!-- 02.03. Reportes -->
+                                    <!-- 02.03. Reportes -->
+                                    @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "USR_LIS"))
+                                    {
                                         <li class="tree-item has-children">
                                             <div class="tree-header">
-                                                <i class="bi bi-folder-fill text-warning me-2"></i>
+                                                <i class="bi bi-folder me-2"></i>
                                                 <span>02.03. Reportes</span>
                                                 <i class="bi bi-chevron-right ms-auto toggle-icon"></i>
                                             </div>
                                             <ul class="tree-submenu">
                                                 <li class="tree-item">
                                                     <a class="tree-link @(currentController == "Reporte" && currentAction == "Seguridad" ? "active" : "")" asp-controller="Reporte" asp-action="Seguridad">
-                                                        <i class="bi bi-shield-fill-check me-2 text-danger"></i> 02.03.01. Reporte de Usuarios
+                                                        <i class="bi bi-shield-fill-check me-2"></i> Reporte Usuarios
                                                     </a>
                                                 </li>
                                             </ul>
                                         </li>
-                                    </ul>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </aside>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                    </ul>
+                </div>
 
-                <!-- Premium Content Area -->
-                <main class="app-content flex-grow-1 p-4 bg-light">
-                    <div class="content-container">
+                <!-- Footer with Logout -->
+                <div class="mt-auto pt-3 border-top">
+                    <a asp-controller="Account" asp-action="Logout" class="tree-link text-danger">
+                        <i class="bi bi-box-arrow-right me-2"></i> Salir
+                    </a>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT AREA -->
+            <div class="main-stripe flex-grow-1">
+                <!-- TOPBAR -->
+                <div class="topbar-stripe">
+                    <div class="search-box-stripe">
+                        <i class="bi bi-search"></i> Buscar...
+                    </div>
+                    <div class="right-icons">
+                        <a class="icon-btn" href="#" title="Ayuda"><i class="bi bi-question-circle"></i></a>
+                        <a class="icon-btn" href="#" title="Notificaciones"><i class="bi bi-bell"></i></a>
+                        <a class="icon-btn" href="#" title="Configuración"><i class="bi bi-gear"></i></a>
+                        @if (User.Claims.Any(x => x.Type == "OPCION" && x.Value == "EMP_CRE"))
+                        {
+                            <a class="plus-btn" asp-controller="Empleado" asp-action="Create" title="Nuevo Empleado">+</a>
+                        }
+                        else
+                        {
+                            <span class="plus-btn">+</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- CONTENT -->
+                <main class="p-4" style="background-color: #f7f9fc; min-height: calc(100vh - 73px);">
+                    <div class="container-fluid">
                         <partial name="_Alerts" />
                         @RenderBody()
                     </div>
@@ -240,15 +478,69 @@
     }
     else
     {
-        <!-- Login/Forgot Password Premium Background Layout -->
-        <div class="auth-layout d-flex align-items-center justify-content-center min-vh-100 px-3">
-            <div class="auth-card shadow-lg rounded-4 p-4 p-sm-5 bg-white">
-                <div class="text-center mb-4">
-                    <h2 class="fw-bold brand-gradient display-6">Monster Projects</h2>
-                    <p class="text-muted">Acceso al Sistema Integrado</p>
+        <!-- Split-screen Login Layout -->
+        <div class="container-fluid p-0 min-vh-100 overflow-x-hidden" style="background-color: #ffffff;">
+            <div class="row g-0 min-vh-100">
+                <!-- Left Side: Form Panel -->
+                <div class="col-lg-5 col-md-6 d-flex flex-column justify-content-between p-4 p-md-5 bg-white min-vh-100">
+                    <!-- Top Logo / Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fs-4 fw-bold text-dark" style="letter-spacing: -0.5px; font-family: 'Outfit', sans-serif;">
+                                <span style="color: #635bff;">Monster</span><span style="color: #1a1f36;">Projects</span>
+                            </span>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-sm btn-light border rounded-pill px-3 dropdown-toggle" type="button" style="font-size: 0.85rem; background-color: #ffffff;">
+                                🌐 Es
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Center Form Content -->
+                    <div class="mx-auto w-100" style="max-width: 400px; margin-top: auto; margin-bottom: auto;">
+                        <partial name="_Alerts" />
+                        @RenderBody()
+                    </div>
+
+                    <!-- Bottom Footer -->
+                    <div class="text-center mt-5 pt-3">
+                        <p class="text-muted small mb-2" style="font-size: 0.825rem;">
+                            ¿Necesitas ayuda? Contáctanos a 
+                            <a href="mailto:support@monsterprojects.com" class="text-success text-decoration-none fw-semibold" style="color: #16a34a !important;">support@monsterprojects.com</a>
+                        </p>
+                        <p class="text-muted" style="font-size: 11px;">&copy; @DateTime.Now.Year Monster Projects. Todos los derechos reservados.</p>
+                    </div>
                 </div>
-                <partial name="_Alerts" />
-                @RenderBody()
+
+                <!-- Right Side: Image with Glassmorphism Overlay -->
+                <div class="col-lg-7 col-md-6 d-none d-md-flex align-items-center justify-content-center p-5 position-relative" 
+                     style="background: url('/images/login-bg.png') no-repeat center center; background-size: cover;">
+                    <!-- Overlay dark color layer to improve readability -->
+                    <div class="position-absolute inset-0" style="top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(10, 37, 64, 0.15);"></div>
+                    
+                    <!-- Glassmorphism Card -->
+                    <div class="card border-0 shadow-lg rounded-4 p-4 p-lg-5 text-white position-relative" 
+                         style="background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.2); max-width: 500px;">
+                        
+                        <!-- Circular loading icon/accent -->
+                        <div class="mb-4">
+                            <div class="spinner-border text-white opacity-75" style="width: 2.2rem; height: 2.2rem; border-width: 3px;" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+
+                        <!-- Big Tagline -->
+                        <h2 class="fw-bold mb-3" style="font-family: 'Outfit', sans-serif; font-size: 1.85rem; line-height: 1.3;">
+                            La gestión de personal y proyectos simplificada y de alto rendimiento.
+                        </h2>
+                        
+                        <!-- Subtitle text -->
+                        <p class="mb-0 opacity-75 small" style="line-height: 1.5; font-size: 0.9rem;">
+                            Nuestra plataforma integrada le permite administrar de forma rápida, segura y centralizada toda la estructura organizacional, cargos, empleados y permisos de su empresa.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     }

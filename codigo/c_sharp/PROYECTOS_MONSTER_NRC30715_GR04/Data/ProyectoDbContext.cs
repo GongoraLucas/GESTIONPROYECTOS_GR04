@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PROYECTOS_MONSTER_NRC30715_GR04.Models.Entities;
 
 namespace PROYECTOS_MONSTER_NRC30715_GR04.Data
@@ -22,7 +22,13 @@ namespace PROYECTOS_MONSTER_NRC30715_GR04.Data
 
         public DbSet<Perfil> Perfiles { get; set; }
 
+        public DbSet<Discapacidad> Discapacidades { get; set; }
+
+        public DbSet<Instruccion> Instrucciones { get; set; }
+
         public DbSet<Empleado> Empleados { get; set; }
+
+        public DbSet<Familiar> Familiares { get; set; }
 
         public DbSet<Cargo> Cargos { get; set; }
 
@@ -71,6 +77,16 @@ namespace PROYECTOS_MONSTER_NRC30715_GR04.Data
               .HasOne(e => e.Cargo)
               .WithMany(c => c.Empleados)
               .HasForeignKey(e => new {e.DepartamentoCodigo, e.CargoCodigo});
+
+            modelBuilder.Entity<Empleado>()
+              .HasOne(e => e.Discapacidad)
+              .WithMany(d => d.Empleados)
+              .HasForeignKey(e => e.DiscapacidadCodigo);
+
+            modelBuilder.Entity<Empleado>()
+              .HasOne(e => e.Instruccion)
+              .WithMany(i => i.Empleados)
+              .HasForeignKey(e => e.InstruccionCodigo);
 
             modelBuilder.Entity<Usuario>()
               .HasOne(u => u.Estado)
@@ -122,6 +138,12 @@ namespace PROYECTOS_MONSTER_NRC30715_GR04.Data
               .HasOne(o => o.Sistema)
               .WithMany(s => s.Opciones)
               .HasForeignKey(o => o.SistemaCodigo);
+
+            modelBuilder.Entity<Familiar>()
+              .HasOne(f => f.Empleado)
+              .WithMany(e => e.Familiares)
+              .HasForeignKey(f => f.EmpleadoCodigo)
+              .OnDelete(DeleteBehavior.Restrict);
 
         }
 

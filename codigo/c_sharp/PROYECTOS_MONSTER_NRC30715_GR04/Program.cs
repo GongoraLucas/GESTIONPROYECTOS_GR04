@@ -26,33 +26,28 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(
         "USR",
-        policy => policy.RequireClaim(
-            "OPCION",
-            "USR"));
+        policy => policy.RequireAssertion(ctx =>
+            ctx.User.HasClaim(c => c.Type == "OPCION" && (c.Value.StartsWith("USR_") || c.Value.StartsWith("PER_") || c.Value == "USR" || c.Value == "PER"))));
 
     options.AddPolicy(
         "EMP",
-        policy => policy.RequireClaim(
-            "OPCION",
-            "EMP"));
+        policy => policy.RequireAssertion(ctx =>
+            ctx.User.HasClaim(c => c.Type == "OPCION" && (c.Value.StartsWith("DEP_") || c.Value.StartsWith("CAR_") || c.Value.StartsWith("EMP_") || c.Value.StartsWith("SEX_") || c.Value.StartsWith("ECI_") || c.Value == "EMP"))));
 
     options.AddPolicy(
         "PRO",
-        policy => policy.RequireClaim(
-            "OPCION",
-            "PRO"));
+        policy => policy.RequireAssertion(ctx =>
+            ctx.User.HasClaim(c => c.Type == "OPCION" && (c.Value.StartsWith("PRO_") || c.Value == "PRO"))));
 
     options.AddPolicy(
         "REP",
-        policy => policy.RequireClaim(
-            "OPCION",
-            "REP"));
+        policy => policy.RequireAssertion(ctx =>
+            ctx.User.HasClaim(c => c.Type == "OPCION" && (c.Value.StartsWith("REP_") || c.Value == "REP"))));
 
     options.AddPolicy(
         "PER",
-        policy => policy.RequireClaim(
-            "OPCION",
-            "PER"));
+        policy => policy.RequireAssertion(ctx =>
+            ctx.User.HasClaim(c => c.Type == "OPCION" && (c.Value.StartsWith("PER_") || c.Value == "PER"))));
 });
 
 builder.Services.AddDbContext<ProyectoDbContext>(options =>

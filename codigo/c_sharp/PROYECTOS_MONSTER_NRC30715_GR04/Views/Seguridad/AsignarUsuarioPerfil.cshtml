@@ -1,151 +1,413 @@
-﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.AsignarPerfilViewModel
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.AsignarPerfilViewModel
 
 @{
     ViewData["Title"] = "Asignar Usuarios a Perfil";
 }
 
-<div class="container mt-4">
+<!-- Banner superior estilo Mockup -->
+<div class="p-4 text-white rounded-4 shadow-sm mb-4 d-flex align-items-center gap-3" 
+     style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);">
+    <div class="bg-white bg-opacity-10 p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+        <i class="bi bi-shield-lock-fill" style="font-size: 1.8rem;"></i>
+    </div>
+    <div>
+        <h2 class="fw-bold m-0" style="letter-spacing: -0.5px;">Asignación de Usuarios a Perfil</h2>
+        <p class="m-0 text-white-50 mt-1" style="font-size: 0.95rem;">Gestione los accesos y perfiles de los usuarios del sistema de forma interactiva y centralizada.</p>
+    </div>
+</div>
 
-    <div class="card shadow">
+<!-- Card principal -->
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body p-4">
+        <form method="get" id="perfilForm">
+            <div class="row align-items-end">
+                <div class="col-md-6 col-lg-5">
+                    <label class="form-label fw-bold text-secondary">
+                        <i class="bi bi-shield-check me-1 text-primary"></i> Seleccionar Perfil de Seguridad
+                    </label>
+                    <select asp-for="PerfilCodigo"
+                            asp-items="Model.Perfiles"
+                            class="form-select border-secondary-subtle"
+                            style="border-radius: 10px;"
+                            onchange="this.form.submit()">
+                        <option value="">Seleccione un perfil</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-        <div class="card-header bg-primary text-white">
+@if (!string.IsNullOrEmpty(Model.PerfilCodigo))
+{
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
+            <div class="row g-4 align-items-stretch">
+                <!-- Usuarios Disponibles (Izquierda) -->
+                <div class="col-lg-5 col-md-6">
+                    <div class="card shadow-xs border rounded-4 h-100" style="border-color: #e2e8f0 !important; background-color: #f8fafc;">
+                        <div class="card-header border-0 bg-transparent pt-3 px-3 pb-2">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="fw-bold text-dark m-0">
+                                    <i class="bi bi-person text-warning me-2 fs-5"></i>Usuarios Disponibles
+                                </h6>
+                                <span class="badge rounded-pill bg-secondary text-white border px-2.5 py-1" id="cntDisponibles" style="font-size: 0.75rem;">
+                                    0
+                                </span>
+                            </div>
+                            <!-- Buscador para Disponibles -->
+                            <div class="mt-3">
+                                <div class="input-group input-group-sm rounded-pill bg-white shadow-xs" style="border: 1px solid #cbd5e1; overflow: hidden;">
+                                    <span class="input-group-text bg-transparent border-0 text-muted ps-3">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" id="searchDisponibles" class="form-control border-0 ps-0 bg-transparent" placeholder="Buscar disponibles..." style="box-shadow: none;" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body px-3 pb-3 pt-2">
+                            <div class="list-container border rounded-3 overflow-auto" style="height: 350px; background-color: #ffffff; border-color: #e2e8f0 !important;">
+                                <ul class="list-group list-group-flush" id="listDisponibles">
+                                    @foreach (var usuario in Model.UsuariosDisponibles)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center py-2.5 px-3 border-light list-item-interactive" data-id="@usuario.Id" style="cursor: pointer; user-select: none;">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-person text-secondary fs-5"></i>
+                                                <span class="fw-semibold text-secondary">@usuario.Login</span>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center btn-transfer-right" style="width: 28px; height: 28px;">
+                                                <i class="bi bi-chevron-right small"></i>
+                                            </button>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <h4 class="mb-0">
-                Asignar Usuarios a Perfil
-            </h4>
+                <!-- Controles Centrales (Grandes) -->
+                <div class="col-lg-2 d-none d-lg-flex flex-column align-items-center justify-content-center gap-2">
+                    <button type="button" class="btn btn-outline-primary w-100 rounded-pill d-flex align-items-center justify-content-center gap-2 shadow-xs py-2.5" id="btnMoveAllRight" title="Asignar todos los filtrados">
+                        Asignar todo <i class="bi bi-chevron-double-right"></i>
+                    </button>
+                    <button type="button" class="btn btn-outline-danger w-100 rounded-pill d-flex align-items-center justify-content-center gap-2 shadow-xs py-2.5" id="btnMoveAllLeft" title="Retirar todos los filtrados">
+                        <i class="bi bi-chevron-double-left"></i> Retirar todo
+                    </button>
+                </div>
 
+                <!-- Usuarios Asignados (Derecha) -->
+                <div class="col-lg-5 col-md-6">
+                    <div class="card shadow-xs border rounded-4 h-100" style="border-color: #e2e8f0 !important; background-color: #f8fafc;">
+                        <div class="card-header border-0 bg-transparent pt-3 px-3 pb-2">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <h6 class="fw-bold text-dark m-0">
+                                    <i class="bi bi-person-fill text-success me-2 fs-5"></i>Usuarios Asignados
+                                </h6>
+                                <span class="badge rounded-pill bg-success text-white border px-2.5 py-1" id="cntAsignados" style="font-size: 0.75rem;">
+                                    0
+                                </span>
+                            </div>
+                            <!-- Buscador para Asignados -->
+                            <div class="mt-3">
+                                <div class="input-group input-group-sm rounded-pill bg-white shadow-xs" style="border: 1px solid #cbd5e1; overflow: hidden;">
+                                    <span class="input-group-text bg-transparent border-0 text-muted ps-3">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" id="searchAsignados" class="form-control border-0 ps-0 bg-transparent" placeholder="Buscar asignados..." style="box-shadow: none;" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body px-3 pb-3 pt-2">
+                            <div class="list-container border rounded-3 overflow-auto" style="height: 350px; background-color: #ffffff; border-color: #e2e8f0 !important;">
+                                <ul class="list-group list-group-flush" id="listAsignados">
+                                    @foreach (var usuario in Model.UsuariosAsignados)
+                                    {
+                                        <li class="list-group-item d-flex justify-content-between align-items-center py-2.5 px-3 border-light list-item-interactive" data-id="@usuario.Id" style="cursor: pointer; user-select: none;">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-person-fill text-primary fs-5"></i>
+                                                <span class="fw-bold text-dark">@usuario.Login</span>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-danger rounded-circle p-0 d-flex align-items-center justify-content-center btn-transfer-left" style="width: 28px; height: 28px;">
+                                                <i class="bi bi-chevron-left small"></i>
+                                            </button>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botones de Acción de Guardado en el Pie -->
+            <div class="d-flex justify-content-end align-items-center gap-3 mt-4 pt-3 border-top" style="border-color: #e2e8f0 !important;">
+                <a asp-action="AsignarUsuarioPerfil" asp-route-perfilCodigo="@Model.PerfilCodigo" class="btn btn-outline-secondary rounded-pill px-4 py-2" id="btnDescartar">
+                    <i class="bi bi-arrow-clockwise me-1"></i> Descartar
+                </a>
+                <button type="button" class="btn btn-primary rounded-pill px-5 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm" id="btnGuardar">
+                    <span class="spinner-border spinner-border-sm d-none" id="saveSpinner" role="status" aria-hidden="true"></span>
+                    <i class="bi bi-save2-fill" id="saveIcon"></i> Guardar Cambios
+                </button>
+            </div>
         </div>
+    </div>
+}
 
-        <div class="card-body">
+<!-- Custom Toast Container -->
+<div class="toast-container-custom">
+    <div id="statusToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2">
+                <i class="bi bi-info-circle-fill text-info" id="toast-icon"></i>
+                <span id="toast-message">Guardando cambios...</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 
-            <form method="get">
+<style>
+    .list-item-interactive {
+        transition: all 0.2s ease;
+    }
+    .list-item-interactive:hover {
+        background-color: #f1f5f9;
+        transform: translateX(2px);
+    }
+    .list-container::-webkit-scrollbar {
+        width: 6px;
+    }
+    .list-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .list-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+    }
+    .list-container::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+    .btn-transfer-right, .btn-transfer-left {
+        opacity: 0.7;
+        transition: all 0.2s ease;
+    }
+    .list-item-interactive:hover .btn-transfer-right,
+    .list-item-interactive:hover .btn-transfer-left {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+    .toast-container-custom {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        z-index: 1055;
+    }
+</style>
 
-                <div class="row mb-4">
+@section Scripts {
+    <script>
+        const guardarUrl = '@Url.Action("GuardarUsuariosPerfil", "Seguridad")';
+        const currentPerfil = '@Model.PerfilCodigo';
 
-                    <div class="col-md-6">
+        function showToast(message, type = 'info') {
+            const toastEl = document.getElementById('statusToast');
+            const messageEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
 
-                        <label class="form-label fw-bold">
-                            Perfil
-                        </label>
+            messageEl.textContent = message;
+            iconEl.className = 'bi me-2';
 
-                        <select asp-for="PerfilCodigo"
-                                asp-items="Model.Perfiles"
-                                class="form-select"
-                                onchange="this.form.submit()">
-
-                            <option value="">
-                                Seleccione un perfil
-                            </option>
-
-                        </select>
-
-                    </div>
-
-                </div>
-
-            </form>
-
-            @if (!string.IsNullOrEmpty(Model.PerfilCodigo))
-            {
-                <div class="row">
-
-                    <div class="col-md-5">
-
-                        <div class="card">
-
-                            <div class="card-header">
-                                Usuarios Disponibles
-                            </div>
-
-                            <ul class="list-group list-group-flush">
-
-                                @foreach (var usuario in Model.UsuariosDisponibles)
-                                {
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-
-                                        @usuario.Login
-
-                                        <form asp-action="AsignarUsuario"
-                                              method="post">
-
-                                            <input type="hidden"
-                                                   name="usuarioId"
-                                                   value="@usuario.Id" />
-
-                                            <input type="hidden"
-                                                   name="perfilCodigo"
-                                                   value="@Model.PerfilCodigo" />
-
-                                            <button type="submit"
-                                                    class="btn btn-success btn-sm">
-
-                                                ►
-
-                                            </button>
-
-                                        </form>
-
-                                    </li>
-                                }
-
-                            </ul>
-
-                        </div>
-
-                    </div>
-
-                    <div class="col-md-2"></div>
-
-                    <div class="col-md-5">
-
-                        <div class="card">
-
-                            <div class="card-header">
-                                Usuarios Asignados
-                            </div>
-
-                            <ul class="list-group list-group-flush">
-
-                                @foreach (var usuario in Model.UsuariosAsignados)
-                                {
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-
-                                        @usuario.Login
-
-                                        <form asp-action="RetirarUsuario"
-                                              method="post">
-
-                                            <input type="hidden"
-                                                   name="usuarioId"
-                                                   value="@usuario.Id" />
-
-                                            <input type="hidden"
-                                                   name="perfilCodigo"
-                                                   value="@Model.PerfilCodigo" />
-
-                                            <button type="submit"
-                                                    class="btn btn-danger btn-sm">
-
-                                                ◄
-
-                                            </button>
-
-                                        </form>
-
-                                    </li>
-                                }
-
-                            </ul>
-
-                        </div>
-
-                    </div>
-
-                </div>
+            if (type === 'success') {
+                iconEl.classList.add('bi-check-circle-fill', 'text-success');
+            } else if (type === 'error') {
+                iconEl.classList.add('bi-exclamation-triangle-fill', 'text-danger');
+            } else {
+                iconEl.classList.add('bi-info-circle-fill', 'text-info');
             }
 
-        </div>
+            const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+            toast.show();
+        }
 
-    </div>
+        function updateCounts() {
+            const dispCount = document.querySelectorAll('#listDisponibles li').length;
+            const asigCount = document.querySelectorAll('#listAsignados li').length;
 
-</div>
+            const cntDispEl = document.getElementById('cntDisponibles');
+            const cntAsigEl = document.getElementById('cntAsignados');
+
+            if (cntDispEl) cntDispEl.textContent = dispCount;
+            if (cntAsigEl) cntAsigEl.textContent = asigCount;
+        }
+
+        function transferItem(item, destinationListId) {
+            const destList = document.getElementById(destinationListId);
+            if (!destList) return;
+
+            const icon = item.querySelector('.bi-person, .bi-person-fill');
+            const textSpan = item.querySelector('span');
+            const btn = item.querySelector('button');
+            const btnIcon = btn ? btn.querySelector('i') : null;
+
+            if (destinationListId === 'listAsignados') {
+                if (icon) {
+                    icon.className = 'bi bi-person-fill text-primary fs-5';
+                }
+                if (textSpan) {
+                    textSpan.className = 'fw-bold text-dark';
+                }
+                if (btn) {
+                    btn.className = 'btn btn-sm btn-outline-danger rounded-circle p-0 d-flex align-items-center justify-content-center btn-transfer-left';
+                }
+                if (btnIcon) {
+                    btnIcon.className = 'bi bi-chevron-left small';
+                }
+            } else {
+                if (icon) {
+                    icon.className = 'bi bi-person text-secondary fs-5';
+                }
+                if (textSpan) {
+                    textSpan.className = 'fw-semibold text-secondary';
+                }
+                if (btn) {
+                    btn.className = 'btn btn-sm btn-outline-primary rounded-circle p-0 d-flex align-items-center justify-content-center btn-transfer-right';
+                }
+                if (btnIcon) {
+                    btnIcon.className = 'bi bi-chevron-right small';
+                }
+            }
+
+            destList.appendChild(item);
+            updateCounts();
+        }
+
+        // Delegated events for transfer buttons
+        document.addEventListener('click', function(e) {
+            const btnRight = e.target.closest('.btn-transfer-right');
+            const btnLeft = e.target.closest('.btn-transfer-left');
+
+            if (btnRight) {
+                e.stopPropagation();
+                const item = btnRight.closest('.list-item-interactive');
+                transferItem(item, 'listAsignados');
+            } else if (btnLeft) {
+                e.stopPropagation();
+                const item = btnLeft.closest('.list-item-interactive');
+                transferItem(item, 'listDisponibles');
+            }
+        });
+
+        // Double click to transfer
+        document.addEventListener('dblclick', function(e) {
+            const item = e.target.closest('.list-item-interactive');
+            if (item) {
+                const parentList = item.parentElement;
+                if (parentList.id === 'listDisponibles') {
+                    transferItem(item, 'listAsignados');
+                } else if (parentList.id === 'listAsignados') {
+                    transferItem(item, 'listDisponibles');
+                }
+            }
+        });
+
+        // Search inputs filtering
+        function filterList(listId, query) {
+            const items = document.querySelectorAll(`#${listId} li`);
+            const lowerQuery = query.toLowerCase().trim();
+
+            items.forEach(item => {
+                const text = item.querySelector('span').textContent.toLowerCase();
+                if (text.includes(lowerQuery)) {
+                    item.classList.remove('d-none');
+                } else {
+                    item.classList.add('d-none');
+                }
+            });
+        }
+
+        document.getElementById('searchDisponibles')?.addEventListener('input', function() {
+            filterList('listDisponibles', this.value);
+        });
+
+        document.getElementById('searchAsignados')?.addEventListener('input', function() {
+            filterList('listAsignados', this.value);
+        });
+
+        // Move all buttons
+        document.getElementById('btnMoveAllRight')?.addEventListener('click', function() {
+            const visibleItems = document.querySelectorAll('#listDisponibles li:not(.d-none)');
+            visibleItems.forEach(item => {
+                transferItem(item, 'listAsignados');
+            });
+        });
+
+        document.getElementById('btnMoveAllLeft')?.addEventListener('click', function() {
+            const visibleItems = document.querySelectorAll('#listAsignados li:not(.d-none)');
+            visibleItems.forEach(item => {
+                transferItem(item, 'listDisponibles');
+            });
+        });
+
+        // Bulk Save action
+        document.getElementById('btnGuardar')?.addEventListener('click', async function() {
+            const btn = this;
+            const spinner = document.getElementById('saveSpinner');
+            const icon = document.getElementById('saveIcon');
+            const btnDescartar = document.getElementById('btnDescartar');
+
+            // Disable UI
+            btn.disabled = true;
+            if (btnDescartar) btnDescartar.classList.add('disabled');
+            if (spinner) spinner.classList.remove('d-none');
+            if (icon) icon.classList.add('d-none');
+
+            // Gather active user IDs
+            const params = new URLSearchParams();
+            params.append('perfilCodigo', currentPerfil);
+            
+            const assignedItems = document.querySelectorAll('#listAsignados li');
+            assignedItems.forEach(item => {
+                params.append('usuarioIds', item.getAttribute('data-id'));
+            });
+
+            showToast('Guardando asignaciones de usuario...', 'info');
+
+            try {
+                const response = await fetch(guardarUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: params.toString()
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                    } else {
+                        showToast(data.message || 'Error al guardar cambios.', 'error');
+                    }
+                } else {
+                    showToast('Ocurrió un error en el servidor al intentar guardar.', 'error');
+                }
+            } catch (error) {
+                console.error(error);
+                showToast('Error de comunicación con el servidor.', 'error');
+            } finally {
+                // Re-enable UI
+                btn.disabled = false;
+                if (btnDescartar) btnDescartar.classList.remove('disabled');
+                if (spinner) spinner.classList.add('d-none');
+                if (icon) icon.classList.remove('d-none');
+            }
+        });
+
+        // Initial setup counts
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCounts();
+        });
+    </script>
+}

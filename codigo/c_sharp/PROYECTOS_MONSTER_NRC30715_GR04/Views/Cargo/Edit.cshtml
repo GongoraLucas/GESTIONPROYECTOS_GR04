@@ -4,44 +4,70 @@
     ViewData["Title"] = "Editar Cargo";
 }
 
-<h3 class="mb-4">Editar Cargo</h3>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a asp-action="Index" class="btn btn-link text-decoration-none p-0 text-secondary d-flex align-items-center gap-1">
+        <i class="bi bi-arrow-left"></i> Volver al listado
+    </a>
+</div>
 
-<form asp-action="Edit" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-
-    <!-- Hidden key preservation fields -->
-    <input type="hidden" asp-for="DepartamentoCodigo" />
-    <input type="hidden" asp-for="Codigo" />
-    <input type="hidden" asp-for="DepartamentoCodigoOriginal" />
-    <input type="hidden" asp-for="CodigoOriginal" />
-
-    <div class="card mb-4">
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Departamento</label>
-                    <input type="text" class="form-control" value="@Model.DepartamentoDescripcion" readonly />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Codigo" class="form-label"></label>
-                    <input type="text" class="form-control" value="@Model.Codigo" readonly />
-                </div>
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-flex align-items-center justify-content-center text-primary" style="width: 55px; height: 55px;">
+                <i class="bi bi-briefcase" style="font-size: 1.5rem;"></i>
             </div>
-            <div class="row">
-                <div class="col-12 mb-3">
-                    <label asp-for="Descripcion" class="form-label"></label>
-                    <input asp-for="Descripcion" class="form-control" placeholder="Ej. Desarrollador Web Senior" required maxlength="50" />
-                    <span asp-validation-for="Descripcion" class="text-danger"></span>
-                </div>
+            <div>
+                <h4 class="fw-bold m-0 text-dark">Editar Cargo</h4>
+                <p class="text-muted small m-0">Modifique la descripción del cargo o puesto de trabajo.</p>
             </div>
         </div>
-    </div>
 
-    <div>
-        <button type="submit" class="btn btn-success">Guardar</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <!-- Hidden key preservation fields -->
+            <input type="hidden" asp-for="DepartamentoCodigo" />
+            <input type="hidden" asp-for="Codigo" />
+            <input type="hidden" asp-for="DepartamentoCodigoOriginal" />
+            <input type="hidden" asp-for="CodigoOriginal" />
+
+            <div class="row g-3 mb-3">
+                <div class="col-md-6">
+                    <label class="form-label text-secondary small fw-semibold">Departamento</label>
+                    <div class="input-group shadow-xs rounded-3" style="border: 1px solid #cbd5e1; overflow: hidden; background-color: #e2e8f0;">
+                        <span class="input-group-text bg-light border-0 text-muted"><i class="bi bi-building"></i></span>
+                        <input type="text" class="form-control border-0 ps-2" value="@Model.DepartamentoDescripcion" readonly style="box-shadow: none; background-color: #e2e8f0; cursor: not-allowed;" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Codigo" class="form-label text-secondary small fw-semibold">Código de Cargo</label>
+                    <div class="input-group shadow-xs rounded-3" style="border: 1px solid #cbd5e1; overflow: hidden; background-color: #e2e8f0;">
+                        <span class="input-group-text bg-light border-0 text-muted"><i class="bi bi-hash"></i></span>
+                        <input type="text" class="form-control border-0 ps-2" value="@Model.Codigo" readonly style="box-shadow: none; background-color: #e2e8f0; cursor: not-allowed;" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <label asp-for="Descripcion" class="form-label text-secondary small fw-semibold">Descripción del Cargo <span class="text-danger">*</span></label>
+                    <div class="input-group shadow-xs rounded-3" style="border: 1px solid #cbd5e1; overflow: hidden;">
+                        <span class="input-group-text bg-light border-0 text-muted"><i class="bi bi-blockquote-left"></i></span>
+                        <input asp-for="Descripcion" class="form-control border-0 ps-2" placeholder="Ej. Desarrollador Web Senior" required maxlength="50" style="box-shadow: none;" />
+                    </div>
+                    <span asp-validation-for="Descripcion" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-2 border-top pt-4">
+                <a asp-action="Index" class="btn btn-light rounded-pill px-4 py-2 fw-semibold text-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fw-semibold shadow-sm d-inline-flex align-items-center gap-2">
+                    <i class="bi bi-save"></i> Guardar
+                </button>
+            </div>
+        </form>
     </div>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

@@ -1,375 +1,451 @@
 @model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.EmpleadoViewModel
 
 @{
-    ViewData["Title"] = "Nuevo Empleado";
+    ViewData["Title"] = "Editar Ficha Empleado";
 }
 
-<h3 class="mb-4">Editar Empleado</h3>
+<style>
+    .brand-card {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .stepper-list .step-item {
+        transition: all 0.3s ease;
+    }
+    .nav-tabs-custom {
+        border-bottom: 2px solid #e9ecef;
+    }
+    .nav-tabs-custom .nav-link {
+        border: none;
+        color: #6c757d;
+        font-weight: 500;
+        padding: 12px 24px;
+        position: relative;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+    .nav-tabs-custom .nav-link.active {
+        color: #0d6efd;
+        background: transparent;
+    }
+    .nav-tabs-custom .nav-link.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #0d6efd;
+    }
+    .input-group-custom {
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .input-group-custom:focus-within {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+    }
+    .input-group-custom .input-group-text {
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        color: #6c757d;
+    }
+    .input-group-custom .form-control, 
+    .input-group-custom .form-select {
+        border-left: none;
+    }
+    .input-group-custom .form-control:focus, 
+    .input-group-custom .form-select:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+    .hover-scale {
+        transition: transform 0.2s;
+    }
+    .hover-scale:hover {
+        transform: scale(1.05);
+    }
+    .photo-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        color: #fff;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    .photo-container:hover .photo-overlay {
+        opacity: 1;
+    }
+</style>
 
-<form asp-action="Edit"
-      method="post"
-      enctype="multipart/form-data">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a asp-action="Index" class="btn btn-link text-decoration-none p-0 text-secondary d-flex align-items-center gap-1">
+        <i class="bi bi-arrow-left"></i> Volver al listado
+    </a>
+</div>
 
-    
-    <div asp-validation-summary="ModelOnly"
-         class="text-danger mb-3">
-    </div>
+<form asp-action="Edit" method="post" enctype="multipart/form-data" id="employeeForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div class="card mb-4">
-
-        <div class="card-body">
-
-            <div class="row">
-
-                <div class="col-md-3 text-center">
-
-                    <img id="preview"
-                         src="@(string.IsNullOrEmpty(Model.Foto)
-                                     ? "/images/no-image.png"
-                                     : Model.Foto)"
-                         class="img-thumbnail mb-2"
-                         style="width:200px;height:200px;object-fit:cover;" />
-
-                    <input asp-for="ArchivoFoto"
-                           type="file"
-                           class="form-control"
-                           accept="image/*"
-                           onchange="previewImage(event)" />
-
+    <!-- Top Profile & Summary Card -->
+    <div class="card brand-card mb-4">
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <!-- Profile Image Selection -->
+                <div class="col-md-3 text-center border-end">
+                    <div class="position-relative d-inline-block photo-container" style="width: 140px; height: 140px;">
+                        <img id="preview" src="@(string.IsNullOrEmpty(Model.Foto) ? "/images/no-image.png" : Model.Foto)" 
+                             class="rounded-circle border border-3 border-white shadow" 
+                             style="width: 140px; height: 140px; object-fit: cover;" />
+                        <div class="photo-overlay" onclick="document.getElementById('ArchivoFoto').click();">
+                            <i class="bi bi-camera fs-3"></i>
+                            <span class="small mt-1">Cambiar</span>
+                        </div>
+                        <input asp-for="ArchivoFoto" type="file" class="d-none" accept="image/*" onchange="previewImage(event)" />
+                    </div>
+                    <div class="text-muted small mt-2">Haga clic para cambiar foto</div>
+                </div>
+                
+                <!-- Code & Names -->
+                <div class="col-md-6 px-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <h4 class="mb-0 fw-bold me-3 text-dark">Editar Ficha</h4>
+                        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold border border-primary border-opacity-25 fs-7">
+                            Cód: <span id="codigoBadge">@Model.Codigo</span>
+                        </span>
+                        <input type="hidden" asp-for="Codigo" />
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="Nombres" class="form-label text-secondary small fw-semibold">Nombres <span class="text-danger">*</span></label>
+                            <input asp-for="Nombres" class="form-control rounded-3" placeholder="Ej. Dennis" required />
+                            <span asp-validation-for="Nombres" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Apellidos" class="form-label text-secondary small fw-semibold">Apellidos <span class="text-danger">*</span></label>
+                            <input asp-for="Apellidos" class="form-control rounded-3" placeholder="Ej. Paucar" required />
+                            <span asp-validation-for="Apellidos" class="text-danger small"></span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-md-9">
-
-                    <div class="row">
-
-                        <div class="col-md-4">
-
-                            <label asp-for="Codigo"
-                                   class="form-label">
-                            </label>
-
-                            <input asp-for="Codigo"
-                                   class="form-control" />
-
-                            <span asp-validation-for="Codigo"
-                                  class="text-danger">
-                            </span>
-
+                <!-- Stepper Progress Sidebar -->
+                <div class="col-md-3 ps-4 border-start">
+                    <h6 class="text-uppercase text-secondary small fw-bold mb-3">Progreso de Datos</h6>
+                    <div class="stepper-list" id="stepperList">
+                        <!-- Will be updated dynamically by javascript -->
+                        <div class="step-item d-flex align-items-center mb-3 active" id="sidebar-step-1">
+                            <i class="bi bi-arrow-right-circle-fill text-primary fs-5"></i>
+                            <span class="step-text small fw-bold text-primary ms-2">1. Datos Personales</span>
                         </div>
-
-                        <div class="col-md-4">
-
-                            <label asp-for="Cedula"
-                                   class="form-label">
-                            </label>
-
-                            <input asp-for="Cedula"
-                                   class="form-control"
-                                   placeholder="Ej. 1712345678"
-                                   required
-                                   maxlength="10" />
-
-                            <span asp-validation-for="Cedula"
-                                  class="text-danger">
-                            </span>
-
+                        <div class="step-item d-flex align-items-center mb-3" id="sidebar-step-2">
+                            <i class="bi bi-circle text-muted fs-5"></i>
+                            <span class="step-text small fw-semibold text-muted ms-2">2. Contrato y Perfil</span>
                         </div>
-
+                        <div class="step-item d-flex align-items-center" id="sidebar-step-3">
+                            <i class="bi bi-circle text-muted fs-5"></i>
+                            <span class="step-text small fw-semibold text-muted ms-2">3. Cargas Familiares</span>
+                        </div>
                     </div>
-
-                    <div class="row mt-3">
-
-                        <div class="col-md-6">
-
-                            <label asp-for="Nombres"
-                                   class="form-label">
-                            </label>
-
-                            <input asp-for="Nombres"
-                                   class="form-control"
-                                   placeholder="Ej. Carlos"
-                                   required
-                                   maxlength="50" />
-
-                            <span asp-validation-for="Nombres"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                        <div class="col-md-6">
-
-                            <label asp-for="Apellidos"
-                                   class="form-label">
-                            </label>
-
-                            <input asp-for="Apellidos"
-                                   class="form-control"
-                                   placeholder="Ej. Gómez"
-                                   required
-                                   maxlength="50" />
-
-                            <span asp-validation-for="Apellidos"
-                                  class="text-danger">
-                            </span>
-
-                        </div>
-
-                    </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
 
-    <ul class="nav nav-tabs">
-
+    <!-- Wizard Navigation Tabs -->
+    <ul class="nav nav-tabs nav-tabs-custom mb-4 border-0 bg-white p-2 rounded-3 shadow-sm d-flex justify-content-around">
         <li class="nav-item">
-            <button class="nav-link active"
-                    data-bs-toggle="tab"
-                    data-bs-target="#personal"
-                    type="button">
-                Personal
+            <button class="nav-link active w-100 text-center" id="tab-button-1" type="button" onclick="goToStep(1)">
+                <i class="bi bi-person-fill me-2"></i> 1. Datos del Empleado
             </button>
         </li>
-
         <li class="nav-item">
-            <button class="nav-link"
-                    data-bs-toggle="tab"
-                    data-bs-target="#laboral"
-                    type="button">
-                Laboral
+            <button class="nav-link w-100 text-center" id="tab-button-2" type="button" onclick="goToStep(2)">
+                <i class="bi bi-briefcase-fill me-2"></i> 2. Contrato y Perfil
             </button>
         </li>
-
         <li class="nav-item">
-            <button class="nav-link"
-                    data-bs-toggle="tab"
-                    data-bs-target="#contacto"
-                    type="button">
-                Contacto
+            <button class="nav-link w-100 text-center" id="tab-button-3" type="button" onclick="goToStep(3)">
+                <i class="bi bi-people-fill me-2"></i> 3. Carga Familiar
             </button>
         </li>
-
     </ul>
 
-    <div class="tab-content border border-top-0 p-4">
+    <!-- Wizard Panes Card -->
+    <div class="card brand-card mb-4">
+        <div class="card-body p-4">
+            
+            <!-- STEP 1: Datos del Empleado -->
+            <div class="step-pane" id="step-pane-1">
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark">Información Personal y Contacto</h5>
+                    <p class="text-muted small">Quién es el empleado y dónde podemos localizarlo.</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label asp-for="Cedula" class="form-label text-secondary small fw-semibold">Cédula de Identidad <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-card-text"></i></span>
+                            <input asp-for="Cedula" class="form-control" placeholder="1754925483" required maxlength="10" />
+                        </div>
+                        <span asp-validation-for="Cedula" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="FechaNacimiento" class="form-label text-secondary small fw-semibold">Fecha de Nacimiento <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                            <input asp-for="FechaNacimiento" type="date" class="form-control" required />
+                        </div>
+                        <span asp-validation-for="FechaNacimiento" class="text-danger small"></span>
+                    </div>
 
-        <div class="tab-pane fade show active"
-             id="personal">
+                    <div class="col-md-6">
+                        <label asp-for="SexoCodigo" class="form-label text-secondary small fw-semibold">Género / Sexo <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-gender-ambiguous"></i></span>
+                            <select asp-for="SexoCodigo" asp-items="Model.Sexos" class="form-select" required>
+                                <option value="">Seleccione</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="SexoCodigo" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="EstadoCivilCodigo" class="form-label text-secondary small fw-semibold">Estado Civil</label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-heart"></i></span>
+                            <select asp-for="EstadoCivilCodigo" asp-items="Model.EstadosCiviles" class="form-select">
+                                <option value="">Seleccione</option>
+                            </select>
+                        </div>
+                    </div>
 
-            <div class="row">
+                    <div class="col-md-12">
+                        <label asp-for="Direccion" class="form-label text-secondary small fw-semibold">Dirección de Domicilio <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+                            <input asp-for="Direccion" class="form-control" placeholder="Amaguaña - Barrio Chaupitena" required maxlength="200" />
+                        </div>
+                        <span asp-validation-for="Direccion" class="text-danger small"></span>
+                    </div>
 
-                <div class="col-md-4">
+                    <div class="col-md-6">
+                        <label asp-for="Telefono" class="form-label text-secondary small fw-semibold">Teléfono de Contacto <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                            <input asp-for="Telefono" class="form-control" placeholder="0967175333" required maxlength="15" />
+                        </div>
+                        <span asp-validation-for="Telefono" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label text-secondary small fw-semibold">Correo Electrónico <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="dennispaucar49@gmail.com" required maxlength="100" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="button" class="btn btn-primary px-4 py-2 rounded-3 fw-semibold hover-scale" onclick="goToStep(2)">
+                        Siguiente <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
 
-                    <label class="form-label">
-                        Sexo
-                    </label>
+            <!-- STEP 2: Contrato y Perfil -->
+            <div class="step-pane d-none" id="step-pane-2">
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark">Perfil Profesional y Contratación</h5>
+                    <p class="text-muted small">Qué rol desempeña, compensación, nivel de instrucción y salud.</p>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label asp-for="DepartamentoCodigo" class="form-label text-secondary small fw-semibold">Departamento <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-building"></i></span>
+                            <select asp-for="DepartamentoCodigo" asp-items="Model.Departamentos" class="form-select" required>
+                                <option value="">Seleccione</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="DepartamentoCodigo" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CargoCodigo" class="form-label text-secondary small fw-semibold">Cargo <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                            <select asp-for="CargoCodigo" asp-items="Model.Cargos" class="form-select" required>
+                                <option value="">Seleccione</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="CargoCodigo" class="text-danger small"></span>
+                    </div>
 
-                    <select asp-for="SexoCodigo"
-                            asp-items="Model.Sexos"
-                            class="form-select">
+                    <div class="col-md-6">
+                        <label asp-for="JefeCodigo" class="form-label text-secondary small fw-semibold">Jefe / Supervisor Inmediato</label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-person-badge"></i></span>
+                            <select asp-for="JefeCodigo" asp-items="Model.Jefes" class="form-select">
+                                <option value="">-- Ninguno (Es Jefe) --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="InstruccionCodigo" class="form-label text-secondary small fw-semibold">Nivel de Instrucción <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-mortarboard"></i></span>
+                            <select asp-for="InstruccionCodigo" asp-items="Model.Instrucciones" class="form-select" required>
+                                <option value="">Seleccione</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="InstruccionCodigo" class="text-danger small"></span>
+                    </div>
 
-                        <option value="">
-                            Seleccione
-                        </option>
+                    <div class="col-md-6">
+                        <label asp-for="DiscapacidadCodigo" class="form-label text-secondary small fw-semibold">Tipo de Discapacidad</label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-universal-access"></i></span>
+                            <select asp-for="DiscapacidadCodigo" asp-items="Model.Discapacidades" class="form-select" id="discapacidadSelect">
+                                <option value="">Ninguna</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PorcentajeDiscapacidad" class="form-label text-secondary small fw-semibold">Porcentaje de Discapacidad</label>
+                        <div class="input-group input-group-custom">
+                            <input asp-for="PorcentajeDiscapacidad" type="number" class="form-control" id="porcentajeInput" min="0" max="100" disabled />
+                            <span class="input-group-text">%</span>
+                        </div>
+                        <span asp-validation-for="PorcentajeDiscapacidad" class="text-danger small"></span>
+                    </div>
 
-                    </select>
+                    <div class="col-md-6">
+                        <label asp-for="Salario" class="form-label text-secondary small fw-semibold">Salario Mensual ($) <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text">$</span>
+                            <input asp-for="Salario" class="form-control" type="number" step="0.01" placeholder="1200" required />
+                        </div>
+                        <span asp-validation-for="Salario" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="FechaSalida" class="form-label text-secondary small fw-semibold">Fecha de Ingreso / Contrato <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-calendar-check"></i></span>
+                            <input asp-for="FechaSalida" type="date" class="form-control" required />
+                        </div>
+                        <span asp-validation-for="FechaSalida" class="text-danger small"></span>
+                    </div>
 
+                    <div class="col-md-6">
+                        <label asp-for="Estado" class="form-label text-secondary small fw-semibold">Estado <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-custom">
+                            <span class="input-group-text"><i class="bi bi-toggle-on"></i></span>
+                            <select asp-for="Estado" class="form-select" required>
+                                <option value="A">Activo</option>
+                                <option value="I">Inactivo</option>
+                            </select>
+                        </div>
+                        <span asp-validation-for="Estado" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-outline-secondary px-4 py-2 rounded-3 fw-semibold hover-scale" onclick="goToStep(1)">
+                        <i class="bi bi-arrow-left me-1"></i> Anterior
+                    </button>
+                    <button type="button" class="btn btn-primary px-4 py-2 rounded-3 fw-semibold hover-scale" onclick="goToStep(3)">
+                        Siguiente <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Carga Familiar -->
+            <div class="step-pane d-none" id="step-pane-3">
+                <div class="mb-4">
+                    <h5 class="fw-bold text-dark">Carga Familiar</h5>
+                    <p class="text-muted small">Registre los familiares o dependientes a cargo del empleado.</p>
                 </div>
 
-                <div class="col-md-4">
-
-                    <label class="form-label">
-                        Estado Civil
-                    </label>
-
-                    <select asp-for="EstadoCivilCodigo"
-                            asp-items="Model.EstadosCiviles"
-                            class="form-select">
-
-                        <option value="">
-                            Seleccione
-                        </option>
-
-                    </select>
-
+                <!-- Add Family Member Subform -->
+                <div class="card bg-light border-0 rounded-4 p-4 mb-4">
+                    <h6 class="fw-bold text-secondary mb-3"><i class="bi bi-plus-circle-fill text-primary me-2"></i> Añadir Familiar</h6>
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-semibold">Nombres</label>
+                            <input type="text" id="fam-nombres" class="form-control bg-white" placeholder="Ej. María Josefa" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-semibold">Apellidos</label>
+                            <input type="text" id="fam-apellidos" class="form-control bg-white" placeholder="Ej. Pérez Ortiz" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label text-muted small fw-semibold">Fecha Nacimiento</label>
+                            <input type="date" id="fam-fechanac" class="form-control bg-white" />
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label text-muted small fw-semibold">Parentesco</label>
+                            <select id="fam-parentesco" class="form-select bg-white">
+                                <option value="">-- Elegir --</option>
+                                <option value="Cónyuge">Cónyuge</option>
+                                <option value="Hijo/a">Hijo/a</option>
+                                <option value="Padre/Madre">Padre/Madre</option>
+                                <option value="Hermano/a">Hermano/a</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 text-center">
+                            <button type="button" class="btn btn-success w-100 rounded-3 d-flex align-items-center justify-content-center" onclick="addFamiliarItem()" style="height: 38px;">
+                                <i class="bi bi-plus-lg fs-5"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="col-md-4">
-
-                    <label asp-for="FechaNacimiento"
-                           class="form-label">
-                    </label>
-
-                    <input asp-for="FechaNacimiento"
-                           type="date"
-                           class="form-control" />
-
+                <!-- Dependents List Table -->
+                <h6 class="fw-bold text-dark mb-3">Dependientes Agregados</h6>
+                <div class="table-responsive rounded-3 border border-light">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-secondary">
+                            <tr>
+                                <th>Nombres y Apellidos</th>
+                                <th>Fecha Nacimiento</th>
+                                <th>Edad</th>
+                                <th>Parentesco</th>
+                                <th class="text-center" style="width: 100px;">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="familiaresTableBody">
+                            <tr id="no-familiares-row">
+                                <td colspan="5" class="text-center text-muted py-4 small">No hay familiares agregados.</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
+                <!-- Hidden inputs wrapper for binding list -->
+                <div id="hiddenFamiliaresInputs"></div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-outline-secondary px-4 py-2 rounded-3 fw-semibold hover-scale" onclick="goToStep(2)">
+                        <i class="bi bi-arrow-left me-1"></i> Anterior
+                    </button>
+                    <button type="submit" class="btn btn-success px-5 py-2 rounded-3 fw-bold shadow hover-scale">
+                        <i class="bi bi-save me-1"></i> Guardar Cambios
+                    </button>
+                </div>
             </div>
 
         </div>
-
-        <div class="tab-pane fade"
-             id="laboral">
-
-            <div class="row">
-
-                <div class="col-md-4">
-
-                    <label class="form-label">
-                        Departamento
-                    </label>
-
-                    <select asp-for="DepartamentoCodigo"
-                            asp-items="Model.Departamentos"
-                            class="form-select">
-
-                        <option value="">
-                            Seleccione
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <label class="form-label">
-                        Cargo
-                    </label>
-
-                    <select asp-for="CargoCodigo"
-                            asp-items="Model.Cargos"
-                            class="form-select">
-
-                        <option value="">
-                            Seleccione
-                        </option>
-
-                    </select>
-
-                </div>
-
-                <div class="col-md-4">
-
-                    <label class="form-label">
-                        Jefe
-                    </label>
-
-                    <select asp-for="JefeCodigo"
-                            asp-items="Model.Jefes"
-                            class="form-select">
-
-                        <option value="">
-                            Sin jefe
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-            <div class="row mt-3">
-
-                <div class="col-md-4">
-
-                    <label asp-for="Salario"
-                           class="form-label">
-                    </label>
-
-                    <input asp-for="Salario"
-                           class="form-control"
-                           placeholder="Ej. 1800.00"
-                           required
-                           type="number"
-                           step="0.01" />
-
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="tab-pane fade"
-             id="contacto">
-
-            <div class="mb-3">
-
-                <label asp-for="Direccion"
-                       class="form-label">
-                </label>
-
-                <input asp-for="Direccion"
-                       class="form-control"
-                       placeholder="Ej. Av. Amazonas N24-123 y Colón"
-                       required
-                       maxlength="100" />
-
-            </div>
-
-            <div class="row">
-
-                <div class="col-md-6">
-
-                    <label asp-for="Telefono"
-                           class="form-label">
-                    </label>
-
-                    <input asp-for="Telefono"
-                           class="form-control"
-                           placeholder="Ej. 0991234567"
-                           required
-                           maxlength="20" />
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <label asp-for="Email"
-                           class="form-label">
-                    </label>
-
-                    <input asp-for="Email"
-                           class="form-control"
-                           placeholder="Ej. carlos.gomez@monster.com"
-                           required
-                           type="email"
-                           maxlength="100" />
-
-                </div>
-
-            </div>
-
-        </div>
-
     </div>
-
-    <div class="mt-4">
-
-        <button type="submit"
-                class="btn btn-success">
-
-            Guardar
-
-        </button>
-
-        <a asp-action="Index"
-           class="btn btn-secondary">
-
-            Cancelar
-
-        </a>
-
-    </div>
- 
-
 </form>
 
 @section Scripts
@@ -377,25 +453,234 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
+        let currentStep = 1;
+        let familiares = [];
 
-        function previewImage(event)
+        // Prepopulate family members from model
+        @if (Model.Familiares != null && Model.Familiares.Count > 0)
         {
-            const reader =
-                new FileReader();
-
-            reader.onload =
-                function ()
-                {
-                    document
-                        .getElementById('preview')
-                        .src = reader.result;
-                };
-
-            reader.readAsDataURL(
-                event.target.files[0]);
+            foreach (var fam in Model.Familiares)
+            {
+                <text>
+                familiares.push({
+                    nombres: "@Html.Raw(fam.Nombres)",
+                    apellidos: "@Html.Raw(fam.Apellidos)",
+                    fechaNacimiento: "@fam.FechaNacimiento.ToString("yyyy-MM-dd")",
+                    edad: @fam.Edad,
+                    parentesco: "@Html.Raw(fam.Parentesco)"
+                });
+                </text>
+            }
         }
 
-    </script>
-    
+        // Initialize view
+        window.addEventListener('DOMContentLoaded', () => {
+            renderFamiliares();
+            togglePorcentaje();
+        });
 
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('preview').src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Stepper Navigation Logic
+        function goToStep(step) {
+            // Validate previous steps before moving forward
+            if (step > currentStep) {
+                if (currentStep === 1 && !validateStep1()) {
+                    return;
+                }
+                if (currentStep === 2 && !validateStep2()) {
+                    return;
+                }
+            }
+
+            // Hide all panes and remove active tab styling
+            document.querySelectorAll('.step-pane').forEach(el => el.classList.add('d-none'));
+            document.querySelectorAll('.nav-tabs-custom .nav-link').forEach(el => el.classList.remove('active'));
+
+            // Show target step pane
+            document.getElementById(`step-pane-${step}`).classList.remove('d-none');
+            document.getElementById(`tab-button-${step}`).classList.add('active');
+
+            // Update Stepper Sidebar UI
+            updateStepperSidebar(step);
+
+            currentStep = step;
+        }
+
+        function validateStep1() {
+            let isValid = true;
+            const form = $("#employeeForm");
+            if (form.length) {
+                const validator = form.validate();
+                const fields = ["Nombres", "Apellidos", "Cedula", "FechaNacimiento", "SexoCodigo", "Direccion", "Telefono", "Email"];
+                fields.forEach(field => {
+                    const el = $(`[name="${field}"]`);
+                    if (el.length && !validator.element(el)) {
+                        isValid = false;
+                    }
+                });
+            }
+            return isValid;
+        }
+
+        function validateStep2() {
+            let isValid = true;
+            const form = $("#employeeForm");
+            if (form.length) {
+                const validator = form.validate();
+                const fields = ["DepartamentoCodigo", "CargoCodigo", "InstruccionCodigo", "Salario", "FechaSalida", "Estado"];
+                fields.forEach(field => {
+                    const el = $(`[name="${field}"]`);
+                    if (el.length && !validator.element(el)) {
+                        isValid = false;
+                    }
+                });
+            }
+            return isValid;
+        }
+
+        function updateStepperSidebar(activeStep) {
+            for (let i = 1; i <= 3; i++) {
+                const stepEl = document.getElementById(`sidebar-step-${i}`);
+                if (!stepEl) continue;
+
+                stepEl.className = "step-item d-flex align-items-center mb-3";
+                
+                if (i < activeStep) {
+                    // Completed step
+                    stepEl.querySelector('i').className = "bi bi-check-circle-fill text-success fs-5";
+                    stepEl.querySelector('.step-text').className = "step-text small fw-semibold text-success ms-2";
+                } else if (i === activeStep) {
+                    // Active step
+                    stepEl.querySelector('i').className = "bi bi-arrow-right-circle-fill text-primary fs-5";
+                    stepEl.querySelector('.step-text').className = "step-text small fw-bold text-primary ms-2";
+                } else {
+                    // Pending step
+                    stepEl.querySelector('i').className = "bi bi-circle text-muted fs-5";
+                    stepEl.querySelector('.step-text').className = "step-text small fw-semibold text-muted ms-2";
+                }
+            }
+            // Remove margin-bottom on last item
+            const lastStepEl = document.getElementById('sidebar-step-3');
+            if (lastStepEl) {
+                lastStepEl.classList.remove('mb-3');
+            }
+        }
+
+        // Disability Selection Logic
+        function togglePorcentaje() {
+            const select = document.getElementById('discapacidadSelect');
+            const pctInput = document.getElementById('porcentajeInput');
+            if (select.value) {
+                pctInput.removeAttribute('disabled');
+            } else {
+                pctInput.setAttribute('disabled', 'disabled');
+                pctInput.value = '0';
+            }
+        }
+        document.getElementById('discapacidadSelect').addEventListener('change', function() {
+            togglePorcentaje();
+            const pctInput = document.getElementById('porcentajeInput');
+            if (this.value && pctInput.value == '0') {
+                pctInput.value = '40';
+            }
+        });
+
+        // Family Members List Logic
+        function addFamiliarItem() {
+            const nombresEl = document.getElementById('fam-nombres');
+            const apellidosEl = document.getElementById('fam-apellidos');
+            const fechanacEl = document.getElementById('fam-fechanac');
+            const parentescoEl = document.getElementById('fam-parentesco');
+
+            const nombres = nombresEl.value.trim();
+            const apellidos = apellidosEl.value.trim();
+            const fechanacVal = fechanacEl.value;
+            const parentesco = parentescoEl.value;
+
+            if (!nombres || !apellidos || !fechanacVal || !parentesco) {
+                alert("Por favor complete todos los campos del familiar.");
+                return;
+            }
+
+            // Calculate age
+            const dob = new Date(fechanacVal);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+
+            const familiar = {
+                nombres: nombres,
+                apellidos: apellidos,
+                fechaNacimiento: fechanacVal,
+                edad: age,
+                parentesco: parentesco
+            };
+
+            familiares.push(familiar);
+            renderFamiliares();
+
+            // Clear inputs
+            nombresEl.value = "";
+            apellidosEl.value = "";
+            fechanacEl.value = "";
+            parentescoEl.value = "";
+        }
+
+        function removeFamiliarItem(index) {
+            familiares.splice(index, 1);
+            renderFamiliares();
+        }
+
+        function renderFamiliares() {
+            const tbody = document.getElementById('familiaresTableBody');
+            const hiddenContainer = document.getElementById('hiddenFamiliaresInputs');
+            
+            tbody.innerHTML = "";
+            hiddenContainer.innerHTML = "";
+
+            if (familiares.length === 0) {
+                tbody.innerHTML = `
+                    <tr id="no-familiares-row">
+                        <td colspan="5" class="text-center text-muted py-4 small">No hay familiares agregados.</td>
+                    </tr>`;
+                return;
+            }
+
+            familiares.forEach((fam, index) => {
+                // Render table row
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="fw-semibold text-dark">${fam.apellidos}, ${fam.nombres}</td>
+                    <td class="text-secondary">${fam.fechaNacimiento}</td>
+                    <td><span class="badge bg-light text-dark border px-2 py-1">${fam.edad} años</span></td>
+                    <td><span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25 px-2 py-1 rounded-pill">${fam.parentesco}</span></td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-outline-danger btn-sm rounded-circle p-1 hover-scale" onclick="removeFamiliarItem(${index})" style="width: 28px; height: 28px; line-height: 1;">
+                            <i class="bi bi-trash-fill"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+
+                // Render hidden inputs for form binding
+                hiddenContainer.innerHTML += `
+                    <input type="hidden" name="Familiares[${index}].Nombres" value="${fam.nombres}" />
+                    <input type="hidden" name="Familiares[${index}].Apellidos" value="${fam.apellidos}" />
+                    <input type="hidden" name="Familiares[${index}].FechaNacimiento" value="${fam.fechaNacimiento}" />
+                    <input type="hidden" name="Familiares[${index}].Edad" value="${fam.edad}" />
+                    <input type="hidden" name="Familiares[${index}].Parentesco" value="${fam.parentesco}" />
+                `;
+            });
+        }
+    </script>
 }

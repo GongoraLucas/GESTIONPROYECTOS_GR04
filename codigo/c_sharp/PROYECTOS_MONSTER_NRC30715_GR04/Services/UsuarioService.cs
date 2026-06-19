@@ -34,7 +34,15 @@ public class UsuarioService : IUsuarioService
             .OrderBy(x => x.Login)
             .Skip((pagina - 1) * registrosPorPagina)
             .Take(registrosPorPagina)
-            .Select(x => new UsuarioItemViewModel { Id = x.Id, Login = x.Login })
+            .Select(x => new UsuarioItemViewModel
+            {
+                Id = x.Id,
+                Login = x.Login,
+                Perfiles = x.UsuariosPerfiles
+                    .Where(up => up.FechaRetiro == null && up.Perfil != null)
+                    .Select(up => up.Perfil!.Descripcion)
+                    .ToList()
+            })
             .ToListAsync();
 
         return (items, total);

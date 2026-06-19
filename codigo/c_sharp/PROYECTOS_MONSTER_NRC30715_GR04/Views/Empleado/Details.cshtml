@@ -1,4 +1,4 @@
-﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.EmpleadoViewModel
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.EmpleadoViewModel
 
 @{
     ViewData["Title"] = "Detalle Empleado";
@@ -94,6 +94,43 @@
                         <th>Salario</th>
                         <td>
                             @Model.Salario.ToString("C")
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>Fecha de Ingreso</th>
+                        <td>@Model.FechaSalida.ToString("dd/MM/yyyy")</td>
+                    </tr>
+
+                    <tr>
+                        <th>Nivel de Instrucción</th>
+                        <td>@Model.InstruccionDescripcion</td>
+                    </tr>
+
+                    <tr>
+                        <th>Discapacidad</th>
+                        <td>@Model.DiscapacidadDescripcion</td>
+                    </tr>
+
+                    @if (Model.DiscapacidadCodigo != null)
+                    {
+                        <tr>
+                            <th>% Discapacidad</th>
+                            <td>@Model.PorcentajeDiscapacidad%</td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <th>Estado</th>
+                        <td>
+                            @if (Model.Estado == "A")
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">Inactivo</span>
+                            }
                         </td>
                     </tr>
 

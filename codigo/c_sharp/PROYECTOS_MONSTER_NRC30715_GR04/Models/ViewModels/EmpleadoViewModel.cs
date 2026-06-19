@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
@@ -30,7 +30,8 @@ public class EmpleadoViewModel
     [Required]
     public DateTime FechaNacimiento { get; set; }
 
-    public DateTime? FechaSalida { get; set; }
+    [Required]
+    public DateTime FechaSalida { get; set; } = DateTime.Today;
 
     [Required]
     public decimal Salario { get; set; }
@@ -52,7 +53,24 @@ public class EmpleadoViewModel
 
     public IFormFile? ArchivoFoto { get; set; }
 
+    public string? DiscapacidadCodigo { get; set; }
+
+    [Required]
+    public string InstruccionCodigo { get; set; } = string.Empty;
+
+    [Required]
+    public string Estado { get; set; } = "A";
+
+    [Required]
+    public int PorcentajeDiscapacidad { get; set; }
+
     public List<SelectListItem> Sexos { get; set; }
+        = new();
+
+    public List<SelectListItem> Discapacidades { get; set; }
+        = new();
+
+    public List<SelectListItem> Instrucciones { get; set; }
         = new();
 
     public List<SelectListItem> EstadosCiviles { get; set; }
@@ -73,5 +91,13 @@ public class EmpleadoViewModel
 
     public string? CargoDescripcion { get; set; }
 
+    public string? DepartamentoDescripcion { get; set; }
+
     public string? JefeNombre { get; set; }
+
+    public string? DiscapacidadDescripcion { get; set; }
+
+    public string? InstruccionDescripcion { get; set; }
+
+    public List<FamiliarViewModel> Familiares { get; set; } = new();
 }

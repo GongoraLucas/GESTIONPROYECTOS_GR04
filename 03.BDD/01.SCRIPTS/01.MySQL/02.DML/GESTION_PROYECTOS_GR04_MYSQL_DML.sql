@@ -282,3 +282,74 @@ VALUES
     '0101010110',
     1750
 );
+
+
+/* ========================================================= */
+/* TABLAS DE SEGURIDAD Y CONFIGURACIÓN                       */
+/* ========================================================= */
+
+-- 1. Insertar géneros si no existen
+INSERT IGNORE INTO PESEX_SEXO (PESEX_CODIGO, PESEX_DESCRIP) VALUES 
+('M', 'Masculino'),
+('F', 'Femenino');
+
+-- 2. Insertar estados civiles si no existen
+INSERT IGNORE INTO PEESC_ESTCIV (PEESC_CODIGO, PEESC_DESCRIP) VALUES 
+('S', 'Soltero'),
+('C', 'Casado');
+
+-- 3. Insertar estado activo si no existe
+INSERT IGNORE INTO XEEST_ESTAD (XEEST_CODIGO, XEEST_DESCRI) VALUES 
+('A', 'Activo');
+
+-- 4. Insertar sistema si no existe
+INSERT IGNORE INTO XESIS_SISTE (XESIS_CODIGO, XESIS_DESCRI) VALUES 
+('S', 'Sistema de Gestión');
+
+-- 5. Insertar opciones del sistema si no existen (Requeridas por políticas de autorización)
+INSERT IGNORE INTO XEOPC_OPCIO (XEOPC_CODIGO, XESIS_CODIGO, XEOPC_DESCRI) VALUES 
+('USR', 'S', 'Gestión de Usuarios'),
+('EMP', 'S', 'Gestión de Empleados'),
+('PRO', 'S', 'Gestión de Proyectos'),
+('REP', 'S', 'Gestión de Reportes'),
+('PER', 'S', 'Gestión de Perfiles y Permisos');
+
+-- 6. Insertar perfil administrador si no existe
+INSERT IGNORE INTO XEPER_PERFI (XEPER_CODIGO, XEPER_DESCRI, XEPER_OBSER) VALUES 
+('ADMIN', 'Administrador', 'Perfil con acceso completo al sistema');
+
+-- 7. Asociar opciones al perfil administrador si no existen
+INSERT IGNORE INTO XEOXP_OPCPE (XEOPC_CODIGO, XEPER_CODIGO, XEOXP_FECASI, XEOXP_FECRET) VALUES 
+('USR', 'ADMIN', NOW(), NULL),
+('EMP', 'ADMIN', NOW(), NULL),
+('PRO', 'ADMIN', NOW(), NULL),
+('REP', 'ADMIN', NOW(), NULL),
+('PER', 'ADMIN', NOW(), NULL);
+
+-- 8. Insertar empleado administrador si no existe (asociado a Sistemas D01 y Desarrollador C01)
+INSERT IGNORE INTO PEEMP_EMPLE (
+    PEEMP_CODIGO, PESEX_CODIGO, PEESC_CODIGO, PEDEP_CODIGO, PECAR_CODIGO,
+    PEE_PEEMP_CODIGO, PEEMP_APELLI, PEEMP_NOMBRE, PEEMP_DIREC, PEEMP_FECNAC,
+    PEEMP_FECSAL, PEEMP_TELEF, PEEMP_EMAIL, PEEMP_CEDULA, PEEMP_SALAR
+) VALUES (
+    'EMP000', 'M', 'S', 'D01', 'C01',
+    NULL, 'Administrador', 'Usuario', 'Dirección General', '1990-01-01',
+    NULL, '0999999999', 'admin@monster.com', '9999999999', 3000.00
+);
+
+-- 9. Insertar usuario administrador si no existe (Login: admin, Password: Admin123*)
+-- Hash BCrypt de "Admin123*": $2a$11$mKpPwycUyKdywzKkeuC6V..FGKTVrW05Gz/7WR8tHmZoIlhzO/AIy
+INSERT IGNORE INTO XEUSU_USUAR (
+    XEUSU_PASWD, XEEST_CODIGO, PEEMP_CODIGO, XEUSU_FECCRE, XEUSU_FECMOD, 
+    XEUSU_PIEFIR, XEUSU_LOGIN, XEUSU_EMAIL, XEUSU_PRIMER_INGRESO
+) VALUES (
+    '$2a$11$mKpPwycUyKdywzKkeuC6V..FGKTVrW05Gz/7WR8tHmZoIlhzO/AIy', 
+    'A', 'EMP000', NOW(), NOW(), 'Firma Admin', 'admin', 'admin@monster.com', 0
+);
+
+-- 10. Asignar perfil de Administrador al usuario si no tiene perfil asignado
+INSERT IGNORE INTO XEUXP_USUPE (XEPER_CODIGO, XEUXP_FECASI, XEUXP_FECRET, XEUSU_ID)
+SELECT 'ADMIN', NOW(), NULL, XEUSU_ID 
+FROM XEUSU_USUAR 
+WHERE XEUSU_LOGIN = 'admin'
+ON DUPLICATE KEY UPDATE XEPER_CODIGO = 'ADMIN';

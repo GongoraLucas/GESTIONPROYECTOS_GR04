@@ -1,75 +1,288 @@
-﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.DashboardViewModel
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.DashboardViewModel
 
 @{
     ViewData["Title"] = "Dashboard";
 }
 
-<div class="container mt-4">
+<style>
+  /* ---------- TODAY METRICS ROW ---------- */
+  .metrics-row {
+    display: flex;
+    gap: 60px;
+    align-items: flex-start;
+  }
+  .metric-block { min-width: 140px; }
+  .metric-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #4f566b;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .metric-value { font-size: 32px; font-weight: 700; color: #1a1f36; }
+  .metric-sub { font-size: 12px; color: #8792a2; margin-top: 2px; }
 
-    <div class="row mb-4">
+  .recommendations {
+    width: 340px;
+    flex-shrink: 0;
+    background: #ffffff;
+    border: 1px solid #e3e8ee;
+    border-radius: 12px;
+    padding: 20px;
+    margin-left: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  }
+  .recommendations .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .recommendations h3 { font-size: 15px; font-weight: 700; margin: 0; color: #1a1f36; }
+  .recommendations .close { color: #8792a2; font-size: 16px; cursor: pointer; }
+  .rec-item { font-size: 13px; color: #4f566b; line-height: 1.5; margin-bottom: 6px; }
+  .rec-link { font-size: 13px; color: #635bff; font-weight: 600; display: inline-block; margin-bottom: 18px; text-decoration: none; }
+  .rec-link:hover { text-decoration: underline; }
+  
+  .api-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    border-top: 1px solid #e3e8ee;
+    padding-top: 14px;
+  }
+  .api-row .api-label { font-size: 13px; font-weight: 700; color: #1a1f36; }
+  .api-row .view-docs { font-size: 13px; color: #635bff; font-weight: 500; text-decoration: none; }
+  .api-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #4f566b;
+    padding: 6px 0;
+  }
+  .api-line .key-val { font-family: "SFMono-Regular", Consolas, monospace; font-size: 11px; color: #1a1f36; background: #eaedf1; padding: 2px 6px; border-radius: 4px; }
 
-        <div class="col">
+  /* ---------- TIMELINE BAR ---------- */
+  .timeline-wrap { margin: 28px 0 36px; }
+  .timeline-bar {
+    height: 6px;
+    border-radius: 4px;
+    background: #e3e8ee;
+    position: relative;
+    overflow: hidden;
+  }
+  .timeline-bar .fill {
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 65%;
+    background: #635bff;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+  .timeline-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #8792a2;
+    margin-top: 8px;
+    font-weight: 500;
+  }
 
-            <h2>Bienvenido @User.Identity?.Name</h2>
-            <p class="text-muted">Sistema de Gestión de Proyectos Monster</p>
-            <hr />
+  /* ---------- BALANCE / PAYOUTS ROW ---------- */
+  .balance-row {
+    display: flex;
+    gap: 100px;
+    margin-bottom: 40px;
+  }
+  .balance-block .label-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .balance-block .label-row .label { font-size: 14px; font-weight: 600; color: #1a1f36; }
+  .balance-block .label-row .view { font-size: 13px; color: #635bff; font-weight: 500; text-decoration: none; }
+  .balance-block .value { font-size: 24px; font-weight: 700; color: #0a2540; }
+  .balance-block .value.dim { color: #8792a2; }
 
+  /* ---------- OVERVIEW CONTROLS ---------- */
+  .controls-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .pill-stripe {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #e3e8ee;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 13px;
+    color: #4f566b;
+    background-color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .pill-stripe .accent { color: #635bff; font-weight: 600; }
+  .pill-stripe .sep { color: #d8dee6; margin: 0 4px; }
+  .controls-right { margin-left: auto; display: flex; gap: 10px; }
+  .btn-outline-stripe {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid #e3e8ee;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1f36;
+    background: #fff;
+    text-decoration: none;
+    transition: background 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  }
+  .btn-outline-stripe:hover { background: #f7f9fc; }
+
+  /* ---------- KPI CARDS ---------- */
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .kpi-card {
+    border-top: 1px solid #e3e8ee;
+    padding-top: 14px;
+  }
+  .kpi-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: #4f566b;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .kpi-title .info-dot {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    border: 1px solid #b4bac4;
+    color: #b4bac4;
+    font-size: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .kpi-value { font-size: 28px; font-weight: 700; color: #1a1f36; margin-bottom: 20px; }
+  .kpi-chart { height: 60px; width: 100%; }
+</style>
+
+<div class="pe-4">
+    <h1 class="page-title fw-bold mb-4" style="font-size: 28px; color: #1a1f36; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">Inicio</h1>
+
+    <div class="metrics-row">
+      <!-- Metric: Employees -->
+      <div class="metric-block">
+        <div class="metric-label">Empleados registrados <i class="bi bi-chevron-down ms-1" style="font-size: 10px;"></i></div>
+        <div class="metric-value">@Model.TotalEmpleados</div>
+        <div class="metric-sub">Actualizado recientemente</div>
+      </div>
+      
+      <!-- Metric: Users -->
+      <div class="metric-block">
+        <div class="metric-label">Usuarios del sistema <i class="bi bi-chevron-down ms-1" style="font-size: 10px;"></i></div>
+        <div class="metric-value">@Model.TotalUsuarios</div>
+        <div class="metric-sub">Accesos configurados</div>
+      </div>
+
+      <!-- Stripe Recommendations box adapted to project -->
+      <div class="recommendations ms-auto">
+        <div class="head">
+          <h3>Acciones Rápidas</h3>
+          <span class="close"><i class="bi bi-x"></i></span>
         </div>
+        <div class="rec-item">Gestiona los empleados y edita su ficha personal de forma rápida.</div>
+        <a class="rec-link" asp-controller="Empleado" asp-action="Index">Ver Empleados</a>
+        
+        <div class="rec-item">Crea y configura credenciales de accesos para nuevos usuarios.</div>
+        <a class="rec-link" asp-controller="Usuario" asp-action="Index">Registrar Usuarios</a>
 
+        <div class="api-row">
+          <span class="api-label">Estado de Conexión</span>
+          <a class="view-docs">Ver Logs</a>
+        </div>
+        <div class="api-line"><span>Servidor SQL</span><span class="key-val">LocalDB (Activo)</span></div>
+        <div class="api-line"><span>Módulo Seguridad</span><span class="key-val">Claims (Habilitado)</span></div>
+      </div>
     </div>
 
-    <div class="row g-4">
-
-        @if (User.HasClaim(c => c.Type == "OPCION" && c.Value == "EMP"))
-        {
-            <div class="col-md-3">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Empleados</h5>
-                        <p class="card-text">Administración de empleados del sistema.</p>
-                        <p class="mt-2"><strong>Total:</strong> @Model.TotalEmpleados</p>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @if (User.HasClaim(c => c.Type == "OPCION" && c.Value == "USR"))
-        {
-            <div class="col-md-3">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Usuarios</h5>
-                        <p class="card-text">Gestión de accesos y credenciales.</p>
-                        <p class="mt-2"><strong>Total:</strong> @Model.TotalUsuarios</p>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @if (User.HasClaim(c => c.Type == "OPCION" && c.Value == "PRO"))
-        {
-            <div class="col-md-3">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Proyectos</h5>
-                        <p class="card-text">Administración de proyectos y equipos.</p>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @if (User.HasClaim(c => c.Type == "OPCION" && c.Value == "REP"))
-        {
-            <div class="col-md-3">
-                <div class="card shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title">Reportes</h5>
-                        <p class="card-text">Consulta y generación de reportes.</p>
-                    </div>
-                </div>
-            </div>
-        }
-
+    <!-- Timeline Bar -->
+    <div class="timeline-wrap">
+      <div class="timeline-bar"><div class="fill"></div></div>
+      <div class="timeline-labels">
+        <span>Inicio de Operaciones</span>
+        <span>En Producción</span>
+      </div>
     </div>
 
+    <!-- Balance Row -->
+    <div class="balance-row">
+      <div class="balance-block">
+        <div class="label-row"><span class="label">Total Empleados</span><a class="view" asp-controller="Empleado" asp-action="Index">Ver todos</a></div>
+        <div class="value">@Model.TotalEmpleados</div>
+      </div>
+      <div class="balance-block">
+        <div class="label-row"><span class="label">Total Usuarios</span><a class="view" asp-controller="Usuario" asp-action="Index">Ver todos</a></div>
+        <div class="value dim">@Model.TotalUsuarios</div>
+      </div>
+    </div>
+
+    <!-- Overview Section -->
+    <h2 class="section-title fw-bold mb-3" style="font-size: 22px; color: #1a1f36;">Resumen General</h2>
+
+    <div class="controls-row">
+      <div class="pill-stripe">Filtro de fecha <span class="sep">|</span> <span class="accent">Últimos 7 días <i class="bi bi-chevron-down ms-1" style="font-size: 10px;"></i></span></div>
+      <div class="pill-stripe"><span class="accent">Diario <i class="bi bi-chevron-down ms-1" style="font-size: 10px;"></i></span></div>
+      <div class="pill-stripe"><i class="bi bi-plus-circle me-1"></i> Comparar <span class="sep">|</span> <span class="accent">Período anterior <i class="bi bi-chevron-down ms-1" style="font-size: 10px;"></i></span></div>
+      <div class="controls-right">
+        <a class="btn-outline-stripe" asp-controller="Empleado" asp-action="Create"><i class="bi bi-plus-lg text-primary"></i> Registrar</a>
+        <a class="btn-outline-stripe" asp-controller="Reporte" asp-action="Personal"><i class="bi bi-file-earmark-bar-graph"></i> Reportes</a>
+      </div>
+    </div>
+
+    <!-- KPI Grid -->
+    <div class="kpi-grid">
+      <!-- KPI 1: Empleados -->
+      <div class="kpi-card">
+        <div class="kpi-title">Empleados <span class="info-dot" style="font-family: inherit;">i</span></div>
+        <div class="kpi-value">@Model.TotalEmpleados</div>
+        <svg class="kpi-chart" viewBox="0 0 300 60" preserveAspectRatio="none">
+          <line x1="0" y1="50" x2="300" y2="50" stroke="#e3e8ee" stroke-width="1"/>
+          <polyline points="0,50 50,42 100,35 150,28 200,20 250,15 300,10" fill="none" stroke="#635bff" stroke-width="2"/>
+        </svg>
+      </div>
+      
+      <!-- KPI 2: Usuarios -->
+      <div class="kpi-card">
+        <div class="kpi-title">Usuarios <span class="info-dot" style="font-family: inherit;">i</span></div>
+        <div class="kpi-value">@Model.TotalUsuarios</div>
+        <svg class="kpi-chart" viewBox="0 0 300 60" preserveAspectRatio="none">
+          <line x1="0" y1="50" x2="300" y2="50" stroke="#e3e8ee" stroke-width="1"/>
+          <polyline points="0,50 50,48 100,45 150,40 200,32 250,28 300,20" fill="none" stroke="#635bff" stroke-width="2"/>
+        </svg>
+      </div>
+
+      <!-- KPI 3: Proyectos (Static simulation to complete layout) -->
+      <div class="kpi-card">
+        <div class="kpi-title">Módulos Activos <span class="info-dot" style="font-family: inherit;">i</span></div>
+        <div class="kpi-value">2</div>
+        <svg class="kpi-chart" viewBox="0 0 300 60" preserveAspectRatio="none">
+          <line x1="0" y1="50" x2="300" y2="50" stroke="#e3e8ee" stroke-width="1"/>
+          <polyline points="0,40 50,40 100,30 150,30 200,20 250,20 300,10" fill="none" stroke="#635bff" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
 </div>

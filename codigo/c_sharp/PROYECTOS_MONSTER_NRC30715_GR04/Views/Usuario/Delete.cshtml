@@ -4,17 +4,63 @@
     ViewData["Title"] = "Eliminar Usuario";
 }
 
-<h3>Eliminar Usuario</h3>
-
-<div class="mb-3">
-    <label class="form-label">Login</label>
-    <div>@Model.Login</div>
-    <label class="form-label">Email</label>
-    <div>@Model.Email</div>
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+    <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-trash text-danger fs-3"></i>
+        <h3 class="m-0 fw-bold" style="font-family: 'Outfit', sans-serif;">Eliminar Cuenta de Usuario</h3>
+    </div>
+    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill btn-sm px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-xs">
+        <i class="bi bi-arrow-left"></i> Volver a la Lista
+    </a>
 </div>
 
-<form asp-action="DeleteConfirmado" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <button class="btn btn-danger">Eliminar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+<!-- Tarjeta de Advertencia y Confirmación -->
+<div class="card shadow-sm border-0 rounded-4 overflow-hidden" style="max-width: 600px; margin: 0 auto;">
+    <!-- Banner de Peligro -->
+    <div class="p-4 text-white d-flex align-items-center gap-3" 
+         style="background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);">
+        <div class="bg-white bg-opacity-20 p-2.5 rounded-circle d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+            <i class="bi bi-exclamation-triangle-fill fs-4 text-white"></i>
+        </div>
+        <div>
+            <h5 class="fw-bold m-0">¿Confirmar Eliminación?</h5>
+            <p class="m-0 text-white-50 mt-1 small">Esta acción no se puede deshacer. Se revocarán todos los perfiles y permisos asignados.</p>
+        </div>
+    </div>
+
+    <!-- Detalles del Registro -->
+    <div class="card-body p-4">
+        <div class="row g-3">
+            <div class="col-12 border-bottom pb-3 mb-2" style="border-color: #f1f5f9 !important;">
+                <label class="text-secondary small fw-bold text-uppercase d-block mb-1" style="font-size: 0.75rem;">Nombre de Usuario (Login)</label>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-person text-secondary fs-5"></i>
+                    <span class="fw-bold text-dark fs-5">@Model.Login</span>
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label class="text-secondary small fw-bold text-uppercase d-block mb-1" style="font-size: 0.75rem;">Correo Electrónico</label>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-envelope text-secondary fs-5"></i>
+                    <span class="fw-semibold text-secondary">@Model.Email</span>
+                </div>
+            </div>
+        </div>
+
+        <hr class="my-4 text-muted opacity-25" />
+
+        <!-- Formulario y Botones de Acción -->
+        <form asp-action="DeleteConfirmado" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.Id" />
+            
+            <div class="d-flex gap-3 justify-content-end">
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold">Cancelar</a>
+                <button type="submit" class="btn btn-danger rounded-pill px-4 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-xs">
+                    <i class="bi bi-trash-fill"></i> Eliminar Definitivamente
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

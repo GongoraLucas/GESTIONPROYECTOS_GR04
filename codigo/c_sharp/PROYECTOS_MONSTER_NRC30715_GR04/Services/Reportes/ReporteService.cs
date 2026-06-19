@@ -179,6 +179,7 @@ public class ReporteService : IReporteService
     private async Task<List<ReporteEmpleadoDto>> ObtenerDatosEmpleadosAsync()
     {
         return await _context.Empleados
+            .Where(e => e.Estado == "A")
             .Include(e => e.Sexo)
             .Include(e => e.EstadoCivil)
             .Include(e => e.Cargo)

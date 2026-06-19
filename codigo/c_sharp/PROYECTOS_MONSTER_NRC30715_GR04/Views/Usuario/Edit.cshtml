@@ -4,37 +4,120 @@
     ViewData["Title"] = "Editar Usuario";
 }
 
-<h3>Editar Usuario</h3>
+<style>
+    /* Estilos estéticos de Stripe para los inputs */
+    .form-label-custom {
+        font-size: 13px;
+        font-weight: 600;
+        color: #4f566b;
+        margin-bottom: 6px;
+    }
+    .form-control-custom, .form-select-custom {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        color: #1a1f36;
+        background-color: #f8fafc;
+        outline: none;
+        transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .form-control-custom:focus, .form-select-custom:focus {
+        background-color: #ffffff;
+        border-color: #cbd5e1;
+        box-shadow: 0 0 0 4px rgba(99, 91, 255, 0.1);
+    }
+    .input-group-text-custom {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-right: none;
+        border-radius: 10px 0 0 10px;
+        color: #64748b;
+        padding-left: 16px;
+        padding-right: 12px;
+    }
+    .input-group-custom .form-control-custom {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+</style>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" asp-for="Id" />
-
-    <div class="mb-3">
-        <label class="form-label">Login</label>
-        <input asp-for="Login" class="form-control" />
-        <span asp-validation-for="Login" class="text-danger"></span>
+<div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+    <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-pencil-square text-primary fs-3"></i>
+        <h3 class="m-0 fw-bold" style="font-family: 'Outfit', sans-serif;">Modificar Cuenta de Usuario</h3>
     </div>
+    <a asp-action="Index" class="btn btn-outline-secondary rounded-pill btn-sm px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-xs">
+        <i class="bi bi-arrow-left"></i> Volver a la Lista
+    </a>
+</div>
 
-    <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+<div class="card shadow-sm border-0 rounded-4">
+    <div class="card-body p-4 p-md-5">
+        <form asp-action="Edit" method="post" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger d-none"></div>
+            <input type="hidden" asp-for="Id" />
+
+            <div class="row g-4">
+                <!-- Username (Login) -->
+                <div class="col-md-6">
+                    <label asp-for="Login" class="form-label-custom">Nombre de Usuario (Login)</label>
+                    <div class="input-group input-group-custom">
+                        <span class="input-group-text-custom d-flex align-items-center"><i class="bi bi-person"></i></span>
+                        <input asp-for="Login" class="form-control-custom" placeholder="Ej. cgomez" required maxlength="50" />
+                    </div>
+                    <span asp-validation-for="Login" class="text-danger small mt-1 d-block"></span>
+                </div>
+
+                <!-- Email Address -->
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label-custom">Correo Electrónico</label>
+                    <div class="input-group input-group-custom">
+                        <span class="input-group-text-custom d-flex align-items-center"><i class="bi bi-envelope"></i></span>
+                        <input asp-for="Email" type="email" class="form-control-custom" placeholder="Ej. carlos.gomez@monster.com" required maxlength="100" />
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger small mt-1 d-block"></span>
+                </div>
+
+                <!-- Associated Employee -->
+                <div class="col-md-6">
+                    <label asp-for="EmpleadoCodigo" class="form-label-custom">Empleado Asociado</label>
+                    <div class="input-group input-group-custom">
+                        <span class="input-group-text-custom d-flex align-items-center"><i class="bi bi-person-badge"></i></span>
+                        <select asp-for="EmpleadoCodigo" asp-items="Model.Empleados" class="form-select-custom" required style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                            <option value="">-- Seleccione el Empleado --</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="EmpleadoCodigo" class="text-danger small mt-1 d-block"></span>
+                </div>
+
+                <!-- Status -->
+                <div class="col-md-6">
+                    <label asp-for="EstadoCodigo" class="form-label-custom">Estado de la Cuenta</label>
+                    <div class="input-group input-group-custom">
+                        <span class="input-group-text-custom d-flex align-items-center"><i class="bi bi-toggle-on"></i></span>
+                        <select asp-for="EstadoCodigo" asp-items="Model.Estados" class="form-select-custom" required style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
+                            <option value="">-- Seleccione el Estado --</option>
+                        </select>
+                    </div>
+                    <span asp-validation-for="EstadoCodigo" class="text-danger small mt-1 d-block"></span>
+                </div>
+            </div>
+
+            <hr class="my-4 text-muted opacity-25" />
+
+            <!-- Acciones -->
+            <div class="d-flex gap-3 justify-content-end">
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-semibold">Cancelar</a>
+                <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 fw-semibold d-inline-flex align-items-center gap-1 shadow-sm">
+                    <i class="bi bi-save2-fill"></i> Guardar Cambios
+                </button>
+            </div>
+        </form>
     </div>
+</div>
 
-    <div class="mb-3">
-        <label class="form-label">Empleado</label>
-        <select asp-for="EmpleadoCodigo" asp-items="Model.Empleados" class="form-select">
-            <option value="">-- Seleccionar --</option>
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Estado</label>
-        <select asp-for="EstadoCodigo" asp-items="Model.Estados" class="form-select">
-            <option value="">-- Seleccionar --</option>
-        </select>
-    </div>
-
-    <button class="btn btn-primary">Guardar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PROYECTOS_MONSTER_NRC30715_GR04.Models.Entities;
@@ -54,8 +54,9 @@ public class Empleado
     public DateTime FechaNacimiento { get; set; }
 
     
+    [Required]
     [Column("PEEMP_FECSAL")]
-    public DateTime? FechaSalida { get; set; }
+    public DateTime FechaSalida { get; set; }
 
     [Required]
     [Column("PEEMP_TELEF")]
@@ -80,6 +81,24 @@ public class Empleado
     [StringLength(250)]
     public string? Foto { get; set; }
 
+    [Column("PEDIS_CODIGO")]
+    [StringLength(2)]
+    public string? DiscapacidadCodigo { get; set; }
+
+    [Required]
+    [Column("PEINS_CODIGO")]
+    [StringLength(2)]
+    public string InstruccionCodigo { get; set; } = string.Empty;
+
+    [Required]
+    [Column("PEEMP_ESTADO")]
+    [StringLength(1)]
+    public string Estado { get; set; } = "A";
+
+    [Required]
+    [Column("PEEMP_PORCEN_DISC")]
+    public decimal PorcentajeDiscapacidad { get; set; }
+
     // Relaciones
 
     public Sexo? Sexo { get; set; }
@@ -90,6 +109,13 @@ public class Empleado
 
     public Empleado? Jefe { get; set; }
 
+    public Discapacidad? Discapacidad { get; set; }
+
+    public Instruccion? Instruccion { get; set; }
+
     public ICollection<Empleado> Subordinados { get; set; }
         = new List<Empleado>();
+
+    public ICollection<Familiar> Familiares { get; set; }
+        = new List<Familiar>();
 }

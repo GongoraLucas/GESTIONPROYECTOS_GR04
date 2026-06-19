@@ -28,7 +28,10 @@ ObtenerTodosAsync(
     int registrosPorPagina)
     {
         var query =
-            _context.Empleados.AsQueryable();
+            _context.Empleados
+                .Include(x => x.Cargo)
+                    .ThenInclude(c => c!.Departamento)
+                .Where(x => x.Estado == "A");
 
         if (!string.IsNullOrWhiteSpace(buscar))
         {
@@ -57,7 +60,12 @@ ObtenerTodosAsync(
                     Apellidos = x.Apellidos,
                     Email = x.Email,
                     Telefono = x.Telefono,
-                    Foto = x.Foto
+                    Foto = x.Foto,
+                    Estado = x.Estado,
+                    CargoDescripcion = x.Cargo != null ? x.Cargo.Descripcion : "",
+                    DepartamentoDescripcion = x.Cargo != null && x.Cargo.Departamento != null
+                        ? x.Cargo.Departamento.Descripcion
+                        : ""
                 })
                 .ToListAsync();
 
@@ -67,10 +75,37 @@ ObtenerTodosAsync(
         );
     }
 
+    private async Task<string> GenerarSiguienteCodigoAsync()
+    {
+        var ultimosCodigos = await _context.Empleados
+            .Select(e => e.Codigo)
+            .ToListAsync();
+
+        int maxNum = -1;
+        foreach (var cod in ultimosCodigos)
+        {
+            if (cod != null && cod.StartsWith("EMP") && int.TryParse(cod.Substring(3).Trim(), out int num))
+            {
+                if (num > maxNum)
+                {
+                    maxNum = num;
+                }
+            }
+        }
+
+        int siguienteNum = maxNum + 1;
+        return $"EMP{siguienteNum:D3}";
+    }
+
     public async Task<EmpleadoViewModel>
         ObtenerFormularioAsync(EmpleadoViewModel? model = null)
     {
         model ??= new EmpleadoViewModel();
+
+        if (string.IsNullOrWhiteSpace(model.Codigo))
+        {
+            model.Codigo = await GenerarSiguienteCodigoAsync();
+        }
 
         model.Sexos =
             await _context.Sexos
@@ -114,6 +149,7 @@ ObtenerTodosAsync(
 
         model.Jefes =
             await _context.Empleados
+                .Where(x => x.Estado == "A")
                 .OrderBy(x => x.Apellidos)
                 .Select(x => new SelectListItem
                 {
@@ -125,12 +161,37 @@ ObtenerTodosAsync(
                 })
                 .ToListAsync();
 
+        model.Discapacidades =
+            await _context.Discapacidades
+                .OrderBy(x => x.Descripcion)
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Codigo,
+                    Text = x.Descripcion
+                })
+                .ToListAsync();
+
+        model.Instrucciones =
+            await _context.Instrucciones
+                .OrderBy(x => x.Descripcion)
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Codigo,
+                    Text = x.Descripcion
+                })
+                .ToListAsync();
+
         return model;
     }
 
     public async Task CrearAsync(
     EmpleadoViewModel model)
     {
+        if (string.IsNullOrWhiteSpace(model.Codigo))
+        {
+            model.Codigo = await GenerarSiguienteCodigoAsync();
+        }
+
         var empleado =
             new Empleado
             {
@@ -141,42 +202,53 @@ ObtenerTodosAsync(
                 Direccion = model.Direccion,
                 Telefono = model.Telefono,
                 Email = model.Email,
-
-                FechaNacimiento =
-                    model.FechaNacimiento,
-
-                FechaSalida =
-                    model.FechaSalida,
-
-                Salario =
-                    model.Salario,
-
-                SexoCodigo =
-                    model.SexoCodigo,
-
-                EstadoCivilCodigo =
-                    model.EstadoCivilCodigo,
-
-                DepartamentoCodigo =
-                    model.DepartamentoCodigo,
-
-                CargoCodigo =
-                    model.CargoCodigo,
-
-                JefeCodigo =
-                    string.IsNullOrWhiteSpace(
-                        model.JefeCodigo)
-                        ? null
-                        : model.JefeCodigo,
-
-                Foto =
-                    model.Foto
+                FechaNacimiento = model.FechaNacimiento,
+                FechaSalida = model.FechaSalida,
+                Salario = model.Salario,
+                SexoCodigo = model.SexoCodigo,
+                EstadoCivilCodigo = model.EstadoCivilCodigo,
+                DepartamentoCodigo = model.DepartamentoCodigo,
+                CargoCodigo = model.CargoCodigo,
+                JefeCodigo = string.IsNullOrWhiteSpace(model.JefeCodigo) ? null : model.JefeCodigo,
+                Foto = model.Foto,
+                DiscapacidadCodigo = string.IsNullOrWhiteSpace(model.DiscapacidadCodigo) ? null : model.DiscapacidadCodigo,
+                InstruccionCodigo = model.InstruccionCodigo,
+                Estado = string.IsNullOrWhiteSpace(model.Estado) ? "A" : model.Estado,
+                PorcentajeDiscapacidad = model.PorcentajeDiscapacidad
             };
 
-        _context.Empleados.Add(
-            empleado);
-
+        _context.Empleados.Add(empleado);
         await _context.SaveChangesAsync();
+
+        // Save familiares
+        long nextFamiliarId = 1;
+        bool tieneFamiliares = await _context.Familiares.AnyAsync();
+        if (tieneFamiliares)
+        {
+            nextFamiliarId = await _context.Familiares.MaxAsync(f => f.Id) + 1;
+        }
+
+        if (model.Familiares != null && model.Familiares.Count > 0)
+        {
+            foreach (var famModel in model.Familiares)
+            {
+                int edad = DateTime.Today.Year - famModel.FechaNacimiento.Year;
+                if (famModel.FechaNacimiento.Date > DateTime.Today.AddYears(-edad)) edad--;
+
+                var familiar = new Familiar
+                {
+                    Id = nextFamiliarId++,
+                    EmpleadoCodigo = model.Codigo,
+                    Nombres = famModel.Nombres,
+                    Apellidos = famModel.Apellidos,
+                    FechaNacimiento = famModel.FechaNacimiento,
+                    Edad = edad,
+                    Parentesco = famModel.Parentesco
+                };
+                _context.Familiares.Add(familiar);
+            }
+            await _context.SaveChangesAsync();
+        }
     }
 
     public async Task<EmpleadoViewModel?>
@@ -184,6 +256,7 @@ ObtenerTodosAsync(
     {
         var empleado =
             await _context.Empleados
+                .Include(x => x.Familiares)
                 .FirstOrDefaultAsync(
                     x => x.Codigo == codigo);
 
@@ -208,7 +281,11 @@ ObtenerTodosAsync(
                 DepartamentoCodigo = empleado.DepartamentoCodigo,
                 CargoCodigo = empleado.CargoCodigo,
                 JefeCodigo = empleado.JefeCodigo,
-                Foto = empleado.Foto
+                Foto = empleado.Foto,
+                DiscapacidadCodigo = empleado.DiscapacidadCodigo,
+                InstruccionCodigo = empleado.InstruccionCodigo,
+                Estado = empleado.Estado,
+                PorcentajeDiscapacidad = (int)empleado.PorcentajeDiscapacidad
             };
 
         model.Sexos =
@@ -253,6 +330,7 @@ ObtenerTodosAsync(
 
         model.Jefes =
             await _context.Empleados
+                .Where(x => x.Estado == "A")
                 .OrderBy(x => x.Apellidos)
                 .Select(x => new SelectListItem
                 {
@@ -260,6 +338,39 @@ ObtenerTodosAsync(
                     Text = x.Apellidos + " " + x.Nombres
                 })
                 .ToListAsync();
+
+        model.Discapacidades =
+            await _context.Discapacidades
+                .OrderBy(x => x.Descripcion)
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Codigo,
+                    Text = x.Descripcion
+                })
+                .ToListAsync();
+
+        model.Instrucciones =
+            await _context.Instrucciones
+                .OrderBy(x => x.Descripcion)
+                .Select(x => new SelectListItem
+                {
+                    Value = x.Codigo,
+                    Text = x.Descripcion
+                })
+                .ToListAsync();
+
+        if (empleado.Familiares != null)
+        {
+            model.Familiares = empleado.Familiares.Select(f => new FamiliarViewModel
+            {
+                Id = f.Id,
+                Nombres = f.Nombres,
+                Apellidos = f.Apellidos,
+                FechaNacimiento = f.FechaNacimiento,
+                Edad = f.Edad,
+                Parentesco = f.Parentesco
+            }).ToList();
+        }
 
         return model;
     }
@@ -269,6 +380,7 @@ ObtenerTodosAsync(
     {
         var empleado =
             await _context.Empleados
+                .Include(x => x.Familiares)
                 .FirstOrDefaultAsync(
                     x => x.Codigo == model.Codigo);
 
@@ -304,6 +416,24 @@ ObtenerTodosAsync(
 
         empleado.JefeCodigo =
             model.JefeCodigo;
+
+        empleado.DiscapacidadCodigo =
+            string.IsNullOrWhiteSpace(
+                model.DiscapacidadCodigo)
+                ? null
+                : model.DiscapacidadCodigo;
+
+        empleado.InstruccionCodigo =
+            model.InstruccionCodigo;
+
+        empleado.Estado =
+            string.IsNullOrWhiteSpace(
+                model.Estado)
+                ? "A"
+                : model.Estado;
+
+        empleado.PorcentajeDiscapacidad =
+            model.PorcentajeDiscapacidad;
 
         if (model.ArchivoFoto != null)
         {
@@ -342,6 +472,41 @@ ObtenerTodosAsync(
                 "/uploads/empleados/" +
                 nombreArchivo;
         }
+        // Remove existing familiares
+        var familiaresExistentes = await _context.Familiares
+            .Where(f => f.EmpleadoCodigo == model.Codigo)
+            .ToListAsync();
+        _context.Familiares.RemoveRange(familiaresExistentes);
+
+        // Add current familiares
+        long nextFamiliarId = 1;
+        bool tieneFamiliares = await _context.Familiares.AnyAsync();
+        if (tieneFamiliares)
+        {
+            nextFamiliarId = await _context.Familiares.MaxAsync(f => f.Id) + 1;
+        }
+
+        if (model.Familiares != null && model.Familiares.Count > 0)
+        {
+            foreach (var famModel in model.Familiares)
+            {
+                int edad = DateTime.Today.Year - famModel.FechaNacimiento.Year;
+                if (famModel.FechaNacimiento.Date > DateTime.Today.AddYears(-edad)) edad--;
+
+                var familiar = new Familiar
+                {
+                    Id = nextFamiliarId++,
+                    EmpleadoCodigo = model.Codigo,
+                    Nombres = famModel.Nombres,
+                    Apellidos = famModel.Apellidos,
+                    FechaNacimiento = famModel.FechaNacimiento,
+                    Edad = edad,
+                    Parentesco = famModel.Parentesco
+                };
+                _context.Familiares.Add(familiar);
+            }
+        }
+
         await _context.SaveChangesAsync();
     }
 
@@ -381,7 +546,7 @@ ObtenerTodosAsync(
         bool esJefe =
             await _context.Empleados
                 .AnyAsync(x =>
-                    x.JefeCodigo == codigo);
+                    x.JefeCodigo == codigo && x.Estado == "A");
 
         if (esJefe)
         {
@@ -397,24 +562,7 @@ ObtenerTodosAsync(
         if (empleado == null)
             return;
 
-        if (!string.IsNullOrWhiteSpace(
-            empleado.Foto))
-        {
-            string rutaFisica =
-                Path.Combine(
-                    Directory.GetCurrentDirectory(),
-                    "wwwroot",
-                    empleado.Foto.TrimStart('/')
-                        .Replace("/", Path.DirectorySeparatorChar.ToString()));
-
-            if (File.Exists(rutaFisica))
-            {
-                File.Delete(rutaFisica);
-            }
-        }
-
-        _context.Empleados.Remove(
-            empleado);
+        empleado.Estado = "I";
 
         await _context.SaveChangesAsync();
     }
@@ -428,6 +576,8 @@ ObtenerDetalleAsync(string codigo)
             .Include(x => x.EstadoCivil)
             .Include(x => x.Cargo)
             .Include(x => x.Jefe)
+            .Include(x => x.Discapacidad)
+            .Include(x => x.Instruccion)
             .Where(x => x.Codigo == codigo)
             .Select(x => new EmpleadoViewModel
             {
@@ -442,6 +592,10 @@ ObtenerDetalleAsync(string codigo)
                 FechaSalida = x.FechaSalida,
                 Salario = x.Salario,
                 Foto = x.Foto,
+                Estado = x.Estado,
+                PorcentajeDiscapacidad = (int)x.PorcentajeDiscapacidad,
+                DiscapacidadCodigo = x.DiscapacidadCodigo,
+                InstruccionCodigo = x.InstruccionCodigo,
 
                 SexoDescripcion =
                     x.Sexo!.Descripcion,
@@ -458,7 +612,17 @@ ObtenerDetalleAsync(string codigo)
                     x.Jefe != null
                         ? x.Jefe.Apellidos + " " +
                           x.Jefe.Nombres
-                        : "Sin jefe"
+                        : "Sin jefe",
+
+                DiscapacidadDescripcion =
+                    x.Discapacidad != null
+                        ? x.Discapacidad.Descripcion
+                        : "Ninguna",
+
+                InstruccionDescripcion =
+                    x.Instruccion != null
+                        ? x.Instruccion.Descripcion
+                        : ""
             })
             .FirstOrDefaultAsync();
     }

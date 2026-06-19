@@ -1,147 +1,530 @@
-﻿@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.AsignarOpcionViewModel
+@model PROYECTOS_MONSTER_NRC30715_GR04.Models.ViewModels.AsignarOpcionViewModel
 
 @{
-    ViewData["Title"] = "Asignar Opciones";
+    ViewData["Title"] = "Asignar Opciones a Perfil";
 }
 
-<div class="container mt-4">
-
-    <h3>
-        Asignar Opciones a Perfil
-    </h3>
-
-    <hr />
-
-    <form method="get">
-
-        <div class="row mb-4">
-
-            <div class="col-md-4">
-
-                <label class="form-label">
-                    Perfil
-                </label>
-
-                <select asp-for="PerfilCodigo"
-                        asp-items="Model.Perfiles"
-                        class="form-select"
-                        onchange="this.form.submit()">
-
-                    <option value="">
-                        Seleccione...
-                    </option>
-
-                </select>
-
-            </div>
-
-        </div>
-
-    </form>
-
-    @if (!string.IsNullOrEmpty(Model.PerfilCodigo))
-    {
-        <div class="row">
-
-            <div class="col-md-5">
-
-                <div class="card">
-
-                    <div class="card-header bg-light">
-                        Opciones Disponibles
-                    </div>
-
-                    <div class="card-body">
-
-                        @foreach (var opcion in Model.OpcionesDisponibles)
-                        {
-                            <form asp-action="AsignarOpcionPerfil"
-                                  method="post"
-                                  class="mb-2">
-
-                                <input type="hidden"
-                                       name="perfilCodigo"
-                                       value="@Model.PerfilCodigo" />
-
-                                <input type="hidden"
-                                       name="opcionCodigo"
-                                       value="@opcion.Codigo" />
-
-                                <div class="d-flex justify-content-between">
-
-                                    <span>
-                                        @opcion.Descripcion
-                                    </span>
-
-                                    <button class="btn btn-success btn-sm">
-                                        →
-                                    </button>
-
-                                </div>
-
-                            </form>
-                        }
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            <div class="col-md-2 text-center">
-
-                <h1>
-                    ⇄
-                </h1>
-
-            </div>
-
-            <div class="col-md-5">
-
-                <div class="card">
-
-                    <div class="card-header bg-light">
-                        Opciones Asignadas
-                    </div>
-
-                    <div class="card-body">
-
-                        @foreach (var opcion in Model.OpcionesAsignadas)
-                        {
-                            <form asp-action="RetirarOpcionPerfil"
-                                  method="post"
-                                  class="mb-2">
-
-                                <input type="hidden"
-                                       name="perfilCodigo"
-                                       value="@Model.PerfilCodigo" />
-
-                                <input type="hidden"
-                                       name="opcionCodigo"
-                                       value="@opcion.Codigo" />
-
-                                <div class="d-flex justify-content-between">
-
-                                    <button class="btn btn-danger btn-sm">
-                                        ←
-                                    </button>
-
-                                    <span>
-                                        @opcion.Descripcion
-                                    </span>
-
-                                </div>
-
-                            </form>
-                        }
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-    }
-
+<!-- Banner superior estilo Mockup con degradado púrpura/índigo -->
+<div class="p-4 text-white rounded-4 shadow-sm mb-4 d-flex align-items-center gap-3" 
+     style="background: linear-gradient(135deg, #635bff 0%, #4f46e5 100%);">
+    <div class="bg-white bg-opacity-10 p-3 rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+        <i class="bi bi-shield-lock-fill" style="font-size: 1.8rem;"></i>
+    </div>
+    <div>
+        <h2 class="fw-bold m-0" style="letter-spacing: -0.5px; font-family: 'Outfit', sans-serif;">Asignación de Opciones a Perfil</h2>
+        <p class="m-0 text-white-50 mt-1" style="font-size: 0.95rem;">Configure qué permisos y módulos del sistema están asociados a cada perfil de acceso de forma interactiva.</p>
+    </div>
 </div>
+
+<!-- Card principal de selección de Perfil -->
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body p-4">
+        <form method="get" id="perfilForm">
+            <div class="row align-items-end">
+                <div class="col-md-6 col-lg-5">
+                    <label class="form-label fw-bold text-secondary">
+                        <i class="bi bi-shield-check me-1 text-primary"></i> Seleccionar Perfil de Seguridad
+                    </label>
+                    <select asp-for="PerfilCodigo"
+                            asp-items="Model.Perfiles"
+                            class="form-select border-secondary-subtle"
+                            style="border-radius: 10px; padding: 10px 14px;"
+                            onchange="this.form.submit()">
+                        <option value="">Seleccione un perfil</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.PerfilCodigo))
+{
+    <div class="row">
+        <div class="col-12">
+            <!-- Barra de Herramientas y Buscador -->
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 mb-4">
+                <!-- Buscador de Permisos en Tiempo Real -->
+                <div class="flex-grow-1" style="max-width: 480px;">
+                    <div class="input-group rounded-pill bg-white shadow-xs" style="border: 1px solid #cbd5e1; overflow: hidden;">
+                        <span class="input-group-text bg-transparent border-0 text-muted ps-3">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" id="searchOpciones" class="form-control border-0 ps-0 bg-transparent" placeholder="Buscar por módulo o permiso..." style="box-shadow: none; padding: 10px;" oninput="filtrarOpciones()" />
+                    </div>
+                </div>
+                <!-- Botones Expandir / Colapsar Todo -->
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill btn-sm px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1" onclick="expandAll()">
+                        <i class="bi bi-arrows-expand"></i> Expandir todo
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary rounded-pill btn-sm px-3 py-2 fw-semibold d-inline-flex align-items-center gap-1" onclick="collapseAll()">
+                        <i class="bi bi-arrows-collapse"></i> Colapsar todo
+                    </button>
+                </div>
+            </div>
+
+            <!-- Estructura de Opciones y Accesos (Árbol) -->
+            <div class="treeview-container">
+                @foreach (var sistema in Model.Sistemas)
+                {
+                    <div class="treeview-card mb-4" id="card-@sistema.Codigo">
+                        <!-- Cabecera del Sistema / Módulo (Padre Nivel 1) -->
+                        <div class="treeview-header d-flex align-items-center justify-content-between" style="background-color: #f8fafc; border-bottom: 1px solid #e2e8f0; padding: 14px 20px;">
+                            <div class="d-flex align-items-center flex-grow-1">
+                                <button type="button" class="btn btn-sm text-secondary p-0 border-0 bg-transparent toggle-btn me-2" 
+                                        onclick="toggleCollapse('@sistema.Codigo')">
+                                    <i class="bi bi-chevron-down toggle-chevron fs-5" id="chevron-@sistema.Codigo"></i>
+                                </button>
+                                <span class="fw-bold text-dark text-uppercase fs-7" style="letter-spacing: 0.5px;">
+                                    <i class="bi bi-folder-fill text-warning me-2 fs-5"></i>@sistema.Descripcion
+                                </span>
+                            </div>
+                            <span class="badge bg-secondary text-white border-0 child-count font-monospace px-2.5 py-1.5" id="count-@sistema.Codigo" style="font-size: 0.8rem; border-radius: 30px;">0 / 0</span>
+                        </div>
+
+                        <!-- Lista de Grupos / Sub-módulos (Nivel 2) -->
+                        <div id="children-@sistema.Codigo" class="treeview-children p-3 bg-white">
+                            @foreach (var grupo in sistema.Grupos)
+                            {
+                                var grupoId = sistema.Codigo + "-" + grupo.Nombre.Replace(" ", "").Replace("(", "").Replace(")", "").Replace("á", "a").Replace("é", "e").Replace("í", "i").Replace("ó", "o").Replace("ú", "u");
+                                
+                                <div class="treeview-group-container border rounded-3 mb-3 overflow-hidden" style="border-color: #e2e8f0 !important; background-color: #fafafa;">
+                                    <!-- Cabecera del Grupo (Nivel 2) -->
+                                    <div class="treeview-group-header d-flex align-items-center justify-content-between p-3 border-bottom bg-white" style="border-color: #e2e8f0 !important;">
+                                        <div class="d-flex align-items-center flex-grow-1">
+                                            <button type="button" class="btn btn-sm text-secondary p-0 border-0 bg-transparent toggle-btn me-2" 
+                                                    onclick="toggleGroupCollapse('@grupoId')">
+                                                <i class="bi bi-chevron-down toggle-chevron" id="chevron-@grupoId"></i>
+                                            </button>
+                                            <div class="form-check mb-0">
+                                                <input type="checkbox" class="form-check-input parent-checkbox" 
+                                                       id="parent-@grupoId" data-parent-code="@grupoId" data-sistema-code="@sistema.Codigo"
+                                                       onclick="toggleParent(this, '@grupoId', '@sistema.Codigo')" style="cursor: pointer;" />
+                                                <label class="form-check-label fw-bold text-secondary ps-1" for="parent-@grupoId" style="font-size: 0.9rem; cursor: pointer;">
+                                                    <i class="bi bi-folder2-open text-info me-2 fs-5"></i>@grupo.Nombre
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <span class="badge bg-light text-dark border child-count font-monospace px-2 py-1" id="count-@grupoId" style="font-size: 0.75rem; border-radius: 30px; border-color: #cbd5e1 !important;">0 / 0</span>
+                                    </div>
+
+                                    <!-- Lista de Opciones / Acciones (Nivel 3) -->
+                                    <div id="children-@grupoId" class="treeview-group-children p-3 bg-white">
+                                        <div class="row row-cols-1 g-2">
+                                            @foreach (var opcion in grupo.Opciones)
+                                            {
+                                                <div class="col">
+                                                    <div class="tree-node-item d-flex align-items-center justify-content-between p-3 border rounded-3 bg-white">
+                                                        <div class="form-check form-switch mb-0 flex-grow-1">
+                                                            <input type="checkbox" class="form-check-input child-checkbox" 
+                                                                   id="child-@opcion.Codigo" 
+                                                                   data-parent-id="parent-@grupoId" 
+                                                                   data-sistema-id="@sistema.Codigo"
+                                                                   data-opcion-codigo="@opcion.Codigo"
+                                                                   data-opcion-desc="@opcion.Descripcion"
+                                                                   @(opcion.Asignada ? "checked" : "")
+                                                                   onclick="toggleChild(this, '@grupoId', '@sistema.Codigo')" style="cursor: pointer;" />
+                                                            <label class="form-check-label text-dark fw-semibold ps-2" for="child-@opcion.Codigo" style="cursor: pointer; font-size: 0.9rem;">
+                                                                <i class="bi bi-shield-lock text-primary me-2"></i>@opcion.Descripcion
+                                                            </label>
+                                                        </div>
+                                                        <div class="d-flex align-items-center ps-2">
+                                                            <!-- Cargando/Éxito individual -->
+                                                            <span class="spinner-border spinner-border-xs text-primary d-none" id="loader-@opcion.Codigo" role="status"></span>
+                                                            <i class="bi bi-check-circle-fill text-success fs-5 d-none" id="success-@opcion.Codigo"></i>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenedor flotante de Toasts -->
+    <div class="toast-container-custom">
+        <div id="statusToast" class="toast align-items-center text-white bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true" style="border-radius: 12px;">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center gap-2 p-3">
+                    <i class="bi bi-info-circle-fill text-info fs-5" id="toast-icon"></i>
+                    <span id="toast-message" class="fw-semibold">Guardando cambios...</span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-3 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Estilos del Árbol de Permisos */
+        .treeview-container {
+            margin-top: 10px;
+        }
+        .treeview-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            background: #ffffff;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03), 0 1px 2px 0 rgba(0, 0, 0, 0.01);
+            overflow: hidden;
+            transition: box-shadow 0.2s ease, border-color 0.2s ease;
+        }
+        .treeview-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .treeview-header {
+            user-select: none;
+        }
+        .treeview-group-container {
+            transition: border-color 0.15s ease;
+        }
+        .tree-node-item {
+            border-color: #e2e8f0 !important;
+            transition: all 0.2s ease;
+        }
+        .tree-node-item:hover {
+            background-color: #f8fafc !important;
+            border-color: #cbd5e1 !important;
+            transform: translateY(-1px);
+        }
+        .toggle-chevron {
+            display: inline-block;
+            transition: transform 0.25s ease;
+            font-size: 1.1rem;
+        }
+        .toggle-chevron.collapsed {
+            transform: rotate(-90deg);
+        }
+        .spinner-border-xs {
+            width: 0.85rem;
+            height: 0.85rem;
+            border-width: 0.12em;
+        }
+        .fs-7 {
+            font-size: 0.85rem;
+        }
+        .toast-container-custom {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 1055;
+        }
+    </style>
+
+    <script>
+        // URLs para peticiones AJAX
+        const assignUrl = '@Url.Action("AsignarOpcionPerfil", "Seguridad")';
+        const retireUrl = '@Url.Action("RetirarOpcionPerfil", "Seguridad")';
+        const currentPerfil = '@Model.PerfilCodigo';
+
+        // Función para notificaciones Toast
+        function showToast(message, type = 'info') {
+            const toastEl = document.getElementById('statusToast');
+            const messageEl = document.getElementById('toast-message');
+            const iconEl = document.getElementById('toast-icon');
+
+            messageEl.textContent = message;
+            
+            iconEl.className = 'bi fs-5';
+            if (type === 'success') {
+                iconEl.classList.add('bi-check-circle-fill', 'text-success');
+                toastEl.className = 'toast align-items-center text-white bg-dark border-0 shadow-lg';
+            } else if (type === 'error') {
+                iconEl.classList.add('bi-exclamation-triangle-fill', 'text-danger');
+                toastEl.className = 'toast align-items-center text-white bg-dark border-0 shadow-lg';
+            } else {
+                iconEl.classList.add('bi-info-circle-fill', 'text-info');
+                toastEl.className = 'toast align-items-center text-white bg-dark border-0 shadow-lg';
+            }
+
+            const toast = new bootstrap.Toast(toastEl, { delay: 3500 });
+            toast.show();
+        }
+
+        // Buscador de Opciones en Tiempo Real
+        function filtrarOpciones() {
+            const term = document.getElementById('searchOpciones').value.toLowerCase().trim();
+            const options = document.querySelectorAll('.tree-node-item');
+            const groups = document.querySelectorAll('.treeview-group-container');
+            const systems = document.querySelectorAll('.treeview-card');
+
+            if (term === '') {
+                // Si la búsqueda está vacía, restaurar todo
+                options.forEach(opt => opt.closest('.col').classList.remove('d-none'));
+                groups.forEach(group => group.classList.remove('d-none'));
+                systems.forEach(sys => sys.classList.remove('d-none'));
+                return;
+            }
+
+            // Filtrar las opciones individuales (Nivel 3)
+            options.forEach(opt => {
+                const desc = opt.querySelector('label').textContent.toLowerCase();
+                const code = opt.querySelector('input').getAttribute('data-opcion-codigo').toLowerCase();
+                const parentCol = opt.closest('.col');
+
+                if (desc.includes(term) || code.includes(term)) {
+                    parentCol.classList.remove('d-none');
+                } else {
+                    parentCol.classList.add('d-none');
+                }
+            });
+
+            // Filtrar los grupos de opciones (Nivel 2)
+            groups.forEach(group => {
+                const groupHeader = group.querySelector('.treeview-group-header');
+                const groupTitle = groupHeader.querySelector('label').textContent.toLowerCase();
+                const groupChildrenContainer = group.querySelector('.treeview-group-children');
+                const visibleChildren = groupChildrenContainer.querySelectorAll('.col:not(.d-none)');
+
+                if (visibleChildren.length > 0 || groupTitle.includes(term)) {
+                    group.classList.remove('d-none');
+                    // Si el título del grupo coincide, mostrar todas sus opciones
+                    if (groupTitle.includes(term)) {
+                        groupChildrenContainer.querySelectorAll('.col').forEach(c => c.classList.remove('d-none'));
+                    }
+                    
+                    // Asegurar que esté expandido para ver las coincidencias
+                    const childrenContainer = group.querySelector('.treeview-group-children');
+                    const chevron = group.querySelector('.treeview-group-header .toggle-chevron');
+                    if (childrenContainer && childrenContainer.classList.contains('d-none')) {
+                        childrenContainer.classList.remove('d-none');
+                        if (chevron) chevron.classList.remove('collapsed');
+                    }
+                } else {
+                    group.classList.add('d-none');
+                }
+            });
+
+            // Filtrar los sistemas/módulos (Nivel 1)
+            systems.forEach(sys => {
+                const sysHeader = sys.querySelector('.treeview-header');
+                const sysTitle = sysHeader.querySelector('span').textContent.toLowerCase();
+                const sysChildrenContainer = sys.querySelector('.treeview-children');
+                const visibleGroups = sysChildrenContainer.querySelectorAll('.treeview-group-container:not(.d-none)');
+
+                if (visibleGroups.length > 0 || sysTitle.includes(term)) {
+                    sys.classList.remove('d-none');
+                    // Si el módulo coincide, mostrar todo su contenido
+                    if (sysTitle.includes(term)) {
+                        sysChildrenContainer.querySelectorAll('.treeview-group-container').forEach(g => {
+                            g.classList.remove('d-none');
+                            g.querySelectorAll('.col').forEach(c => c.classList.remove('d-none'));
+                        });
+                    }
+                    
+                    // Asegurar que esté expandido para ver las coincidencias
+                    const childrenContainer = sys.querySelector('.treeview-children');
+                    const chevron = sys.querySelector('.treeview-header .toggle-chevron');
+                    if (childrenContainer && childrenContainer.classList.contains('d-none')) {
+                        childrenContainer.classList.remove('d-none');
+                        if (chevron) chevron.classList.remove('collapsed');
+                    }
+                } else {
+                    sys.classList.add('d-none');
+                }
+            });
+        }
+
+        // Expandir/Colapsar Nivel 1 (Sistema)
+        function toggleCollapse(sistemaCodigo) {
+            const childrenContainer = document.getElementById(`children-${sistemaCodigo}`);
+            const chevron = document.getElementById(`chevron-${sistemaCodigo}`);
+            
+            if (childrenContainer.classList.contains('d-none')) {
+                childrenContainer.classList.remove('d-none');
+                chevron.classList.remove('collapsed');
+            } else {
+                childrenContainer.classList.add('d-none');
+                chevron.classList.add('collapsed');
+            }
+        }
+
+        // Expandir/Colapsar Nivel 2 (Grupo)
+        function toggleGroupCollapse(grupoId) {
+            const childrenContainer = document.getElementById(`children-${grupoId}`);
+            const chevron = document.getElementById(`chevron-${grupoId}`);
+            
+            if (childrenContainer.classList.contains('d-none')) {
+                childrenContainer.classList.remove('d-none');
+                chevron.classList.remove('collapsed');
+            } else {
+                childrenContainer.classList.add('d-none');
+                chevron.classList.add('collapsed');
+            }
+        }
+
+        function expandAll() {
+            document.querySelectorAll('.treeview-children, .treeview-group-children').forEach(el => el.classList.remove('d-none'));
+            document.querySelectorAll('.toggle-chevron').forEach(el => el.classList.remove('collapsed'));
+        }
+
+        function collapseAll() {
+            document.querySelectorAll('.treeview-children, .treeview-group-children').forEach(el => el.classList.add('d-none'));
+            document.querySelectorAll('.toggle-chevron').forEach(el => el.classList.add('collapsed'));
+        }
+
+        // Tri-state helper para el checkbox de grupo (Nivel 2)
+        function updateParentCheckbox(grupoId, sistemaCodigo) {
+            const parentCheckbox = document.getElementById(`parent-${grupoId}`);
+            const children = document.querySelectorAll(`#children-${grupoId} .child-checkbox`);
+            const badge = document.getElementById(`count-${grupoId}`);
+            
+            let checkedCount = 0;
+            children.forEach(child => {
+                if (child.checked) checkedCount++;
+            });
+
+            if (badge) badge.textContent = `${checkedCount} / ${children.length}`;
+
+            if (parentCheckbox) {
+                if (checkedCount === 0) {
+                    parentCheckbox.checked = false;
+                    parentCheckbox.indeterminate = false;
+                } else if (checkedCount === children.length) {
+                    parentCheckbox.checked = true;
+                    parentCheckbox.indeterminate = false;
+                } else {
+                    parentCheckbox.checked = false;
+                    parentCheckbox.indeterminate = true;
+                }
+            }
+
+            // Actualizar contador del Sistema (Nivel 1)
+            updateSystemCount(sistemaCodigo);
+        }
+
+        // Actualizar contador del módulo principal (Nivel 1)
+        function updateSystemCount(sistemaCodigo) {
+            const badge = document.getElementById(`count-${sistemaCodigo}`);
+            const allSystemChildren = document.querySelectorAll(`#children-${sistemaCodigo} .child-checkbox`);
+            
+            let checkedCount = 0;
+            allSystemChildren.forEach(child => {
+                if (child.checked) checkedCount++;
+            });
+
+            if (badge) badge.textContent = `${checkedCount} / ${allSystemChildren.length}`;
+        }
+
+        // Inicializar contadores al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.parent-checkbox').forEach(parentCheckbox => {
+                const grupoId = parentCheckbox.getAttribute('data-parent-code');
+                const sistemaCodigo = parentCheckbox.getAttribute('data-sistema-code');
+                updateParentCheckbox(grupoId, sistemaCodigo);
+            });
+        });
+
+        // Toggle para permisos individuales (Nivel 3)
+        async function toggleChild(checkbox, grupoId, sistemaCodigo) {
+            const optionCode = checkbox.getAttribute('data-opcion-codigo');
+            const optionDesc = checkbox.getAttribute('data-opcion-desc');
+            const isAssign = checkbox.checked;
+            const loader = document.getElementById(`loader-${optionCode}`);
+            const successIcon = document.getElementById(`success-${optionCode}`);
+
+            if (loader) loader.classList.remove('d-none');
+            if (successIcon) successIcon.classList.add('d-none');
+            checkbox.disabled = true;
+
+            const success = await savePermission(optionCode, isAssign);
+
+            if (loader) loader.classList.add('d-none');
+            checkbox.disabled = false;
+
+            if (success) {
+                if (successIcon) {
+                    successIcon.classList.remove('d-none');
+                    setTimeout(() => {
+                        successIcon.classList.add('d-none');
+                    }, 1500);
+                }
+                showToast(`Permiso "${optionDesc}" ${isAssign ? 'asignado' : 'retirado'} correctamente.`, 'success');
+            } else {
+                checkbox.checked = !isAssign;
+                showToast(`Error al guardar el permiso "${optionDesc}".`, 'error');
+            }
+
+            updateParentCheckbox(grupoId, sistemaCodigo);
+        }
+
+        // Master toggle para grupo (Nivel 2)
+        async function toggleParent(parentCheckbox, grupoId, sistemaCodigo) {
+            const shouldCheck = parentCheckbox.checked;
+            const children = document.querySelectorAll(`#children-${grupoId} .child-checkbox`);
+            const pendingPromises = [];
+
+            parentCheckbox.disabled = true;
+            showToast(`${shouldCheck ? 'Asignando' : 'Retirando'} permisos del sub-módulo...`, 'info');
+
+            for (const child of children) {
+                if (child.checked !== shouldCheck) {
+                    const optionCode = child.getAttribute('data-opcion-codigo');
+                    const loader = document.getElementById(`loader-${optionCode}`);
+                    
+                    child.checked = shouldCheck;
+                    if (loader) loader.classList.remove('d-none');
+                    child.disabled = true;
+
+                    const savePromise = savePermission(optionCode, shouldCheck).then(success => {
+                        if (loader) loader.classList.add('d-none');
+                        child.disabled = false;
+                        if (!success) {
+                            child.checked = !shouldCheck;
+                        }
+                        return success;
+                    });
+                    pendingPromises.push(savePromise);
+                }
+            }
+
+            if (pendingPromises.length > 0) {
+                const results = await Promise.all(pendingPromises);
+                const allOk = results.every(r => r === true);
+                if (allOk) {
+                    showToast(`Permisos del sub-módulo actualizados con éxito.`, 'success');
+                } else {
+                    showToast(`Algunos permisos del sub-módulo no pudieron actualizarse.`, 'error');
+                }
+            }
+
+            parentCheckbox.disabled = false;
+            updateParentCheckbox(grupoId, sistemaCodigo);
+        }
+
+        // Petición AJAX POST
+        async function savePermission(optionCode, isAssign) {
+            const url = isAssign ? assignUrl : retireUrl;
+            
+            const params = new URLSearchParams();
+            params.append('perfilCodigo', currentPerfil);
+            params.append('opcionCodigo', optionCode);
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: params.toString()
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    return data.success;
+                }
+                return false;
+            } catch (error) {
+                console.error('Error AJAX:', error);
+                return false;
+            }
+        }
+    </script>
+}

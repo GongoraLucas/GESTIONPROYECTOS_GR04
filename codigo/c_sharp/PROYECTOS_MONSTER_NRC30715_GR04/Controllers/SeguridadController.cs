@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PROYECTOS_MONSTER_NRC30715_GR04.Services.Interfaces;
 
@@ -56,6 +56,28 @@ public class SeguridadController : Controller
             new { perfilCodigo });
     }
 
+    [HttpPost]
+    public async Task<IActionResult> GuardarUsuariosPerfil(
+        string perfilCodigo,
+        List<int> usuarioIds)
+    {
+        if (string.IsNullOrEmpty(perfilCodigo))
+        {
+            return Json(new { success = false, message = "El perfil es requerido." });
+        }
+
+        try
+        {
+            usuarioIds ??= new List<int>();
+            await _perfilService.GuardarUsuariosPerfilAsync(perfilCodigo, usuarioIds);
+            return Json(new { success = true, message = "Asignaciones guardadas exitosamente." });
+        }
+        catch (System.Exception ex)
+        {
+            return Json(new { success = false, message = $"Error al guardar: {ex.Message}" });
+        }
+    }
+
     [HttpGet]
     public async Task<IActionResult>
     AsignarOpcionPerfil(
@@ -80,6 +102,11 @@ public class SeguridadController : Controller
                 perfilCodigo,
                 opcionCodigo);
 
+        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        {
+            return Json(new { success = true, message = "Opción asignada exitosamente." });
+        }
+
         return RedirectToAction(
             nameof(AsignarOpcionPerfil),
             new
@@ -98,6 +125,11 @@ public class SeguridadController : Controller
             .RetirarOpcionAsync(
                 perfilCodigo,
                 opcionCodigo);
+
+        if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+        {
+            return Json(new { success = true, message = "Opción retirada exitosamente." });
+        }
 
         return RedirectToAction(
             nameof(AsignarOpcionPerfil),
